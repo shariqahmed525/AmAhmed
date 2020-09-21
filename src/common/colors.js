@@ -1,0 +1,9 @@
+export const link = "#0e9ae4";
+export const black = "#111111";
+export const theme = "#e30a2c";
+export const darkGray = "#696969";
+export const gray = "#aaaaaa";
+export const lightGray = "#c7c7c7";
+export const dangerColor = "#DC3545";
+export const tabIconColor = "#bac2c8";
+export const backgroundColor = "#fefefe";
