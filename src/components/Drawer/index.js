@@ -27,7 +27,7 @@ const List = ({ onPress, text, icon, isArabic }) => (
   </TouchableOpacity>
 );
 
-export default ({ navigation }) => {
+export default ({ navigation, drawerClose }) => {
   const {
     user: { userData },
     app: { language }
@@ -105,7 +105,8 @@ export default ({ navigation }) => {
               isArabic={isArabic}
               text={isArabic ? "عناويني" : "My Addresses"}
               onPress={() => {
-                navigation.closeDrawer();
+                drawerClose();
+                // navigation.closeDrawer();
                 setTimeout(() => {
                   navigation.navigate("Address", {
                     myAddresses: true
@@ -136,7 +137,8 @@ export default ({ navigation }) => {
               isArabic={isArabic}
               text={isArabic ? "شارك التطبيق" : "Share App"}
               onPress={() => {
-                navigation.closeDrawer();
+                drawerClose();
+                // navigation.closeDrawer();
                 setTimeout(() => {}, 0);
               }}
               icon={<Icon name="share-social-outline" size={25} color={gray} />}

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import ShowAlert from "../components/ShowAlert";
 import {
@@ -11,27 +11,21 @@ import {
   OnBoardingLanguage
 } from "../containers";
 import { store } from "../redux";
+import { StatusBar } from "react-native";
 import CartIcon from "../components/CartIcon";
 import { gray, theme } from "../common/colors";
-import DrawerComponent from "../components/Drawer";
 import { TransitionPresets } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Feather, MaterialCommunityIcons } from "../common/icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { ARABIC } from "../common/constants";
+import { ANDROID } from "../common/constants";
 
 const { Navigator, Screen } = createStackNavigator();
 const {
   Screen: TabScreen,
   Navigator: TabNavigator
 } = createBottomTabNavigator();
-
-const {
-  Screen: DrawerScreen,
-  Navigator: DrawerNavigator
-} = createDrawerNavigator();
 
 const tabOptions = {
   activeTintColor: theme,
@@ -69,29 +63,12 @@ const getTabBarVisible = (route, array) => {
   return true;
 };
 
-const MainDrawer = () => {
-  const { language } = useSelector(state => state.app);
-  const memo = useMemo(
-    () => (
-      <DrawerNavigator
-        initialRouteName="Home"
-        drawerPosition={language === ARABIC ? "right" : "left"}
-        drawerContent={props => <DrawerComponent {...props} />}
-      >
-        <DrawerScreen name="Home" component={Home} />
-      </DrawerNavigator>
-    ),
-    [language]
-  );
-  return memo;
-};
-
 const Tab = () => {
   return (
     <TabNavigator tabBarOptions={tabOptions}>
       <TabScreen
         name="Home"
-        component={MainDrawer}
+        component={Home}
         options={({ route }) => ({
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons size={30} name={"home"} color={color} />
@@ -165,6 +142,17 @@ const OnBoardStack = () => {
 
 export default () => {
   const { category } = useSelector(state => state.app);
+
+  useEffect(() => {
+    if (category) {
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
+    } else {
+      StatusBar.setBarStyle("dark-content");
+      ANDROID && StatusBar.setBackgroundColor("#fff");
+    }
+  }, [category]);
+
   const memoizeApp = useMemo(
     () => (
       <NavigationContainer>

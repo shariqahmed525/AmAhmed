@@ -18,12 +18,13 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 10,
     maxHeight: 180,
+    backgroundColor,
     height: HEIGHT * 0.22,
     paddingHorizontal: 10
   },
   swiperWrapper: {
+    backgroundColor,
     borderRadius: 10,
-    backgroundColor: "red",
     borderColor: "#fff",
     borderWidth: 1,
     shadowColor: "#000",
@@ -36,9 +37,15 @@ const styles = StyleSheet.create({
     elevation: 3,
     overflow: "hidden"
   },
+  sliderImageWrapper: {
+    width: "100%",
+    maxHeight: 180,
+    height: HEIGHT * 0.22,
+    backgroundColor: "#fff"
+  },
   sliderImage: {
     width: "100%",
-    height: HEIGHT * 0.22
+    height: "100%"
   }
 });
 
