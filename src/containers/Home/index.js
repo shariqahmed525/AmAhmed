@@ -8,32 +8,32 @@ import {
   ScrollView,
   TouchableOpacity
 } from "react-native";
+import _ from "lodash";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import Swiper from "react-native-swiper";
 import styles from "./styles";
 import { black, darkGray, gray, theme } from "../../common/colors";
-import { ANDROID, ARABIC, CATEGORIES, ENGLISH } from "../../common/constants";
+import {
+  ANDROID,
+  ARABIC,
+  CATEGORIES,
+  ENGLISH,
+  ITEMS,
+  SLIDER_IMAGES
+} from "../../common/constants";
 import { Icon, MaterialCommunityIcons } from "../../common/icons";
 import Header from "../../components/Header";
 import { onLanguageAction } from "../../redux/actions/app";
 import SideMenu from "react-native-side-menu";
 import Drawer from "../../components/Drawer";
-
-const SLIDER_IMAGES = [
-  require("../../../assets/images/slider/1.jpeg"),
-  require("../../../assets/images/slider/2.jpeg"),
-  require("../../../assets/images/slider/3.jpeg"),
-  require("../../../assets/images/slider/4.jpeg"),
-  require("../../../assets/images/slider/6.jpeg"),
-  require("../../../assets/images/slider/7.jpeg")
-];
+import HomeItem from "../../components/Item";
 
 export default () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
-  const { language } = useSelector(state => state.app);
+  const { language, category } = useSelector(state => state.app);
   const isArabic = language === ARABIC;
 
   useEffect(() => {
@@ -70,6 +70,38 @@ export default () => {
     []
   );
 
+  const header = (
+    <Header
+      leftIcon={() => <Icon name="md-menu-outline" color={"#fff"} size={30} />}
+      rightIcon={() => (
+        <MaterialCommunityIcons size={30} color={"#fff"} name="translate" />
+      )}
+      title={isArabic ? "الرئيسية" : "Home"}
+      titleColor={"#fff"}
+      leftIconProps={{
+        onPress: () => setIsOpen(true)
+      }}
+      rightIconProps={{
+        onPress: handleToggleLanguage
+      }}
+    />
+  );
+
+  const items = () => {
+    const filter = ITEMS.filter(v => v.category === category);
+    const grouped = _.groupBy(filter, o => o.subcategory(isArabic));
+    const keys = Object.keys(grouped);
+    return keys.map((v, i) => (
+      <HomeItem
+        key={i}
+        name={v}
+        tabIndex={i}
+        data={grouped[v]}
+        isArabic={isArabic}
+      />
+    ));
+  };
+
   return (
     <SideMenu
       isOpen={isOpen}
@@ -81,28 +113,14 @@ export default () => {
     >
       <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
         <View style={styles.container}>
-          <Header
-            leftIcon={() => (
-              <Icon name="md-menu-outline" color={"#fff"} size={30} />
-            )}
-            rightIcon={() => (
-              <MaterialCommunityIcons
-                size={30}
-                color={"#fff"}
-                name="translate"
-              />
-            )}
-            title={isArabic ? "الرئيسية" : "Home"}
-            titleColor={"#fff"}
-            leftIconProps={{
-              onPress: () => setIsOpen(true)
-            }}
-            rightIconProps={{
-              onPress: handleToggleLanguage
-            }}
-          />
-          <ScrollView bounces={false} contentContainerStyle={styles.scrollView}>
+          {header}
+          <ScrollView
+            bounces={false}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollView}
+          >
             {sliderMemo}
+            {items()}
           </ScrollView>
         </View>
       </SafeAreaView>
