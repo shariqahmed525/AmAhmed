@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Text,
   View,
@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TouchableOpacity
 } from "react-native";
-import SeeAll from "../SeeAll";
 import Item from "./Item";
 import { theme } from "../../common/colors";
 
@@ -15,7 +14,19 @@ const renderItem = ({ item, isArabic }) => {
 };
 
 export default ({ data, name, onSeeAll, isArabic, tabIndex, ...rest }) => {
+  const ref = useRef(null);
   const keyExtractor = (item, index) => item + index;
+
+  useEffect(() => {
+    if (
+      ref &&
+      ref.current &&
+      typeof ref.current.scrollToOffset === "function"
+    ) {
+      ref.current.scrollToOffset({ animated: true, offset: 0 });
+    }
+  }, [isArabic]);
+
   return (
     <View style={styles.containerStyle}>
       <View style={styles.itemColTop(isArabic)}>
@@ -28,12 +39,13 @@ export default ({ data, name, onSeeAll, isArabic, tabIndex, ...rest }) => {
           </Text>
         </TouchableOpacity>
       </View>
-      {data && (
+      {data && data.length > 0 && (
         <FlatList
-          data={data}
+          ref={ref}
           extraData={rest}
           horizontal={true}
           inverted={isArabic}
+          data={data.slice(0, 5)}
           keyExtractor={keyExtractor}
           keyboardShouldPersistTaps="handled"
           showsHorizontalScrollIndicator={false}
@@ -47,8 +59,7 @@ export default ({ data, name, onSeeAll, isArabic, tabIndex, ...rest }) => {
 
 const styles = StyleSheet.create({
   containerStyle: {
-    paddingTop: 15,
-    backgroundColor: "#fff"
+    paddingTop: 15
   },
   itemColTop: isArabic => ({
     height: 40,

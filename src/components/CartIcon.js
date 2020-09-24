@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { gray, theme } from "../common/colors";
+import { gray, tabIconColor, theme } from "../common/colors";
 import { View, Text, StyleSheet } from "react-native";
 import { FontAwesome5, MaterialCommunityIcons } from "../common/icons";
 
@@ -16,7 +16,7 @@ export default ({ focused, color }) => {
       <FontAwesome5
         size={26}
         name={"shopping-basket"}
-        color={color || (focused ? theme : gray)}
+        color={color || (focused ? theme : tabIconColor)}
       />
     </View>
   );

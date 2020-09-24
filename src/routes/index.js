@@ -13,7 +13,7 @@ import {
 import { store } from "../redux";
 import { StatusBar } from "react-native";
 import CartIcon from "../components/CartIcon";
-import { gray, theme } from "../common/colors";
+import { tabIconColor, theme } from "../common/colors";
 import { TransitionPresets } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -29,7 +29,7 @@ const {
 
 const tabOptions = {
   activeTintColor: theme,
-  inactiveTintColor: gray,
+  inactiveTintColor: tabIconColor,
   showLabel: false
 };
 

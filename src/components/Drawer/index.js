@@ -58,7 +58,7 @@ export default ({ navigation, drawerClose }) => {
   const memo = useMemo(
     () => (
       <SafeAreaView
-        style={styles.safeAreaView}
+        style={styles.safeAreaView(isArabic)}
         forceInset={{ bottom: "never" }}
       >
         <Alert
@@ -71,7 +71,7 @@ export default ({ navigation, drawerClose }) => {
           title={alert.alertTitle}
           onCancelPress={alertClose}
         />
-        <View style={styles.container}>
+        <View style={styles.container(isArabic)}>
           <TouchableOpacity
             activeOpacity={0.7}
             style={styles.profileWrapper(isArabic)}
@@ -106,7 +106,6 @@ export default ({ navigation, drawerClose }) => {
               text={isArabic ? "عناويني" : "My Addresses"}
               onPress={() => {
                 drawerClose();
-                // navigation.closeDrawer();
                 setTimeout(() => {
                   navigation.navigate("Address", {
                     myAddresses: true
@@ -138,7 +137,6 @@ export default ({ navigation, drawerClose }) => {
               text={isArabic ? "شارك التطبيق" : "Share App"}
               onPress={() => {
                 drawerClose();
-                // navigation.closeDrawer();
                 setTimeout(() => {}, 0);
               }}
               icon={<Icon name="share-social-outline" size={25} color={gray} />}
@@ -163,7 +161,7 @@ export default ({ navigation, drawerClose }) => {
             <List
               isArabic={isArabic}
               onPress={confirmation}
-              text={isArabic ? "" : "Logout"}
+              text={isArabic ? "تسجيل خروج" : "Logout"}
               icon={<AntDesign name="poweroff" size={20} color={gray} />}
             />
           </View>

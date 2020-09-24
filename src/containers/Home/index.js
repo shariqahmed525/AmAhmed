@@ -115,7 +115,6 @@ export default () => {
         <View style={styles.container}>
           {header}
           <ScrollView
-            bounces={false}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollView}
           >

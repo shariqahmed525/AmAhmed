@@ -1,14 +1,32 @@
 import { StyleSheet } from "react-native";
-import { black, gray } from "../../common/colors";
+import { backgroundColor, black, gray, theme } from "../../common/colors";
 import { WIDTH } from "../../common/constants";
 export default StyleSheet.create({
-  container: {
+  safeAreaView: isArabic => ({
+    flex: 1,
+    backgroundColor: theme,
+    borderTopLeftRadius: isArabic ? 30 : 0,
+    borderTopRightRadius: isArabic ? 0 : 30,
+    borderBottomLeftRadius: isArabic ? 30 : 0,
+    borderBottomRightRadius: isArabic ? 0 : 30
+  }),
+  container: isArabic => ({
     flex: 1,
     backgroundColor: "#fff",
-    borderTopRightRadius: 30,
-    borderBottomRightRadius: 30,
-    paddingHorizontal: WIDTH * 0.05
-  },
+    borderTopLeftRadius: isArabic ? 30 : 0,
+    borderTopRightRadius: isArabic ? 0 : 30,
+    borderBottomLeftRadius: isArabic ? 30 : 0,
+    borderBottomRightRadius: isArabic ? 0 : 30,
+    paddingHorizontal: WIDTH * 0.05,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 2.22,
+    elevation: 3
+  }),
   iconWrapper: isArabic => ({
     width: 55,
     height: 55,
@@ -59,12 +77,6 @@ export default StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     marginBottom: WIDTH * 0.05
-  },
-  safeAreaView: {
-    flex: 1,
-    backgroundColor: "#fff",
-    borderTopRightRadius: 30,
-    borderBottomRightRadius: 30
   },
   image: {
     height: "100%",

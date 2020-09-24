@@ -53,7 +53,7 @@ export const CATEGORIES = [
 ];
 
 export const SLIDER_IMAGES = [
-  require("../../assets/images/sliders/1.jpeg"),
+  require("../../assets/images/sliders/1.jpg"),
   require("../../assets/images/sliders/2.jpeg"),
   require("../../assets/images/sliders/3.jpeg"),
   require("../../assets/images/sliders/4.jpeg"),
@@ -67,9 +67,9 @@ const GOATS_ITEMS = [
     category: "g/s",
     subcategory: isArabic => (isArabic ? "الماعز والأغنام" : "GOAT / SHEEPS"),
     name: isArabic => (isArabic ? "الماعز" : "Goat"),
-    price: 500.0,
-    offerPrice: 0,
-    inStock: true,
+    price: 500,
+    offerPrice: 300,
+    inStock: false,
     quantityType: isArabic => (isArabic ? "كيلو" : "Kilo"),
     image: require("../../assets/images/items/g1.jpeg")
   },
@@ -79,7 +79,8 @@ const GOATS_ITEMS = [
     subcategory: isArabic => (isArabic ? "الماعز والأغنام" : "GOAT / SHEEPS"),
     name: isArabic => (isArabic ? "الأغنام" : "Sheeps"),
     price: 500.0,
-    offerPrice: 0,
+    offerPrice: 220,
+    checkKey: true,
     inStock: true,
     quantityType: isArabic => (isArabic ? "كيلو" : "Kilo"),
     image: require("../../assets/images/items/g3.jpeg")

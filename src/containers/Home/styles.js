@@ -18,15 +18,8 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 10,
     maxHeight: 180,
-    backgroundColor,
+    paddingHorizontal: 10,
     height: HEIGHT * 0.22,
-    paddingHorizontal: 10
-  },
-  swiperWrapper: {
-    backgroundColor,
-    borderRadius: 10,
-    borderColor: "#fff",
-    borderWidth: 1,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -35,7 +28,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 2.22,
     elevation: 3,
-    overflow: "hidden"
+    backgroundColor: "transparent"
+  },
+  swiperWrapper: {
+    borderWidth: 1,
+    borderRadius: 10,
+    overflow: "hidden",
+    backgroundColor: "#fff",
+    borderColor: backgroundColor
   },
   sliderImageWrapper: {
     width: "100%",

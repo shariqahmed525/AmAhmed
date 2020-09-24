@@ -40,3 +40,8 @@ export const removePreviousRoute = (
     });
   });
 };
+
+export const calculatePercentage = (price, offerPrice) => {
+  const percentage = Math.round((price / (price + offerPrice)) * 100);
+  return 100 - percentage;
+};
