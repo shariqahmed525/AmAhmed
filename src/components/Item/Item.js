@@ -1,16 +1,11 @@
-import React from "react";
-import {
-  black,
-  greenColor,
-  lightGray,
-  redColor,
-  tabIconColor,
-  theme
-} from "../../common/colors";
-import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
+import React, { useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addItemToCart } from "../../redux/actions/user";
 import { calculatePercentage } from "../../common/functions";
+import { theme, black, redColor, greenColor } from "../../common/colors";
+import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
 
-export default ({ product, isArabic }) => {
+export default ({ item, isArabic }) => {
   const {
     id,
     name,
@@ -18,14 +13,25 @@ export default ({ product, isArabic }) => {
     price = 0,
     quantityType,
     offerPrice = 0,
-    inStock = true,
-    checkKey
-  } = product;
-  // let checkKey = false;
-  return (
-    <View>
-      <TouchableOpacity activeOpacity={0.5}>
-        <View style={styles.itemWrapper(isArabic)}>
+    inStock = true
+  } = item;
+  const dispatch = useDispatch();
+  const { cart } = useSelector(state => state.user);
+  let findItem = cart.find(v => v.id === id);
+  const memo = useMemo(
+    () => (
+      <View style={styles.container}>
+        {!inStock && (
+          <View style={styles.outOfStockWrapper}>
+            <Text style={styles.outOfStockWrapperLabel(isArabic)}>
+              {isArabic ? "إنتهى من المخزن" : "OUT OF STOCK"}
+            </Text>
+          </View>
+        )}
+        <TouchableOpacity
+          activeOpacity={0.5}
+          style={styles.itemWrapper(inStock)}
+        >
           {offerPrice > 0 && inStock && (
             <View style={styles.labelWrapper()}>
               <Text style={styles.label()}>
@@ -34,18 +40,11 @@ export default ({ product, isArabic }) => {
               </Text>
             </View>
           )}
-          {!inStock && (
-            <View style={styles.labelWrapper(true)}>
-              <Text style={styles.label(isArabic, true)}>
-                {isArabic ? "إنتهى من المخزن" : "Out of Stock"}
-              </Text>
-            </View>
-          )}
           <View style={styles.firstSection}>
             <View style={styles.imageWrapper}>
               <Image
                 source={image}
-                resizeMode="stretch"
+                resizeMode="contain"
                 style={styles.imageStyle}
               />
             </View>
@@ -75,23 +74,25 @@ export default ({ product, isArabic }) => {
                 )}
               </Text>
             </View>
-            {checkKey ? (
-              <View style={styles.cartActionsWrapper}>
+            {findItem ? (
+              <View style={styles.cartActionsWrapper(isArabic)}>
                 <View style={styles.cartActionsContainer}>
                   <TouchableOpacity
                     activeOpacity={0.8}
                     style={styles.cartAction}
-                    // onPress={() => addItemToCart(id, "-")}
+                    onPress={() => dispatch(addItemToCart(item, "-"))}
                   >
                     <Text style={styles.cartLeftActionText}>-</Text>
                   </TouchableOpacity>
                   <View style={styles.quantityWrappper}>
-                    <Text style={styles.quantityWithUnit(isArabic)}>{12}</Text>
+                    <Text style={styles.quantityWithUnit(isArabic)}>
+                      {findItem?.quantity || 0}
+                    </Text>
                   </View>
                   <TouchableOpacity
                     activeOpacity={0.8}
                     style={styles.cartAction}
-                    // onPress={() => addItemToCart(id, "+")}
+                    onPress={() => dispatch(addItemToCart(item, "+"))}
                   >
                     <Text style={styles.cartRightActionText}>+</Text>
                   </TouchableOpacity>
@@ -100,8 +101,8 @@ export default ({ product, isArabic }) => {
             ) : (
               <TouchableOpacity
                 activeOpacity={0.5}
-                style={styles.cartBtn}
-                // onPress={() => addItemToCart(id, "+")}
+                style={styles.cartBtn(isArabic)}
+                onPress={() => dispatch(addItemToCart(item, "+"))}
               >
                 <Text style={styles.cartBtnText(isArabic)}>
                   {isArabic ? "أضف إلى السلة" : "ADD TO CART"}
@@ -109,33 +110,48 @@ export default ({ product, isArabic }) => {
               </TouchableOpacity>
             )}
           </View>
-        </View>
-      </TouchableOpacity>
-    </View>
+        </TouchableOpacity>
+      </View>
+    ),
+    [isArabic, findItem?.quantity]
   );
+  return memo;
 };
 
 const styles = StyleSheet.create({
-  itemWrapper: () => ({
-    width: 150,
-    height: 250,
-    borderWidth: 1,
-    borderRadius: 7,
-    paddingVertical: 10,
-    marginHorizontal: 5,
-    paddingHorizontal: 10,
-    borderColor: "#fff",
-    justifyContent: "space-between",
-    backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 2.22,
-    elevation: 3
-  }),
+  container: {
+    width: 160,
+    height: 270,
+    marginHorizontal: 5
+  },
+  itemWrapper: inStock => {
+    let obj = {};
+    if (inStock) {
+      obj = {
+        borderWidth: 1,
+        borderColor: "#fff",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 1
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 2.22,
+        elevation: 3
+      };
+    }
+    return {
+      width: "100%",
+      height: "100%",
+      borderRadius: 7,
+      paddingVertical: 10,
+      position: "relative",
+      paddingHorizontal: 10,
+      backgroundColor: "#fff",
+      justifyContent: "space-between",
+      ...obj
+    };
+  },
   firstSection: {
     width: "100%",
     overflow: "hidden"
@@ -149,17 +165,17 @@ const styles = StyleSheet.create({
     height: "100%"
   },
   name: isArabic => ({
-    color: "#707070",
     width: "100%",
+    color: "#707070",
     textAlign: "center",
-    fontSize: isArabic ? 15 : 17,
-    paddingTop: isArabic ? 5 : 7,
+    fontSize: isArabic ? 16 : 17,
+    paddingTop: isArabic ? 5 : 10,
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
   perQuantity: isArabic => ({
-    fontSize: 13,
     color: theme,
-    marginBottom: isArabic ? 1 : 6,
+    fontSize: isArabic ? 13 : 14,
+    marginBottom: isArabic ? 3 : 10,
     textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
@@ -169,8 +185,8 @@ const styles = StyleSheet.create({
   },
   priceWrapper: isArabic => ({
     color: greenColor,
-    fontSize: isArabic ? 13 : 11,
     width: "100%",
+    fontSize: isArabic ? 13 : 11,
     textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
@@ -180,17 +196,17 @@ const styles = StyleSheet.create({
     textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
-  cartBtn: {
+  cartBtn: isArabic => ({
     height: 28,
-    marginTop: 7,
     width: "100%",
     borderWidth: 1,
     borderRadius: 5,
+    marginTop: isArabic ? 7 : 10,
     justifyContent: "center",
     alignItems: "center",
     borderColor: theme,
     backgroundColor: theme
-  },
+  }),
   cartBtnText: isArabic => ({
     color: "#fff",
     textAlign: "center",
@@ -202,18 +218,18 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     width: 150,
-    height: 100,
+    height: 110,
     alignSelf: "center"
   },
-  labelWrapper: inStock => ({
+  labelWrapper: () => ({
     top: 1,
     right: 1,
     zIndex: 1,
     position: "absolute",
     alignItems: "center",
     justifyContent: "center",
-    width: inStock ? 60 : 60,
-    height: inStock ? 60 : 60,
+    width: 60,
+    height: 60,
     backgroundColor: redColor,
     shadowColor: "#000",
     shadowOffset: {
@@ -225,21 +241,36 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     shadowOpacity: 0.25
   }),
-  label: (isArabic, inStock) => ({
+  label: () => ({
     color: "#fff",
     textAlign: "center",
-    fontSize: inStock ? (isArabic ? 10 : 13) : 14,
-    fontFamily: inStock && isArabic ? "Cairo-Black" : "Rubik-SemiBold"
+    fontSize: 14,
+    fontFamily: "Rubik-SemiBold"
   }),
-  cartActionsWrapper: {
+  outOfStockWrapper: {
+    zIndex: 10,
+    width: 160,
+    height: 270,
+    borderRadius: 7,
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(20, 20, 20, 0.5)"
+  },
+  outOfStockWrapperLabel: isArabic => ({
+    color: "#fff",
+    textAlign: "center",
+    fontSize: isArabic ? 25 : 27,
+    fontFamily: isArabic ? "Cairo-Black" : "Rubik-Bold"
+  }),
+  cartActionsWrapper: isArabic => ({
     height: 28,
     width: "100%",
-    marginTop: 7,
-    // alignSelf: "center",
+    marginTop: isArabic ? 7 : 10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end"
-  },
+  }),
   cartActionsContainer: {
     flex: 1,
     flexDirection: "row",
@@ -273,9 +304,9 @@ const styles = StyleSheet.create({
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Medium"
   }),
   offerWrapper: isArabic => ({
-    fontSize: 10,
     color: "#707070",
     alignSelf: "flex-end",
+    fontSize: isArabic ? 12 : 11,
     textDecorationLine: "line-through",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   })

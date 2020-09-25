@@ -1,25 +1,49 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { FontAwesome5 } from "../common/icons";
 import { gray, tabIconColor, theme } from "../common/colors";
-import { View, Text, StyleSheet } from "react-native";
-import { FontAwesome5, MaterialCommunityIcons } from "../common/icons";
+import { View, Text, StyleSheet, Animated } from "react-native";
 
 export default ({ focused, color }) => {
+  const springValue = new Animated.Value(1);
   const { cart } = useSelector(state => state.user);
-  return (
-    <View style={styles.container}>
-      {cart && cart.length > 0 && (
-        <View style={styles.textWrapper(focused)}>
-          <Text style={styles.text(focused)}>{cart.length}</Text>
-        </View>
-      )}
-      <FontAwesome5
-        size={26}
-        name={"shopping-basket"}
-        color={color || (focused ? theme : tabIconColor)}
-      />
-    </View>
+
+  const spring = () => {
+    springValue.setValue(0.3);
+    Animated.spring(springValue, {
+      toValue: 1,
+      friction: 1
+    }).start();
+  };
+
+  useEffect(() => {
+    spring();
+  }, [cart.length]);
+
+  const memo = useMemo(
+    () => (
+      <View style={styles.container}>
+        {cart && cart.length > 0 && (
+          <Animated.View
+            style={{
+              ...styles.textWrapper(focused),
+              transform: [{ scale: springValue }]
+            }}
+          >
+            <Text style={styles.text(focused)}>{cart.length}</Text>
+          </Animated.View>
+        )}
+        <FontAwesome5
+          size={26}
+          name={"shopping-basket"}
+          color={color || (focused ? theme : tabIconColor)}
+        />
+      </View>
+    ),
+    [cart.length]
   );
+
+  return memo;
 };
 
 const styles = StyleSheet.create({

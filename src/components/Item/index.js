@@ -10,7 +10,7 @@ import Item from "./Item";
 import { theme } from "../../common/colors";
 
 const renderItem = ({ item, isArabic }) => {
-  return <Item product={item} isArabic={isArabic} />;
+  return <Item item={item} isArabic={isArabic} />;
 };
 
 export default ({ data, name, onSeeAll, isArabic, tabIndex, ...rest }) => {

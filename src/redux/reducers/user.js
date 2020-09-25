@@ -6,7 +6,7 @@ import {
 } from "../types/user";
 
 const initialState = {
-  cart: [{ item: { id: "7777" }, quantity: 10 }],
+  cart: [],
   userData: null
 };
 

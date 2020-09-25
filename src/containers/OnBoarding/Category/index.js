@@ -3,11 +3,11 @@ import styles from "./styles";
 import LottieView from "lottie-react-native";
 import { SafeAreaView } from "react-navigation";
 import { View, Text, ScrollView } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import ImageButton from "../../../components/ImageButton";
 import OnBoardHeader from "../../../components/OnBoardHeader";
 import { ARABIC, CATEGORIES, ENGLISH } from "../../../common/constants";
-import { useDispatch, useSelector } from "react-redux";
 import { onCategoryAction, onLanguageAction } from "../../../redux/actions/app";
 
 export default () => {
@@ -55,7 +55,7 @@ export default () => {
           ) : (
             <View style={styles.centerContainer}>
               <Text style={styles.heading(isArabic)}>
-                {isArabic ? "اختر الفئة" : "Choose category"}
+                {isArabic ? "اختر الفئة" : "Choose Category"}
               </Text>
               {CATEGORIES.map((v, i) => (
                 <ImageButton

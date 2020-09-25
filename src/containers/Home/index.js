@@ -91,15 +91,17 @@ export default () => {
     const filter = ITEMS.filter(v => v.category === category);
     const grouped = _.groupBy(filter, o => o.subcategory(isArabic));
     const keys = Object.keys(grouped);
-    return keys.map((v, i) => (
-      <HomeItem
-        key={i}
-        name={v}
-        tabIndex={i}
-        data={grouped[v]}
-        isArabic={isArabic}
-      />
-    ));
+    return keys.map((v, i) => {
+      return (
+        <HomeItem
+          key={i}
+          name={v}
+          tabIndex={i}
+          data={grouped[v]}
+          isArabic={isArabic}
+        />
+      );
+    });
   };
 
   return (

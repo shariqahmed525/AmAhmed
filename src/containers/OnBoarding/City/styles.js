@@ -13,8 +13,8 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "#fefefe",
-    paddingBottom: HEIGHT * 0.04
+    paddingBottom: HEIGHT * 0.04,
+    backgroundColor: backgroundColor
   },
   heading: isArabic => ({
     color: theme,

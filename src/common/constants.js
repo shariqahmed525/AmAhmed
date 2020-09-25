@@ -80,7 +80,6 @@ const GOATS_ITEMS = [
     name: isArabic => (isArabic ? "الأغنام" : "Sheeps"),
     price: 500.0,
     offerPrice: 220,
-    checkKey: true,
     inStock: true,
     quantityType: isArabic => (isArabic ? "كيلو" : "Kilo"),
     image: require("../../assets/images/items/g3.jpeg")
@@ -262,7 +261,7 @@ const FRUITS_ITEMS = [
   {
     id: "18",
     category: "v/f",
-    subcategory: isArabic => (isArabic ? "الفواكه" : "VEGETABLES"),
+    subcategory: isArabic => (isArabic ? "الفواكه" : "FRUITS"),
     name: isArabic => (isArabic ? "البطيخ" : "Watermelon"),
     price: 130.0,
     offerPrice: 0,
@@ -273,7 +272,7 @@ const FRUITS_ITEMS = [
   {
     id: "19",
     category: "v/f",
-    subcategory: isArabic => (isArabic ? "الفواكه" : "VEGETABLES"),
+    subcategory: isArabic => (isArabic ? "الفواكه" : "FRUITS"),
     name: isArabic => (isArabic ? "تفاحة" : "Apple"),
     price: 340.0,
     offerPrice: 0,
