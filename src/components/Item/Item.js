@@ -1,8 +1,10 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef, useState } from "react";
+import SoundPlayer from "react-native-sound-player";
+import * as Animatable from "react-native-animatable";
 import { useDispatch, useSelector } from "react-redux";
 import { addItemToCart } from "../../redux/actions/user";
 import { calculatePercentage } from "../../common/functions";
-import { theme, black, redColor, greenColor } from "../../common/colors";
+import { theme, redColor, greenColor } from "../../common/colors";
 import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
 
 export default ({ item, isArabic }) => {
@@ -15,9 +17,37 @@ export default ({ item, isArabic }) => {
     offerPrice = 0,
     inStock = true
   } = item;
+  const ref = useRef(null);
   const dispatch = useDispatch();
+  const [animatedObj, setAnimatedObj] = useState(null);
   const { cart } = useSelector(state => state.user);
   let findItem = cart.find(v => v.id === id);
+
+  const playSound = sound => {
+    try {
+      SoundPlayer.playSoundFile(sound, "mp3");
+    } catch (e) {
+      console.log(`cannot play the sound file`, e);
+    }
+  };
+
+  const cartAction = sign => {
+    const redColor = "rgba(227, 10, 43, 0.8)";
+    const greenColor = "rgba(143, 201, 77, 0.8)";
+    setAnimatedObj(
+      sign === "+"
+        ? { bgColor: greenColor, quantityUnit: 1 }
+        : { bgColor: redColor, quantityUnit: 1 }
+    );
+    dispatch(addItemToCart(item, sign));
+    playSound(sign === "+" ? "addtocart" : "removefromcart");
+    if (ref && ref.current) {
+      ref.current.fadeIn(300).then(() => {
+        ref.current.fadeOut(300).then(() => setAnimatedObj(null));
+      });
+    }
+  };
+
   const memo = useMemo(
     () => (
       <View style={styles.container}>
@@ -28,8 +58,19 @@ export default ({ item, isArabic }) => {
             </Text>
           </View>
         )}
+        <Animatable.View
+          ref={ref}
+          useNativeDriver
+          animation="fadeOut"
+          style={styles.animatedView(animatedObj?.bgColor)}
+        >
+          <Text style={styles.animatedViewText}>
+            {animatedObj?.quantityUnit}
+          </Text>
+        </Animatable.View>
         <TouchableOpacity
           activeOpacity={0.5}
+          // onPress={() => alert("OK")}
           style={styles.itemWrapper(inStock)}
         >
           {offerPrice > 0 && inStock && (
@@ -80,7 +121,7 @@ export default ({ item, isArabic }) => {
                   <TouchableOpacity
                     activeOpacity={0.8}
                     style={styles.cartAction}
-                    onPress={() => dispatch(addItemToCart(item, "-"))}
+                    onPress={() => cartAction("-")}
                   >
                     <Text style={styles.cartLeftActionText}>-</Text>
                   </TouchableOpacity>
@@ -92,7 +133,7 @@ export default ({ item, isArabic }) => {
                   <TouchableOpacity
                     activeOpacity={0.8}
                     style={styles.cartAction}
-                    onPress={() => dispatch(addItemToCart(item, "+"))}
+                    onPress={() => cartAction("+")}
                   >
                     <Text style={styles.cartRightActionText}>+</Text>
                   </TouchableOpacity>
@@ -102,7 +143,7 @@ export default ({ item, isArabic }) => {
               <TouchableOpacity
                 activeOpacity={0.5}
                 style={styles.cartBtn(isArabic)}
-                onPress={() => dispatch(addItemToCart(item, "+"))}
+                onPress={() => cartAction("+")}
               >
                 <Text style={styles.cartBtnText(isArabic)}>
                   {isArabic ? "أضف إلى السلة" : "ADD TO CART"}
@@ -113,7 +154,7 @@ export default ({ item, isArabic }) => {
         </TouchableOpacity>
       </View>
     ),
-    [isArabic, findItem?.quantity]
+    [isArabic, animatedObj, findItem?.quantity]
   );
   return memo;
 };
@@ -191,8 +232,8 @@ const styles = StyleSheet.create({
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
   price: isArabic => ({
-    color: greenColor,
     fontSize: 18,
+    color: greenColor,
     textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
@@ -219,17 +260,18 @@ const styles = StyleSheet.create({
   imageWrapper: {
     width: 150,
     height: 110,
-    alignSelf: "center"
+    alignSelf: "center",
+    position: "relative"
   },
   labelWrapper: () => ({
     top: 1,
     right: 1,
     zIndex: 1,
+    width: 60,
+    height: 60,
     position: "absolute",
     alignItems: "center",
     justifyContent: "center",
-    width: 60,
-    height: 60,
     backgroundColor: redColor,
     shadowColor: "#000",
     shadowOffset: {
@@ -243,8 +285,8 @@ const styles = StyleSheet.create({
   }),
   label: () => ({
     color: "#fff",
-    textAlign: "center",
     fontSize: 14,
+    textAlign: "center",
     fontFamily: "Rubik-SemiBold"
   }),
   outOfStockWrapper: {
@@ -277,21 +319,21 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   cartAction: {
-    width: 27,
+    width: 37,
     height: 27,
     borderRadius: 5,
     alignItems: "center",
     flexDirection: "row",
-    justifyContent: "center",
-    backgroundColor: "#e5e9ec"
+    backgroundColor: theme,
+    justifyContent: "center"
   },
   cartLeftActionText: {
-    color: black,
+    color: "#fff",
     fontSize: 25,
     marginTop: -4
   },
   cartRightActionText: {
-    color: black,
+    color: "#fff",
     fontSize: 20,
     marginTop: -4
   },
@@ -309,5 +351,26 @@ const styles = StyleSheet.create({
     fontSize: isArabic ? 12 : 11,
     textDecorationLine: "line-through",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
-  })
+  }),
+  animatedView: backgroundColor => ({
+    width: 150,
+    height: 195,
+    zIndex: 2000,
+    width: "100%",
+    backgroundColor,
+    alignItems: "center",
+    position: "absolute",
+    paddingHorizontal: 10,
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
+    justifyContent: "center",
+    borderBottomLeftRadius: 3,
+    borderBottomRightRadius: 3
+  }),
+  animatedViewText: {
+    color: "#fff",
+    fontSize: 25,
+    textAlign: "center",
+    fontFamily: "Rubik-SemiBold"
+  }
 });

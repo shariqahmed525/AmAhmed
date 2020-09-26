@@ -5,7 +5,7 @@ import { HEIGHT } from "../common/constants";
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
-export default ({ back, onPress, isArabic }) => {
+export default ({ back, onPress, isArabic, showLanguageToggle = true }) => {
   const navigation = useNavigation();
   return (
     <View style={styles.header}>
@@ -25,23 +25,27 @@ export default ({ back, onPress, isArabic }) => {
         style={styles.logo}
         source={require("../../assets/images/logo.png")}
       />
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={onPress}
-        style={styles.rightIcon(isArabic)}
-      >
-        <Image
-          style={styles.languageIcon(isArabic)}
-          source={
-            isArabic
-              ? require("../../assets/images/UK-flag.jpg")
-              : require("../../assets/images/SA-flag.jpg")
-          }
-        />
-        <Text style={styles.language(isArabic)}>
-          {isArabic ? "English" : "عربي"}
-        </Text>
-      </TouchableOpacity>
+      {showLanguageToggle ? (
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={onPress}
+          style={styles.rightIcon(isArabic)}
+        >
+          <Image
+            style={styles.languageIcon(isArabic)}
+            source={
+              isArabic
+                ? require("../../assets/images/UK-flag.jpg")
+                : require("../../assets/images/SA-flag.jpg")
+            }
+          />
+          <Text style={styles.language(isArabic)}>
+            {isArabic ? "English" : "عربي"}
+          </Text>
+        </TouchableOpacity>
+      ) : (
+        <View style={styles.leftIcon} />
+      )}
     </View>
   );
 };

@@ -12,14 +12,14 @@ import {
 } from "../containers";
 import { store } from "../redux";
 import { StatusBar } from "react-native";
+import { ANDROID } from "../common/constants";
 import CartIcon from "../components/CartIcon";
-import { tabIconColor, theme } from "../common/colors";
 import { TransitionPresets } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Feather, MaterialCommunityIcons } from "../common/icons";
+import { backgroundColor, tabIconColor, theme } from "../common/colors";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { ANDROID } from "../common/constants";
 
 const { Navigator, Screen } = createStackNavigator();
 const {
@@ -149,14 +149,13 @@ export default () => {
       ANDROID && StatusBar.setBackgroundColor(theme);
     } else {
       StatusBar.setBarStyle("dark-content");
-      ANDROID && StatusBar.setBackgroundColor("#fff");
+      ANDROID && StatusBar.setBackgroundColor(backgroundColor);
     }
   }, [category]);
 
   const memoizeApp = useMemo(
     () => (
       <NavigationContainer>
-        {/* <AppStack /> */}
         {category ? <AppStack /> : <OnBoardStack />}
       </NavigationContainer>
     ),

@@ -41,6 +41,7 @@ export default () => {
           <OnBoardHeader
             back
             isArabic={isArabic}
+            showLanguageToggle={false}
             onPress={handleToggleLanguage}
           />
           {loading ? (
