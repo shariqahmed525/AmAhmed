@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-navigation";
-import { Feather } from "../../../common/icons";
+import { Feather } from "../../common/icons";
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, Image, TouchableOpacity } from "react-native";
-import { store } from "../../../redux";
+import { View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
 import styles from "./styles";
-import { theme } from "../../../common/colors";
-import { ARABIC, LANGUAGES } from "../../../common/constants";
-import Header from "../../../components/Header";
+import { theme } from "../../common/colors";
+import { ANDROID, ARABIC, LANGUAGES } from "../../common/constants";
+import Header from "../../components/Header";
+import { onLanguageAction } from "../../redux/actions/app";
+import { useDispatch, useSelector } from "react-redux";
 
-const List = ({ text, selected, code, source, ...rest }) => (
+const List = ({ text, selected, isArabic, source, ...rest }) => (
   <TouchableOpacity
     activeOpacity={0.7}
-    style={styles.list(selected, code)}
+    style={styles.list(selected, isArabic)}
     {...rest}
   >
     <Image style={styles.listIcon} source={source} />
-    <Text style={styles.listText(code)}>{text}</Text>
+    <Text style={styles.listText(isArabic)}>{text}</Text>
     <View style={styles.listSelected}>
       {selected && <Feather size={20} color={theme} name="check-circle" />}
     </View>
@@ -24,14 +25,15 @@ const List = ({ text, selected, code, source, ...rest }) => (
 );
 
 export default () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [language, setLanguage] = useState();
+  const { language: code } = useSelector(state => state.app);
+  const [language, setLanguage] = useState(code);
+  const isArabic = language === ARABIC;
 
   useEffect(() => {
-    const {
-      app: { language }
-    } = store.getState();
-    setLanguage(language);
+    StatusBar.setBarStyle("light-content");
+    ANDROID && StatusBar.setBackgroundColor(theme);
   }, []);
 
   const handleListItem = async code => {
@@ -39,7 +41,7 @@ export default () => {
   };
 
   const handleContinue = () => {
-    navigation.goBack();
+    dispatch(onLanguageAction(language));
   };
 
   const handleBack = () => {
@@ -49,23 +51,23 @@ export default () => {
   return (
     <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
       <View style={styles.container}>
-        <Header transparent back onBackPress={handleBack} />
+        <Header
+          back
+          onBackPress={handleBack}
+          title={isArabic ? "لغة" : "Language"}
+          titleAlign={isArabic ? "right" : "left"}
+        />
         <View style={styles.mainContainer}>
-          <View>
-            <Image
-              style={styles.logo}
-              source={require("../../../../assets/images/logo.png")}
-            />
-          </View>
+          <View />
           <View style={styles.centerContainer}>
-            <Text style={styles.heading(language)}>
-              {language === ARABIC ? "اختر اللغة" : "CHOOSE LANGUAGE"}
+            <Text style={styles.heading(isArabic)}>
+              {isArabic ? "اختر اللغة" : "CHOOSE LANGUAGE"}
             </Text>
             {LANGUAGES.map((v, i) => (
               <List
                 key={i}
                 source={v.icon}
-                code={language}
+                isArabic={isArabic}
                 text={v.name(language)}
                 selected={language === v.code}
                 onPress={() => handleListItem(v.code)}
@@ -77,8 +79,8 @@ export default () => {
             activeOpacity={0.7}
             onPress={handleContinue}
           >
-            <Text style={styles.btnText(language)}>
-              {language === ARABIC ? "استمر" : "CONTINUE"}
+            <Text style={styles.btnText(isArabic)}>
+              {isArabic ? "استمر" : "CONTINUE"}
             </Text>
           </TouchableOpacity>
         </View>

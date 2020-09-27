@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
-import { theme } from "../../../common/colors";
-import { ARABIC, CONTAINER_PADDING, HEIGHT } from "../../../common/constants";
+import { backgroundColor, theme } from "../../common/colors";
+import { CONTAINER_PADDING, HEIGHT } from "../../common/constants";
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
@@ -8,29 +8,29 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#fefefe"
+    backgroundColor: backgroundColor
   },
   mainContainer: {
     flex: 1,
     alignItems: "center",
     backgroundColor: "#fefefe",
     paddingBottom: HEIGHT * 0.04,
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     paddingHorizontal: CONTAINER_PADDING
   },
   logo: {
     width: 115,
     height: 115
   },
-  heading: code => ({
-    height: 30,
+  heading: isArabic => ({
+    height: 45,
     color: theme,
     marginBottom: 20,
     textAlign: "center",
-    fontSize: code === ARABIC ? 25 : 20,
-    fontWeight: code === ARABIC ? "bold" : "normal"
+    fontSize: isArabic ? 25 : 20,
+    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
-  list: (checked, code) => ({
+  list: (checked, isArabic) => ({
     height: 75,
     width: "100%",
     marginBottom: 8,
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     justifyContent: "center",
     borderWidth: 1,
-    flexDirection: code === ARABIC ? "row-reverse" : "row",
+    flexDirection: isArabic ? "row-reverse" : "row",
     borderColor: checked ? theme : "#fff",
     shadowColor: "#000",
     shadowOffset: {
@@ -56,14 +56,14 @@ const styles = StyleSheet.create({
     width: 40,
     height: 23
   },
-  listText: code => ({
+  listText: isArabic => ({
     flex: 1,
     color: "#000",
     alignItems: "center",
     paddingHorizontal: 12,
-    fontSize: code === ARABIC ? 20 : 18,
-    textAlign: code === ARABIC ? "right" : "left",
-    fontWeight: code === ARABIC ? "bold" : "normal"
+    fontSize: isArabic ? 20 : 19,
+    textAlign: isArabic ? "right" : "left",
+    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
   listSelected: {
     width: 30
@@ -86,13 +86,13 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5
   },
-  btnText: code => ({
+  btnText: isArabic => ({
     color: "#fff",
-    fontSize: code === ARABIC ? 22 : 18,
-    fontWeight: code === ARABIC ? "bold" : "normal"
+    fontSize: isArabic ? 22 : 18,
+    fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
   }),
   centerContainer: {
-    marginVertical: HEIGHT * 0.07
+    marginBottom: 40
   }
 });
 

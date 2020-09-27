@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   heading: isArabic => ({
     color: theme,
-    height: 35,
+    height: 40,
     textAlign: "center",
     marginBottom: HEIGHT * 0.03,
     fontSize: isArabic ? 23 : 22,

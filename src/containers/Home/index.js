@@ -1,36 +1,20 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { SafeAreaView } from "react-navigation";
-import {
-  View,
-  Text,
-  Image,
-  StatusBar,
-  ScrollView,
-  TouchableOpacity
-} from "react-native";
+import { View, Image, StatusBar, ScrollView, Linking } from "react-native";
 import _ from "lodash";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Swiper from "react-native-swiper";
 import styles from "./styles";
-import { black, darkGray, gray, theme } from "../../common/colors";
-import {
-  ANDROID,
-  ARABIC,
-  CATEGORIES,
-  ENGLISH,
-  ITEMS,
-  SLIDER_IMAGES
-} from "../../common/constants";
-import { Icon, MaterialCommunityIcons } from "../../common/icons";
+import { theme } from "../../common/colors";
+import { ANDROID, ARABIC, ITEMS, SLIDER_IMAGES } from "../../common/constants";
 import Header from "../../components/Header";
-import { onLanguageAction } from "../../redux/actions/app";
-import SideMenu from "react-native-side-menu";
 import Drawer from "../../components/Drawer";
 import HomeItem from "../../components/Item";
+import SideMenu from "react-native-side-menu";
+import { Icon, MaterialCommunityIcons } from "../../common/icons";
 
 export default () => {
-  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const { language, category } = useSelector(state => state.app);
@@ -38,10 +22,11 @@ export default () => {
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
+    ANDROID && StatusBar.setBackgroundColor(theme);
   }, []);
 
-  const handleToggleLanguage = () => {
-    dispatch(onLanguageAction(isArabic ? ENGLISH : ARABIC));
+  const handleOpenDialer = () => {
+    Linking.openURL("tel:+966505513711");
   };
 
   const sliderMemo = useMemo(
@@ -74,7 +59,9 @@ export default () => {
     <Header
       leftIcon={() => <Icon name="md-menu-outline" color={"#fff"} size={30} />}
       rightIcon={() => (
-        <MaterialCommunityIcons size={30} color={"#fff"} name="translate" />
+        <View style={styles.rotateIcon(isArabic)}>
+          <MaterialCommunityIcons size={30} color={"#fff"} name="phone" />
+        </View>
       )}
       title={isArabic ? "الرئيسية" : "Home"}
       titleColor={"#fff"}
@@ -82,7 +69,7 @@ export default () => {
         onPress: () => setIsOpen(true)
       }}
       rightIconProps={{
-        onPress: handleToggleLanguage
+        onPress: handleOpenDialer
       }}
     />
   );

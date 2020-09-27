@@ -1,12 +1,18 @@
 import { StyleSheet } from "react-native";
-import { backgroundColor, black, gray, theme } from "../../common/colors";
+import { black, gray, theme } from "../../common/colors";
 import { WIDTH } from "../../common/constants";
 export default StyleSheet.create({
+  main: isArabic => ({
+    flex: 1,
+    backgroundColor: theme,
+    borderBottomLeftRadius: isArabic ? 30 : 0,
+    borderBottomRightRadius: isArabic ? 0 : 30
+  }),
   safeAreaView: isArabic => ({
     flex: 1,
     backgroundColor: theme,
-    borderTopLeftRadius: isArabic ? 30 : 0,
-    borderTopRightRadius: isArabic ? 0 : 30,
+    // borderTopLeftRadius: isArabic ? 30 : 0,
+    // borderTopRightRadius: isArabic ? 0 : 30,
     borderBottomLeftRadius: isArabic ? 30 : 0,
     borderBottomRightRadius: isArabic ? 0 : 30
   }),

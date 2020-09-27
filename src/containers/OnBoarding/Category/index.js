@@ -4,9 +4,9 @@ import LottieView from "lottie-react-native";
 import { SafeAreaView } from "react-navigation";
 import { View, Text, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
 import ImageButton from "../../../components/ImageButton";
 import OnBoardHeader from "../../../components/OnBoardHeader";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { ARABIC, CATEGORIES, ENGLISH } from "../../../common/constants";
 import { onCategoryAction, onLanguageAction } from "../../../redux/actions/app";
 
@@ -29,6 +29,12 @@ export default () => {
 
   const handleListItem = code => {
     dispatch(onCategoryAction(code));
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: "MainStack" }]
+      })
+    );
   };
 
   return (

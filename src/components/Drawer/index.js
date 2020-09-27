@@ -58,8 +58,8 @@ export default ({ navigation, drawerClose }) => {
   const memo = useMemo(
     () => (
       <SafeAreaView
-        style={styles.safeAreaView(isArabic)}
         forceInset={{ bottom: "never" }}
+        style={styles.safeAreaView(isArabic)}
       >
         <Alert
           error={alert.error}
@@ -71,99 +71,108 @@ export default ({ navigation, drawerClose }) => {
           title={alert.alertTitle}
           onCancelPress={alertClose}
         />
-        <View style={styles.container(isArabic)}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.profileWrapper(isArabic)}
-          >
-            <View style={styles.iconWrapper(isArabic)}>
-              <FontAwesome5 name="user-alt" size={20} />
-            </View>
-            <View style={styles.nameWrapper(isArabic)}>
-              <Text
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                style={styles.profileName(isArabic)}
-              >
-                {isArabic ? "حساب زائر" : "Guest User"}
-              </Text>
-              <Text style={styles.listText(isArabic, false)}>
-                {isArabic ? "الملف الشخصي" : "Profile"}
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <View style={styles.line} />
+        <View style={styles.main(isArabic)}>
+          <View style={styles.container(isArabic)}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.profileWrapper(isArabic)}
+            >
+              <View style={styles.iconWrapper(isArabic)}>
+                <FontAwesome5 name="user-alt" size={20} />
+              </View>
+              <View style={styles.nameWrapper(isArabic)}>
+                <Text
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  style={styles.profileName(isArabic)}
+                >
+                  {isArabic ? "حساب زائر" : "Guest User"}
+                </Text>
+                <Text style={styles.listText(isArabic, false)}>
+                  {isArabic ? "الملف الشخصي" : "Profile"}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <View style={styles.line} />
 
-          <View style={styles.listWrapper}>
-            <List
-              isArabic={isArabic}
-              text={isArabic ? "طلباتي" : "My Orders"}
-              onPress={() => navigation.navigate("MyOrdersScreen")}
-              icon={<MaterialIcons size={25} color={gray} name="restore" />}
-            />
-            <List
-              isArabic={isArabic}
-              text={isArabic ? "عناويني" : "My Addresses"}
-              onPress={() => {
-                drawerClose();
-                setTimeout(() => {
+            <View style={styles.listWrapper}>
+              <List
+                isArabic={isArabic}
+                text={isArabic ? "طلباتي" : "My Orders"}
+                onPress={() => navigation.navigate("MyOrdersScreen")}
+                icon={<MaterialIcons size={25} color={gray} name="restore" />}
+              />
+              <List
+                isArabic={isArabic}
+                text={isArabic ? "عناويني" : "My Addresses"}
+                onPress={() => {
                   navigation.navigate("Address", {
                     myAddresses: true
                   });
-                }, 0);
-              }}
-              icon={
-                <MaterialCommunityIcons
-                  size={25}
-                  color={gray}
-                  name="map-marker-multiple-outline"
-                />
-              }
-            />
-            <List
-              isArabic={isArabic}
-              text={isArabic ? "لغة" : "Language"}
-              onPress={() => navigation.navigate("Language")}
-              icon={
-                <MaterialCommunityIcons
-                  size={25}
-                  color={gray}
-                  name="translate"
-                />
-              }
-            />
-            <List
-              isArabic={isArabic}
-              text={isArabic ? "شارك التطبيق" : "Share App"}
-              onPress={() => {
-                drawerClose();
-                setTimeout(() => {}, 0);
-              }}
-              icon={<Icon name="share-social-outline" size={25} color={gray} />}
-            />
-            <List
-              isArabic={isArabic}
-              text={isArabic ? "معلومات عنا" : "About Us"}
-              onPress={() => navigation.navigate("AboutUs")}
-              icon={<Entypo name="info" size={20} color={gray} />}
-            />
-            <List
-              isArabic={isArabic}
-              text={isArabic ? "اتصل بنا" : "Contact Us"}
-              onPress={() => navigation.navigate("ContactUs")}
-              icon={<Feather name="message-circle" size={20} color={gray} />}
-            />
-          </View>
+                  setTimeout(() => {
+                    drawerClose();
+                  }, 300);
+                }}
+                icon={
+                  <MaterialCommunityIcons
+                    size={25}
+                    color={gray}
+                    name="map-marker-multiple-outline"
+                  />
+                }
+              />
+              <List
+                isArabic={isArabic}
+                text={isArabic ? "لغة" : "Language"}
+                onPress={() => {
+                  navigation.navigate("Language");
+                  setTimeout(() => {
+                    drawerClose();
+                  }, 300);
+                }}
+                icon={
+                  <MaterialCommunityIcons
+                    size={25}
+                    color={gray}
+                    name="translate"
+                  />
+                }
+              />
+              <List
+                isArabic={isArabic}
+                text={isArabic ? "شارك التطبيق" : "Share App"}
+                onPress={() => {
+                  drawerClose();
+                  setTimeout(() => {}, 0);
+                }}
+                icon={
+                  <Icon name="share-social-outline" size={25} color={gray} />
+                }
+              />
+              <List
+                isArabic={isArabic}
+                text={isArabic ? "معلومات عنا" : "About Us"}
+                onPress={() => navigation.navigate("AboutUs")}
+                icon={<Entypo name="info" size={20} color={gray} />}
+              />
+              <List
+                isArabic={isArabic}
+                text={isArabic ? "اتصل بنا" : "Contact Us"}
+                onPress={() => navigation.navigate("ContactUs")}
+                icon={<Feather name="message-circle" size={20} color={gray} />}
+              />
+            </View>
 
-          <View style={[styles.line, { height: 0.5 }]} />
+            <View style={[styles.line, { height: 0.5 }]} />
 
-          <View style={[styles.listWrapper, styles.bottomIcons]}>
-            <List
-              isArabic={isArabic}
-              onPress={confirmation}
-              text={isArabic ? "تسجيل خروج" : "Logout"}
-              icon={<AntDesign name="poweroff" size={20} color={gray} />}
-            />
+            <View style={[styles.listWrapper, styles.bottomIcons]}>
+              <List
+                isArabic={isArabic}
+                onPress={confirmation}
+                text={isArabic ? "تسجيل خروج" : "Logout"}
+                icon={<AntDesign name="poweroff" size={20} color={gray} />}
+              />
+            </View>
           </View>
         </View>
       </SafeAreaView>

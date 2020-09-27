@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 import { backgroundColor, theme } from "../../../common/colors";
 import { HEIGHT, CONTAINER_PADDING } from "../../../common/constants";
+
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
@@ -17,8 +18,8 @@ const styles = StyleSheet.create({
     backgroundColor: backgroundColor
   },
   heading: isArabic => ({
+    height: 40,
     color: theme,
-    height: 35,
     textAlign: "center",
     marginBottom: HEIGHT * 0.03,
     fontSize: isArabic ? 23 : 22,

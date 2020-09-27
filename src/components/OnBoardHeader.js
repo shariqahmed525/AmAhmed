@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   language: isArabic => ({
     flex: 1,
     color: theme,
-    fontSize: isArabic ? 15 : 18,
+    fontSize: isArabic ? 15 : 15,
     paddingLeft: isArabic ? 5 : 0,
     paddingRight: isArabic ? 0 : 7,
     fontFamily: isArabic ? "Rubik-Regular" : "Cairo-SemiBold"

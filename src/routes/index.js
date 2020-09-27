@@ -1,24 +1,20 @@
-import React, { useEffect, useMemo } from "react";
-import { useSelector } from "react-redux";
+import React from "react";
 import ShowAlert from "../components/ShowAlert";
 import {
   Home,
   Cart,
   Search,
+  Language,
   Categories,
   OnBoardingCity,
-  OnBoardingCategory,
-  OnBoardingLanguage
+  OnBoardingCategory
 } from "../containers";
-import { store } from "../redux";
-import { StatusBar } from "react-native";
-import { ANDROID } from "../common/constants";
 import CartIcon from "../components/CartIcon";
+import { tabIconColor, theme } from "../common/colors";
 import { TransitionPresets } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Feather, MaterialCommunityIcons } from "../common/icons";
-import { backgroundColor, tabIconColor, theme } from "../common/colors";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const { Navigator, Screen } = createStackNavigator();
@@ -108,19 +104,10 @@ const Tab = () => {
     </TabNavigator>
   );
 };
-const AppStack = () => {
-  return <Tab />;
-};
 
 const OnBoardStack = () => {
-  const {
-    app: { city }
-  } = store.getState();
-
-  const initialRouteName = city ? "OnBoardingCategory" : "OnBoardingCity";
-
   return (
-    <Navigator initialRouteName={initialRouteName}>
+    <Navigator initialRouteName={"OnBoardingCity"}>
       <Screen
         options={StackOptions}
         name="OnBoardingCity"
@@ -131,40 +118,19 @@ const OnBoardStack = () => {
         name="OnBoardingCategory"
         component={OnBoardingCategory}
       />
-      <Screen
-        options={StackOptions}
-        name="OnBoardingLanguage"
-        component={OnBoardingLanguage}
-      />
+      <Screen name="Language" component={Language} options={StackOptions} />
+      <Screen component={Tab} name="MainStack" options={StackOptions} />
     </Navigator>
   );
 };
 
 export default () => {
-  const { category } = useSelector(state => state.app);
-
-  useEffect(() => {
-    if (category) {
-      StatusBar.setBarStyle("light-content");
-      ANDROID && StatusBar.setBackgroundColor(theme);
-    } else {
-      StatusBar.setBarStyle("dark-content");
-      ANDROID && StatusBar.setBackgroundColor(backgroundColor);
-    }
-  }, [category]);
-
-  const memoizeApp = useMemo(
-    () => (
-      <NavigationContainer>
-        {category ? <AppStack /> : <OnBoardStack />}
-      </NavigationContainer>
-    ),
-    [category]
-  );
   return (
     <>
       <ShowAlert />
-      {memoizeApp}
+      <NavigationContainer>
+        <OnBoardStack />
+      </NavigationContainer>
     </>
   );
 };

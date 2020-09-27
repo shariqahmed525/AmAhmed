@@ -6,6 +6,12 @@ import { addItemToCart } from "../../redux/actions/user";
 import { calculatePercentage } from "../../common/functions";
 import { theme, redColor, greenColor } from "../../common/colors";
 import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
+import { WIDTH } from "../../common/constants";
+const ITEM_WIDTH = WIDTH / 2 - 17.5;
+const ITEM_HEIGHT = (270 / 160) * ITEM_WIDTH;
+const IMAGE_WIDTH = ITEM_WIDTH - 20;
+
+let timeOut = null;
 
 export default ({ item, isArabic }) => {
   const {
@@ -32,6 +38,11 @@ export default ({ item, isArabic }) => {
   };
 
   const cartAction = sign => {
+    setAnimatedObj(null);
+    if (timeOut) {
+      clearTimeout(timeOut);
+      timeOut = null;
+    }
     const redColor = "rgba(227, 10, 43, 0.8)";
     const greenColor = "rgba(143, 201, 77, 0.8)";
     setAnimatedObj(
@@ -42,9 +53,11 @@ export default ({ item, isArabic }) => {
     dispatch(addItemToCart(item, sign));
     playSound(sign === "+" ? "addtocart" : "removefromcart");
     if (ref && ref.current) {
-      ref.current.fadeIn(300).then(() => {
-        ref.current.fadeOut(300).then(() => setAnimatedObj(null));
-      });
+      ref.current.stopAnimation();
+      ref.current.fadeIn(500);
+      timeOut = setTimeout(() => {
+        setAnimatedObj(null);
+      }, 500);
     }
   };
 
@@ -58,21 +71,23 @@ export default ({ item, isArabic }) => {
             </Text>
           </View>
         )}
-        <Animatable.View
-          ref={ref}
-          useNativeDriver
-          animation="fadeOut"
-          style={styles.animatedView(animatedObj?.bgColor)}
-        >
-          <Text style={styles.animatedViewText}>
-            {animatedObj?.quantityUnit}
-          </Text>
-        </Animatable.View>
         <TouchableOpacity
           activeOpacity={0.5}
           // onPress={() => alert("OK")}
           style={styles.itemWrapper(inStock)}
         >
+          {setAnimatedObj && (
+            <Animatable.View
+              ref={ref}
+              useNativeDriver
+              animation="fadeOut"
+              style={styles.animatedView(animatedObj?.bgColor)}
+            >
+              <Text style={styles.animatedViewText}>
+                {animatedObj?.quantityUnit}
+              </Text>
+            </Animatable.View>
+          )}
           {offerPrice > 0 && inStock && (
             <View style={styles.labelWrapper()}>
               <Text style={styles.label()}>
@@ -85,12 +100,12 @@ export default ({ item, isArabic }) => {
             <View style={styles.imageWrapper}>
               <Image
                 source={image}
-                resizeMode="contain"
+                // resizeMode="contain"
                 style={styles.imageStyle}
               />
             </View>
             <Text
-              numberOfLines={1}
+              numberOfLines={2}
               ellipsizeMode="tail"
               style={styles.name(isArabic)}
             >
@@ -161,8 +176,8 @@ export default ({ item, isArabic }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: 160,
-    height: 270,
+    width: ITEM_WIDTH,
+    height: ITEM_HEIGHT,
     marginHorizontal: 5
   },
   itemWrapper: inStock => {
@@ -215,7 +230,7 @@ const styles = StyleSheet.create({
   }),
   perQuantity: isArabic => ({
     color: theme,
-    fontSize: isArabic ? 13 : 14,
+    fontSize: isArabic ? 15 : 15,
     marginBottom: isArabic ? 3 : 10,
     textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
@@ -227,18 +242,18 @@ const styles = StyleSheet.create({
   priceWrapper: isArabic => ({
     color: greenColor,
     width: "100%",
-    fontSize: isArabic ? 13 : 11,
+    fontSize: isArabic ? 15 : 12,
     textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
   price: isArabic => ({
-    fontSize: 18,
+    fontSize: 20,
     color: greenColor,
     textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
   cartBtn: isArabic => ({
-    height: 28,
+    height: 30,
     width: "100%",
     borderWidth: 1,
     borderRadius: 5,
@@ -258,8 +273,8 @@ const styles = StyleSheet.create({
     margin: 0
   },
   imageWrapper: {
-    width: 150,
-    height: 110,
+    width: IMAGE_WIDTH,
+    height: (110 / 150) * IMAGE_WIDTH,
     alignSelf: "center",
     position: "relative"
   },
@@ -291,8 +306,8 @@ const styles = StyleSheet.create({
   }),
   outOfStockWrapper: {
     zIndex: 10,
-    width: 160,
-    height: 270,
+    width: ITEM_WIDTH,
+    height: ITEM_HEIGHT,
     borderRadius: 7,
     position: "absolute",
     alignItems: "center",
@@ -306,7 +321,7 @@ const styles = StyleSheet.create({
     fontFamily: isArabic ? "Cairo-Black" : "Rubik-Bold"
   }),
   cartActionsWrapper: isArabic => ({
-    height: 28,
+    height: 30,
     width: "100%",
     marginTop: isArabic ? 7 : 10,
     flexDirection: "row",
@@ -320,7 +335,7 @@ const styles = StyleSheet.create({
   },
   cartAction: {
     width: 37,
-    height: 27,
+    height: 30,
     borderRadius: 5,
     alignItems: "center",
     flexDirection: "row",
@@ -353,11 +368,9 @@ const styles = StyleSheet.create({
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
   animatedView: backgroundColor => ({
-    width: 150,
-    height: 195,
     zIndex: 2000,
-    width: "100%",
     backgroundColor,
+    width: ITEM_WIDTH,
     alignItems: "center",
     position: "absolute",
     paddingHorizontal: 10,
@@ -365,12 +378,16 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 7,
     justifyContent: "center",
     borderBottomLeftRadius: 3,
-    borderBottomRightRadius: 3
+    borderBottomRightRadius: 3,
+    height: IMAGE_WIDTH + 30
   }),
   animatedViewText: {
     color: "#fff",
     fontSize: 25,
     textAlign: "center",
     fontFamily: "Rubik-SemiBold"
+  },
+  animatedTouch: {
+    flex: 1
   }
 });

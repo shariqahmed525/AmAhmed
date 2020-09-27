@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     maxHeight: 180,
     paddingHorizontal: 10,
-    height: HEIGHT * 0.22,
+    height: HEIGHT * 0.25,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -40,13 +40,16 @@ const styles = StyleSheet.create({
   sliderImageWrapper: {
     width: "100%",
     maxHeight: 180,
-    height: HEIGHT * 0.22,
+    height: HEIGHT * 0.25,
     backgroundColor: "#fff"
   },
   sliderImage: {
     width: "100%",
     height: "100%"
-  }
+  },
+  rotateIcon: isArabic => ({
+    transform: [{ rotateY: isArabic ? "0deg" : "180deg" }]
+  })
 });
 
 export default styles;

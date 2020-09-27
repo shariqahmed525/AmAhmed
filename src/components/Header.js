@@ -8,10 +8,12 @@ import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 export default ({
   back,
   title,
+  titleAlign,
   titleColor,
   headerStyle,
   transparent,
   onBackPress,
+  backIconColor,
   leftIconProps,
   rightIconProps,
   backgroundColor,
@@ -35,8 +37,15 @@ export default ({
       >
         {/* Back and Left Icon */}
         {back ? (
-          <TouchableOpacity onPress={onBackPress} style={styles.back}>
-            <Entypo size={25} color={theme} name="chevron-thin-left" />
+          <TouchableOpacity onPress={onBackPress} style={styles.back(isArabic)}>
+            <Entypo
+              size={25}
+              name="chevron-thin-left"
+              color={
+                backIconColor ||
+                (!backgroundColor && !transparent ? "#fff" : theme)
+              }
+            />
           </TouchableOpacity>
         ) : LeftIcon ? (
           <TouchableOpacity style={styles.back} {...leftIconProps}>
@@ -53,11 +62,14 @@ export default ({
           </View>
         ) : (
           title && (
-            <View style={styles.titleWrapper}>
+            <View style={styles.titleWrapper(isArabic)}>
               <Text
                 style={{
                   ...styles.title(isArabic),
-                  color: titleColor || theme
+                  textAlign: titleAlign || "center",
+                  color:
+                    titleColor ||
+                    (!backgroundColor && !transparent ? "#fff" : theme)
                 }}
               >
                 {title}
@@ -90,23 +102,24 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
-  titleWrapper: {
+  titleWrapper: isArabic => ({
     flex: 1,
     height: 33,
-    alignItems: "center",
-    justifyContent: "flex-end"
-  },
+    paddingHorizontal: isArabic ? 4 : 7,
+    justifyContent: isArabic ? "flex-start" : "center"
+  }),
   title: isArabic => ({
-    fontSize: isArabic ? 20 : 22,
-    textAlign: "center",
+    marginTop: isArabic ? -3 : 0,
     textAlignVertical: "center",
+    fontSize: isArabic ? 20 : 22,
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
-  back: {
+  back: isArabic => ({
     width: 40,
     alignItems: "center",
-    justifyContent: "center"
-  },
+    justifyContent: "center",
+    transform: [{ rotateZ: isArabic ? "180deg" : "0deg" }]
+  }),
   dummy: {
     width: 40
   },

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ImageBackground
 } from "react-native";
+import DeviceInfo from "react-native-device-info";
 
 export default ({ text, isCity, isArabic, source, primaryText, ...rest }) => {
   return (
@@ -32,9 +33,11 @@ export default ({ text, isCity, isArabic, source, primaryText, ...rest }) => {
   );
 };
 
+const isTablet = DeviceInfo.isTablet();
+
 const styles = StyleSheet.create({
   list: isArabic => ({
-    height: 170,
+    height: isTablet ? 230 : 170,
     overflow: "hidden",
     width: "100%",
     marginBottom: 15,
