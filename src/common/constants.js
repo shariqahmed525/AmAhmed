@@ -70,7 +70,7 @@ const GOATS_ITEMS = [
     price: 500,
     offerPrice: 300,
     inStock: false,
-    quantityType: isArabic => (isArabic ? "كيلو" : "Kilo"),
+    quantityType: isArabic => (isArabic ? "وحدة" : "Unit"),
     image: require("../../assets/images/items/g1.jpeg")
   },
   {
@@ -81,7 +81,7 @@ const GOATS_ITEMS = [
     price: 500.0,
     offerPrice: 220,
     inStock: true,
-    quantityType: isArabic => (isArabic ? "كيلو" : "Kilo"),
+    quantityType: isArabic => (isArabic ? "وحدة" : "Unit"),
     image: require("../../assets/images/items/g3.jpeg")
   },
   {
@@ -92,7 +92,7 @@ const GOATS_ITEMS = [
     price: 500.0,
     offerPrice: 0,
     inStock: true,
-    quantityType: isArabic => (isArabic ? "كيلو" : "Kilo"),
+    quantityType: isArabic => (isArabic ? "وحدة" : "Unit"),
     image: require("../../assets/images/items/g5.jpeg")
   },
   {
@@ -103,7 +103,7 @@ const GOATS_ITEMS = [
     price: 500.0,
     offerPrice: 0,
     inStock: true,
-    quantityType: isArabic => (isArabic ? "كيلو" : "Kilo"),
+    quantityType: isArabic => (isArabic ? "وحدة" : "Unit"),
     image: require("../../assets/images/items/g6.jpeg")
   },
   {
@@ -114,7 +114,7 @@ const GOATS_ITEMS = [
     price: 500.0,
     offerPrice: 0,
     inStock: true,
-    quantityType: isArabic => (isArabic ? "كيلو" : "Kilo"),
+    quantityType: isArabic => (isArabic ? "وحدة" : "Unit"),
     image: require("../../assets/images/items/g8.jpeg")
   },
   {
@@ -443,6 +443,61 @@ const DAIRY_EGGS_ITEMS = [
     inStock: true,
     quantityType: isArabic => (isArabic ? "رزمة" : "Pack"),
     image: require("../../assets/images/items/d&e6.jpeg")
+  }
+];
+
+export const CUTTINGWAY = [
+  {
+    id: 1,
+    price: 0,
+    name: isArabic => (isArabic ? "خروف كامل" : "Full Sheep")
+  },
+  {
+    id: 2,
+    price: 10,
+    name: isArabic => (isArabic ? "أنصاف" : "Halves")
+  },
+  {
+    id: 3,
+    price: 20,
+    name: isArabic => (isArabic ? "ربع" : "Quarter")
+  },
+  {
+    id: 4,
+    price: 30,
+    name: isArabic => (isArabic ? "قطع صغيرة" : "Small Pieces")
+  }
+];
+
+export const HEAD_AND_LEGS = [
+  {
+    id: 1,
+    price: 0,
+    name: isArabic => (isArabic ? "غير مطلوب" : "Not Required")
+  },
+  {
+    id: 2,
+    price: 0,
+    name: isArabic => (isArabic ? "مع الرأس والساقين" : "With Head & Legs")
+  },
+  {
+    id: 3,
+    price: 0,
+    name: isArabic => (isArabic ? "بدون الرأس والساقين" : "Without Head & Legs")
+  }
+];
+
+export const PACKING = [
+  {
+    id: 1,
+    price: 20,
+    name: isArabic =>
+      isArabic ? "حقيبة عادية بدون تغليف" : "Normal Bag Without Packing"
+  },
+  {
+    id: 2,
+    price: 40,
+    name: isArabic => (isArabic ? "أطباق بلاستيكية" : "Plastic Plates")
   }
 ];
 

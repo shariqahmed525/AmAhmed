@@ -6,6 +6,7 @@ import {
   Search,
   Language,
   Categories,
+  ItemDetail,
   OnBoardingCity,
   OnBoardingCategory
 } from "../containers";
@@ -42,7 +43,16 @@ const StackOptions = {
   ...TransitionPresets.SlideFromRightIOS
 };
 
-const HomeScreensArr = [];
+const HomeStack = () => {
+  return (
+    <Navigator initialRouteName="HomeScreen">
+      <Screen component={Home} name="HomeScreen" options={StackOptions} />
+      <Screen component={ItemDetail} name="ItemDetail" options={StackOptions} />
+    </Navigator>
+  );
+};
+
+const HomeScreensArr = ["ItemDetail"];
 const SearchScreensArr = [];
 const CartScreensArr = [];
 
@@ -64,7 +74,7 @@ const Tab = () => {
     <TabNavigator tabBarOptions={tabOptions}>
       <TabScreen
         name="Home"
-        component={Home}
+        component={HomeStack}
         options={({ route }) => ({
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons size={30} name={"home"} color={color} />
@@ -107,7 +117,7 @@ const Tab = () => {
 
 const OnBoardStack = () => {
   return (
-    <Navigator initialRouteName={"OnBoardingCity"}>
+    <Navigator initialRouteName={"MainStack"}>
       <Screen
         options={StackOptions}
         name="OnBoardingCity"
@@ -118,8 +128,8 @@ const OnBoardStack = () => {
         name="OnBoardingCategory"
         component={OnBoardingCategory}
       />
-      <Screen name="Language" component={Language} options={StackOptions} />
       <Screen component={Tab} name="MainStack" options={StackOptions} />
+      <Screen name="Language" component={Language} options={StackOptions} />
     </Navigator>
   );
 };

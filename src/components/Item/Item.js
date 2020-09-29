@@ -7,6 +7,7 @@ import { calculatePercentage } from "../../common/functions";
 import { theme, redColor, greenColor } from "../../common/colors";
 import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
 import { WIDTH } from "../../common/constants";
+import { useNavigation } from "@react-navigation/native";
 const ITEM_WIDTH = WIDTH / 2 - 17.5;
 const ITEM_HEIGHT = (270 / 160) * ITEM_WIDTH;
 const IMAGE_WIDTH = ITEM_WIDTH - 20;
@@ -25,6 +26,7 @@ export default ({ item, isArabic }) => {
   } = item;
   const ref = useRef(null);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const [animatedObj, setAnimatedObj] = useState(null);
   const { cart } = useSelector(state => state.user);
   let findItem = cart.find(v => v.id === id);
@@ -73,10 +75,14 @@ export default ({ item, isArabic }) => {
         )}
         <TouchableOpacity
           activeOpacity={0.5}
-          // onPress={() => alert("OK")}
           style={styles.itemWrapper(inStock)}
+          onPress={() =>
+            navigation.navigate("ItemDetail", {
+              item
+            })
+          }
         >
-          {setAnimatedObj && (
+          {animatedObj && (
             <Animatable.View
               ref={ref}
               useNativeDriver
@@ -98,11 +104,7 @@ export default ({ item, isArabic }) => {
           )}
           <View style={styles.firstSection}>
             <View style={styles.imageWrapper}>
-              <Image
-                source={image}
-                // resizeMode="contain"
-                style={styles.imageStyle}
-              />
+              <Image source={image} style={styles.imageStyle} />
             </View>
             <Text
               numberOfLines={2}
@@ -386,8 +388,5 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textAlign: "center",
     fontFamily: "Rubik-SemiBold"
-  },
-  animatedTouch: {
-    flex: 1
   }
 });
