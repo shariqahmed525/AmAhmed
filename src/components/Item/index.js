@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import Item from "./Item";
 import { theme } from "../../common/colors";
+import { useNavigation } from "@react-navigation/native";
 
 const renderItem = ({ item, isArabic }) => {
   return <Item item={item} isArabic={isArabic} />;
@@ -15,6 +16,7 @@ const renderItem = ({ item, isArabic }) => {
 
 export default ({ data, name, onSeeAll, isArabic, tabIndex, ...rest }) => {
   const ref = useRef(null);
+  const navigation = useNavigation();
   const keyExtractor = (item, index) => item + index;
 
   useEffect(() => {
@@ -33,7 +35,10 @@ export default ({ data, name, onSeeAll, isArabic, tabIndex, ...rest }) => {
         <View style={styles.itemColTopHeadTextWrapper(isArabic)}>
           <Text style={styles.itemColTopHead(isArabic)}>{name}</Text>
         </View>
-        <TouchableOpacity onPress={() => alert(tabIndex)} style={styles.seeAll}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Categories", { tabIndex })}
+          style={styles.seeAll}
+        >
           <Text style={styles.seeAllText(isArabic)}>
             {isArabic ? "المزيد" : "MORE"}
           </Text>

@@ -14,8 +14,8 @@ import HomeItem from "../../components/Item";
 import SideMenu from "react-native-side-menu";
 import { Icon, MaterialCommunityIcons } from "../../common/icons";
 
-export default () => {
-  const navigation = useNavigation();
+export default ({ navigation }) => {
+  // const navigation = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const { language, category } = useSelector(state => state.app);
   const isArabic = language === ARABIC;
@@ -86,6 +86,7 @@ export default () => {
           tabIndex={i}
           data={grouped[v]}
           isArabic={isArabic}
+          navigation={navigation}
         />
       );
     });

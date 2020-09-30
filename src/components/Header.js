@@ -8,14 +8,17 @@ import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 export default ({
   back,
   title,
+  titleHeight,
   titleAlign,
   titleColor,
   headerStyle,
   transparent,
   onBackPress,
+  titleFontSize,
   backIconColor,
   leftIconProps,
   rightIconProps,
+  titleFontFamily,
   backgroundColor,
   leftIcon: LeftIcon,
   rightIcon: RightIcon,
@@ -52,7 +55,7 @@ export default ({
             <LeftIcon />
           </TouchableOpacity>
         ) : (
-          <View style={styles.dummy} />
+          (back || LeftIcon || RightIcon) && <View style={styles.dummy} />
         )}
 
         {/* Title */}
@@ -62,11 +65,15 @@ export default ({
           </View>
         ) : (
           title && (
-            <View style={styles.titleWrapper(isArabic)}>
+            <View style={styles.titleWrapper(isArabic, titleHeight)}>
               <Text
                 style={{
                   ...styles.title(isArabic),
                   textAlign: titleAlign || "center",
+                  fontSize: titleFontSize || (isArabic ? 20 : 22),
+                  fontFamily:
+                    titleFontFamily ||
+                    (isArabic ? "Cairo-SemiBold" : "Rubik-Regular"),
                   color:
                     titleColor ||
                     (!backgroundColor && !transparent ? "#fff" : theme)
@@ -84,7 +91,7 @@ export default ({
             <RightIcon />
           </TouchableOpacity>
         ) : (
-          <View style={styles.dummy} />
+          (back || LeftIcon) && <View style={styles.dummy} />
         )}
       </View>
     ),
@@ -102,17 +109,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
-  titleWrapper: isArabic => ({
+  titleWrapper: (isArabic, height) => ({
     flex: 1,
-    height: 33,
+    height: height || 33,
     paddingHorizontal: isArabic ? 4 : 7,
     justifyContent: isArabic ? "flex-start" : "center"
   }),
   title: isArabic => ({
     marginTop: isArabic ? -3 : 0,
-    textAlignVertical: "center",
-    fontSize: isArabic ? 20 : 22,
-    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
+    textAlignVertical: "center"
   }),
   back: isArabic => ({
     width: 40,

@@ -8,12 +8,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#fff"
+    backgroundColor
   },
   scrollView: {
     flexGrow: 1,
-    // backgroundColor
-    backgroundColor: "#fff"
+    backgroundColor
   },
   sliderWrapper: {
     width: "100%",

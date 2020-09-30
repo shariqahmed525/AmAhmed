@@ -232,12 +232,7 @@ export default () => {
               {CUTTINGWAY.map((v, i) => (
                 <RadioButton.Item
                   key={i}
-                  style={{
-                    marginBottom: 10,
-                    borderRadius: 10,
-                    backgroundColor: "#efefef",
-                    flexDirection: isArabic ? "row-reverse" : "row"
-                  }}
+                  style={styles.radioItem(isArabic)}
                   labelStyle={{
                     color: "#111111",
                     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
@@ -260,12 +255,7 @@ export default () => {
               {HEAD_AND_LEGS.map((v, i) => (
                 <RadioButton.Item
                   key={i}
-                  style={{
-                    marginBottom: 10,
-                    borderRadius: 10,
-                    backgroundColor: "#efefef",
-                    flexDirection: isArabic ? "row-reverse" : "row"
-                  }}
+                  style={styles.radioItem(isArabic)}
                   labelStyle={{
                     color: "#111111",
                     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
@@ -288,12 +278,7 @@ export default () => {
               {PACKING.map((v, i) => (
                 <RadioButton.Item
                   key={i}
-                  style={{
-                    marginBottom: 10,
-                    borderRadius: 10,
-                    backgroundColor: "#efefef",
-                    flexDirection: isArabic ? "row-reverse" : "row"
-                  }}
+                  style={styles.radioItem(isArabic)}
                   labelStyle={{
                     color: "#111111",
                     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"

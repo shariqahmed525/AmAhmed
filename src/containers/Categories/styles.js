@@ -3,15 +3,20 @@ import { backgroundColor, theme } from "../../common/colors";
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: backgroundColor
+    backgroundColor: theme
   },
   container: {
     flex: 1,
+    backgroundColor
+  },
+  header: isArabic => ({
+    width: "100%",
     alignItems: "center",
-    backgroundColor: "white",
-    justifyContent: "center",
-    backgroundColor: backgroundColor
-  }
+    // paddingVertical: 15,
+    paddingHorizontal: 10,
+    justifyContent: "space-between",
+    flexDirection: isArabic ? "row-reverse" : "row"
+  })
 });
 
 export default styles;

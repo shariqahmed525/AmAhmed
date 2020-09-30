@@ -71,7 +71,7 @@ const getTabBarVisible = (route, array) => {
 
 const Tab = () => {
   return (
-    <TabNavigator tabBarOptions={tabOptions}>
+    <TabNavigator initialRouteName="Categories" tabBarOptions={tabOptions}>
       <TabScreen
         name="Home"
         component={HomeStack}
