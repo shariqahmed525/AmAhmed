@@ -8,6 +8,8 @@ export const CONTAINER_PADDING = WIDTH * 0.07;
 export const ARABIC = "ar-sa";
 export const ENGLISH = "en";
 
+export const ERROR_IMG = require("../../assets/images/error.png");
+
 export const LANGUAGES = [
   {
     code: ARABIC,
@@ -65,6 +67,7 @@ const GOATS_ITEMS = [
   {
     id: "1",
     category: "g/s",
+    hasCuttingWay: true,
     subcategory: isArabic => (isArabic ? "الماعز والأغنام" : "GOAT / SHEEPS"),
     name: isArabic => (isArabic ? "الماعز" : "Goat"),
     price: 500,
@@ -76,6 +79,7 @@ const GOATS_ITEMS = [
   {
     id: "2",
     category: "g/s",
+    hasCuttingWay: true,
     subcategory: isArabic => (isArabic ? "الماعز والأغنام" : "GOAT / SHEEPS"),
     name: isArabic => (isArabic ? "الأغنام" : "Sheeps"),
     price: 500.0,
@@ -87,6 +91,7 @@ const GOATS_ITEMS = [
   {
     id: "3",
     category: "g/s",
+    hasCuttingWay: true,
     subcategory: isArabic => (isArabic ? "الماعز والأغنام" : "GOAT / SHEEPS"),
     name: isArabic => (isArabic ? "الماعز" : "Goat"),
     price: 500.0,
@@ -98,6 +103,7 @@ const GOATS_ITEMS = [
   {
     id: "4",
     category: "g/s",
+    hasCuttingWay: true,
     subcategory: isArabic => (isArabic ? "الماعز والأغنام" : "GOAT / SHEEPS"),
     name: isArabic => (isArabic ? "الأغنام" : "Sheeps"),
     price: 500.0,
@@ -109,6 +115,7 @@ const GOATS_ITEMS = [
   {
     id: "5",
     category: "g/s",
+    hasCuttingWay: true,
     subcategory: isArabic => (isArabic ? "الماعز والأغنام" : "GOAT / SHEEPS"),
     name: isArabic => (isArabic ? "الماعز" : "Goat"),
     price: 500.0,
@@ -120,6 +127,7 @@ const GOATS_ITEMS = [
   {
     id: "6",
     category: "g/s",
+    hasCuttingWay: true,
     subcategory: isArabic => (isArabic ? "الماعز والأغنام" : "GOAT / SHEEPS"),
     name: isArabic => (isArabic ? "الأغنام" : "Sheeps"),
     price: 500.0,

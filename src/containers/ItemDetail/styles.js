@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
+    paddingBottom: 0,
     paddingHorizontal: 10
   },
   image: {
@@ -45,6 +46,8 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     width: "100%",
+    bottom: 0,
+    position: "absolute",
     paddingVertical: CONTAINER_PADDING,
     paddingHorizontal: CONTAINER_PADDING
   },
@@ -71,9 +74,6 @@ const styles = StyleSheet.create({
     fontSize: isArabic ? 22 : 19,
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
   }),
-  centerContainer: {
-    marginBottom: 40
-  },
   cartActionsWrapper: () => ({
     height: 50,
     width: "100%",

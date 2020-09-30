@@ -1,8 +1,9 @@
 import React from "react";
 import Modal from "react-native-modal";
-import { WIDTH } from "../common/constants";
-import { theme } from "../common/colors";
+import { ARABIC, WIDTH } from "../common/constants";
+import { black, theme } from "../common/colors";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { useSelector } from "react-redux";
 
 export default ({
   img,
@@ -21,6 +22,8 @@ export default ({
   onBackButtonPress,
   cancelBtnTextColor
 }) => {
+  const { language } = useSelector(state => state.app);
+  const isArabic = language === ARABIC;
   return (
     <Modal
       useNativeDriver
@@ -35,10 +38,10 @@ export default ({
           <Image source={img} style={styles.img} />
         )}
         {title !== undefined && title !== "" && (
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.title(isArabic)}>{title}</Text>
         )}
         {text !== undefined && text !== "" && (
-          <Text style={styles.text}>{text}</Text>
+          <Text style={styles.text(isArabic)}>{text}</Text>
         )}
         {children}
         <View style={styles.btnWrapper}>
@@ -48,7 +51,9 @@ export default ({
               onPress={onCancelPress}
               style={styles.btn(cancelBtnColor || "#b4b4b4")}
             >
-              <Text style={styles.btnText(cancelBtnTextColor || "#fff")}>
+              <Text
+                style={styles.btnText(cancelBtnTextColor || "#fff", isArabic)}
+              >
                 {cancelText}
               </Text>
             </TouchableOpacity>
@@ -60,7 +65,10 @@ export default ({
               style={styles.btn(error ? "#e4011c" : btnColor || theme)}
             >
               <Text
-                style={styles.btnText(error ? "#fff" : btnTextColor || theme)}
+                style={styles.btnText(
+                  error ? "#fff" : btnTextColor || theme,
+                  isArabic
+                )}
               >
                 {btnText}
               </Text>
@@ -92,20 +100,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     paddingHorizontal: WIDTH * 0.03
   },
-  title: {
-    color: "#000",
-    fontSize: 22,
-    marginTop: 20,
+  title: isArabic => ({
+    color: black,
     textAlign: "center",
-    fontFamily: "Montserrat-Bold"
-  },
-  text: {
-    color: "#000",
-    fontSize: 15,
-    marginTop: 14,
+    fontSize: isArabic ? 23 : 26,
+    marginTop: isArabic ? 10 : 20,
+    fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
+  }),
+  text: isArabic => ({
+    color: black,
     textAlign: "center",
-    fontFamily: "Montserrat-Regular"
-  },
+    fontSize: isArabic ? 17 : 17,
+    marginTop: isArabic ? 7 : 14,
+    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
+  }),
   btnWrapper: {
     width: "100%",
     flexDirection: "row",
@@ -114,15 +122,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly"
   },
   btn: color => ({
+    height: 38,
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 30,
     width: WIDTH * 0.33,
     backgroundColor: color,
-    paddingVertical: WIDTH * 0.028,
     paddingHorizontal: WIDTH * 0.028
   }),
-  btnText: color => ({
+  btnText: (color, isArabic) => ({
+    color: color,
     textAlign: "center",
-    fontSize: 12.5,
-    color: color
+    fontSize: isArabic ? 15 : 15,
+    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   })
 });

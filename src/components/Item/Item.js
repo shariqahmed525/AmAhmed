@@ -63,6 +63,16 @@ export default ({ item, isArabic }) => {
     }
   };
 
+  const handleItemPress = () => {
+    if (item.hasCuttingWay) {
+      navigation.navigate("ItemDetail", {
+        item
+      });
+      return;
+    }
+    cartAction("+");
+  };
+
   const memo = useMemo(
     () => (
       <View style={styles.container}>
@@ -75,12 +85,8 @@ export default ({ item, isArabic }) => {
         )}
         <TouchableOpacity
           activeOpacity={0.5}
+          onPress={handleItemPress}
           style={styles.itemWrapper(inStock)}
-          onPress={() =>
-            navigation.navigate("ItemDetail", {
-              item
-            })
-          }
         >
           {animatedObj && (
             <Animatable.View
@@ -159,8 +165,8 @@ export default ({ item, isArabic }) => {
             ) : (
               <TouchableOpacity
                 activeOpacity={0.5}
+                onPress={handleItemPress}
                 style={styles.cartBtn(isArabic)}
-                onPress={() => cartAction("+")}
               >
                 <Text style={styles.cartBtnText(isArabic)}>
                   {isArabic ? "أضف إلى السلة" : "ADD TO CART"}

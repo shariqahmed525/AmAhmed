@@ -5,9 +5,9 @@ import {
   View,
   Text,
   Image,
-  TouchableOpacity,
   StatusBar,
-  ScrollView
+  ScrollView,
+  TouchableOpacity
 } from "react-native";
 import styles from "./styles";
 import { theme } from "../../common/colors";
@@ -21,10 +21,12 @@ import {
   ANDROID,
   ARABIC,
   PACKING,
+  ERROR_IMG,
   CATEGORIES,
   CUTTINGWAY,
   HEAD_AND_LEGS
 } from "../../common/constants";
+import Alert from "../../components/Alert";
 
 let timeOut = null;
 
@@ -83,9 +85,17 @@ export default () => {
     user: { cart }
   } = useSelector(state => state);
   const ref = useRef(null);
+  const scrollRef = useRef(null);
   const [checked1, setChecked1] = useState(null);
   const [checked2, setChecked2] = useState(1);
   const [checked3, setChecked3] = useState(null);
+  const [alert, setAlert] = useState({
+    error: false,
+    alert: false,
+    alertImg: "",
+    alertText: "",
+    alertTitle: ""
+  });
   const [animatedObj, setAnimatedObj] = useState(null);
   const isArabic = language === ARABIC;
   const category = CATEGORIES.find(o => o.code === item.category);
@@ -146,6 +156,46 @@ export default () => {
     setChecked3(id);
   };
 
+  const handleAddToCart = () => {
+    if (!checked1) {
+      scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
+      setAlert({
+        error: true,
+        alert: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "الرجاء تحديد طريقة القطع"
+          : "Please select cutting way"
+      });
+      return;
+    }
+    if (!checked3) {
+      scrollRef.current.scrollToEnd({ animated: true });
+      setAlert({
+        error: true,
+        alert: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "الرجاء تحديد نوع التعبئة"
+          : "Please select packing type"
+      });
+      return;
+    }
+    cartAction("+");
+  };
+
+  const alertClose = () => {
+    setAlert({
+      error: false,
+      alert: false,
+      alertImg: "",
+      alertText: "",
+      alertTitle: ""
+    });
+  };
+
   return (
     <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
       <View style={styles.container}>
@@ -155,7 +205,19 @@ export default () => {
           title={category.name(isArabic)}
           titleAlign={isArabic ? "right" : "left"}
         />
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Alert
+          error={alert.error}
+          alert={alert.alert}
+          img={alert.alertImg}
+          text={alert.alertText}
+          onBtnPress={alertClose}
+          title={alert.alertTitle}
+          btnText={isArabic ? "حسنا" : "Ok"}
+        />
+        <ScrollView
+          ref={scrollRef}
+          contentContainerStyle={styles.scrollContainer}
+        >
           <ImageRender animatedObj={animatedObj} item={item} ref={ref} />
           <TitleRender isArabic={isArabic} item={item} />
           <PriceRender isArabic={isArabic} item={item} />
@@ -273,7 +335,7 @@ export default () => {
             <TouchableOpacity
               style={styles.btn}
               activeOpacity={0.7}
-              onPress={() => cartAction("+")}
+              onPress={handleAddToCart}
             >
               <Text style={styles.btnText(isArabic)}>
                 {isArabic ? "أضف إلى السلة" : "ADD TO CART"}

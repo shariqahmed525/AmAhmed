@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styles from "./styles";
 import { theme } from "../../common/colors";
 import { ANDROID } from "../../common/constants";
+import ItemsTabs from "./ItemsTabs";
 
 export default () => {
   const dispatch = useDispatch();
@@ -21,7 +22,8 @@ export default () => {
   return (
     <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
       <View style={styles.container}>
-        <Text>Categories</Text>
+        {/* <Text>Categories</Text> */}
+        <ItemsTabs />
       </View>
     </SafeAreaView>
   );
