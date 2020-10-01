@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import SoundPlayer from "react-native-sound-player";
 import * as Animatable from "react-native-animatable";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,7 +28,9 @@ export default ({ item, isArabic }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [animatedObj, setAnimatedObj] = useState(null);
-  const { cart } = useSelector(state => state.user);
+  const {
+    user: { cart }
+  } = useSelector(state => state);
   let findItem = cart.find(v => v.id === id);
 
   const playSound = sound => {
@@ -73,117 +75,113 @@ export default ({ item, isArabic }) => {
     cartAction("+");
   };
 
-  const memo = useMemo(
-    () => (
-      <View style={styles.container}>
-        {!inStock && (
-          <View style={styles.outOfStockWrapper}>
-            <Text style={styles.outOfStockWrapperLabel(isArabic)}>
-              {isArabic ? "إنتهى من المخزن" : "OUT OF STOCK"}
+  return (
+    <View style={styles.container}>
+      {!inStock && (
+        <View style={styles.outOfStockWrapper}>
+          <Text style={styles.outOfStockWrapperLabel(isArabic)}>
+            {isArabic ? "إنتهى من المخزن" : "OUT OF STOCK"}
+          </Text>
+        </View>
+      )}
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={handleItemPress}
+        style={styles.itemWrapper(inStock)}
+      >
+        {animatedObj && (
+          <Animatable.View
+            ref={ref}
+            useNativeDriver
+            animation="fadeOut"
+            style={styles.animatedView(animatedObj?.bgColor)}
+          >
+            <Text style={styles.animatedViewText}>
+              {animatedObj?.quantityUnit}
+            </Text>
+          </Animatable.View>
+        )}
+        {offerPrice > 0 && inStock && (
+          <View style={styles.labelWrapper()}>
+            <Text style={styles.label()}>
+              {calculatePercentage(price, offerPrice)}%
+              {isArabic ? "\nخصم" : "\nOFF"}
             </Text>
           </View>
         )}
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={handleItemPress}
-          style={styles.itemWrapper(inStock)}
-        >
-          {animatedObj && (
-            <Animatable.View
-              ref={ref}
-              useNativeDriver
-              animation="fadeOut"
-              style={styles.animatedView(animatedObj?.bgColor)}
-            >
-              <Text style={styles.animatedViewText}>
-                {animatedObj?.quantityUnit}
-              </Text>
-            </Animatable.View>
-          )}
-          {offerPrice > 0 && inStock && (
-            <View style={styles.labelWrapper()}>
-              <Text style={styles.label()}>
-                {calculatePercentage(price, offerPrice)}%
-                {isArabic ? "\nخصم" : "\nOFF"}
-              </Text>
-            </View>
-          )}
-          <View style={styles.firstSection}>
-            <View style={styles.imageWrapper}>
-              <Image
-                source={image}
-                resizeMode="contain"
-                style={styles.imageStyle}
-              />
-            </View>
-            <Text
-              numberOfLines={2}
-              ellipsizeMode="tail"
-              style={styles.name(isArabic)}
-            >
-              {name(isArabic)}
-            </Text>
+        <View style={styles.firstSection}>
+          <View style={styles.imageWrapper}>
+            <Image
+              source={image}
+              resizeMode="contain"
+              style={styles.imageStyle}
+            />
           </View>
-          <View style={styles.secondSection}>
-            <Text style={styles.perQuantity(isArabic)}>
-              {quantityType(isArabic)}
-            </Text>
-            <View style={styles.priceContainer}>
-              <Text style={styles.priceWrapper(isArabic)}>
-                {!isArabic && "SAR "}
-                <Text style={styles.price(isArabic)}>{price} </Text>
-                {isArabic && "ر.س "}
-                {offerPrice > 0 && inStock && (
-                  <Text style={styles.offerWrapper(isArabic)}>
-                    {!isArabic && "SAR "}
-                    <Text>{price + offerPrice}</Text>
-                    {isArabic && " ر.س"}
-                  </Text>
-                )}
-              </Text>
-            </View>
-            {findItem ? (
-              <View style={styles.cartActionsWrapper(isArabic)}>
-                <View style={styles.cartActionsContainer}>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    style={styles.cartAction}
-                    onPress={() => cartAction("-")}
-                  >
-                    <Text style={styles.cartLeftActionText}>-</Text>
-                  </TouchableOpacity>
-                  <View style={styles.quantityWrappper}>
-                    <Text style={styles.quantityWithUnit(isArabic)}>
-                      {findItem?.quantity || 0}
-                    </Text>
-                  </View>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    style={styles.cartAction}
-                    onPress={() => cartAction("+")}
-                  >
-                    <Text style={styles.cartRightActionText}>+</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ) : (
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={handleItemPress}
-                style={styles.cartBtn(isArabic)}
-              >
-                <Text style={styles.cartBtnText(isArabic)}>
-                  {isArabic ? "أضف إلى السلة" : "ADD TO CART"}
+          <Text
+            numberOfLines={2}
+            ellipsizeMode="tail"
+            style={styles.name(isArabic)}
+          >
+            {name(isArabic)}
+          </Text>
+        </View>
+        <View style={styles.secondSection}>
+          <Text style={styles.perQuantity(isArabic)}>
+            {quantityType(isArabic)}
+          </Text>
+          <View style={styles.priceContainer}>
+            <Text style={styles.priceWrapper(isArabic)}>
+              {!isArabic && "SAR "}
+              <Text style={styles.price(isArabic)}>{price} </Text>
+              {isArabic && "ر.س "}
+              {offerPrice > 0 && inStock && (
+                <Text style={styles.offerWrapper(isArabic)}>
+                  {!isArabic && "SAR "}
+                  <Text>{price + offerPrice}</Text>
+                  {isArabic && " ر.س"}
                 </Text>
-              </TouchableOpacity>
-            )}
+              )}
+            </Text>
           </View>
-        </TouchableOpacity>
-      </View>
-    ),
-    [isArabic, animatedObj, findItem?.quantity]
+          {findItem ? (
+            <View style={styles.cartActionsWrapper(isArabic)}>
+              <View style={styles.cartActionsContainer}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={styles.cartAction}
+                  onPress={() => cartAction("-")}
+                >
+                  <Text style={styles.cartLeftActionText}>-</Text>
+                </TouchableOpacity>
+                <View style={styles.quantityWrappper}>
+                  <Text style={styles.quantityWithUnit(isArabic)}>
+                    {findItem?.quantity || 0}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={styles.cartAction}
+                  onPress={() => cartAction("+")}
+                >
+                  <Text style={styles.cartRightActionText}>+</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={handleItemPress}
+              style={styles.cartBtn(isArabic)}
+            >
+              <Text style={styles.cartBtnText(isArabic)}>
+                {isArabic ? "أضف إلى السلة" : "ADD TO CART"}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </TouchableOpacity>
+    </View>
   );
-  return memo;
 };
 
 const styles = StyleSheet.create({

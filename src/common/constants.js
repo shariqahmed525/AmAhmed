@@ -54,15 +54,6 @@ export const CATEGORIES = [
   }
 ];
 
-// export const SLIDER_IMAGES = [
-//   require("../../assets/images/sliders/1.jpg"),
-//   require("../../assets/images/sliders/2.jpeg"),
-//   require("../../assets/images/sliders/3.jpeg"),
-//   require("../../assets/images/sliders/4.jpeg"),
-//   require("../../assets/images/sliders/6.jpeg"),
-//   require("../../assets/images/sliders/7.jpeg")
-// ];
-
 const GOATS_ITEMS = [
   {
     id: "1",
@@ -294,7 +285,7 @@ const OTHER_ITEMS = [
   {
     id: "20",
     category: "v/f",
-    subcategory: isArabic => (isArabic ? "الآخرين" : "Others"),
+    subcategory: isArabic => (isArabic ? "الآخرين" : "OTHERS"),
     name: isArabic => (isArabic ? "كنور" : "Knorr"),
     price: 180.0,
     offerPrice: 0,
@@ -305,7 +296,7 @@ const OTHER_ITEMS = [
   {
     id: "21",
     category: "v/f",
-    subcategory: isArabic => (isArabic ? "الآخرين" : "Others"),
+    subcategory: isArabic => (isArabic ? "الآخرين" : "OTHERS"),
     name: isArabic => (isArabic ? "زيت الطهي" : "Cooking Oil"),
     price: 450.0,
     offerPrice: 0,
@@ -316,7 +307,7 @@ const OTHER_ITEMS = [
   {
     id: "22",
     category: "v/f",
-    subcategory: isArabic => (isArabic ? "الآخرين" : "Others"),
+    subcategory: isArabic => (isArabic ? "الآخرين" : "OTHERS"),
     name: isArabic =>
       isArabic ? "مربى الفراولة فيتا" : "Vitac Strawberry Jam",
     price: 340.0,

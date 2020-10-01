@@ -1,13 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Animated, StyleSheet, TouchableOpacity } from "react-native";
 import { backgroundColor } from "../../common/colors";
 import TabBar from "react-native-underline-tabbar";
 import ScrollableTabView from "react-native-scrollable-tab-view";
 import { useSelector } from "react-redux";
-import { ARABIC, ITEMS } from "../../common/constants";
+import { ANDROID, ARABIC, IOS, ITEMS } from "../../common/constants";
 import Page from "./Page";
 import _ from "lodash";
 import { useNavigation } from "@react-navigation/native";
+import { Tab as NativeBaseTab, Tabs, ScrollableTab } from "native-base";
 
 let _isMounted = false;
 
@@ -47,7 +48,6 @@ const Tab = ({
 export default () => {
   const tabView = useRef(null);
   const navigation = useNavigation();
-  const [number, setNumber] = useState(0);
   const { language, category } = useSelector(state => state.app);
   const isArabic = language === ARABIC;
 
@@ -63,8 +63,10 @@ export default () => {
           tabView.current
         ) {
           const tabIndex = params.tabIndex;
-          tabView.current.goToPage(tabIndex);
-          navigation.setParams({ tabIndex: null });
+          setTimeout(() => {
+            tabView.current.goToPage(tabIndex);
+            navigation.setParams({ tabIndex: null });
+          });
         }
       };
 
@@ -83,7 +85,6 @@ export default () => {
   useEffect(() => {
     _isMounted = true;
     if (_isMounted) {
-      setNumber(Math.random() * 109279);
       console.log("need to call api");
     }
   }, [category]);
@@ -108,7 +109,7 @@ export default () => {
     backgroundColor: () =>
       _scrollX.interpolate({
         inputRange: [idx - 1, idx, idx + 1],
-        outputRange: ["#f03250", "#f03250", "#f03250"],
+        outputRange: ["#f73957", "#f73957", "#f73957"],
         extrapolate: "clamp"
       })
   }));
@@ -130,35 +131,87 @@ export default () => {
     });
   };
 
-  return (
-    <ScrollableTabView
-      ref={tabView}
-      initialPage={0}
-      renderTabBar={() => (
-        <TabBar
-          underlineHeight={3}
-          underlineColor={"#fff"}
-          tabBarStyle={styles.tabBarStyle(isArabic)}
-          renderTab={(tab, page, isTabActive, onPressHandler, onTabLayout) => (
-            <Tab
-              key={page}
-              tab={tab}
-              page={page}
-              isArabic={isArabic}
-              navigation={navigation}
-              isTabActive={isTabActive}
-              onTabLayout={onTabLayout}
-              styles={interpolators[page]}
-              onPressHandler={onPressHandler}
-            />
-          )}
-        />
-      )}
-      onScroll={x => _scrollX.setValue(x)}
-    >
-      {renderPages()}
-    </ScrollableTabView>
-  );
+  const renderTabs = () => {
+    const filter = ITEMS.filter(v => v.category === category);
+    const grouped = _.groupBy(filter, o => o.subcategory(isArabic));
+    const keys = Object.keys(grouped);
+    return keys.map((v, i) => {
+      return (
+        <NativeBaseTab
+          key={i}
+          heading={v}
+          tabStyle={styles.tabStyle(isArabic)}
+          textStyle={styles.tabTextStyle(isArabic)}
+          activeTabStyle={styles.tabStyle(isArabic)}
+          activeTextStyle={styles.tabTextStyle(isArabic, true)}
+        >
+          <Page
+            key={i}
+            data={grouped[v]}
+            isArabic={isArabic}
+            navigation={navigation}
+          />
+        </NativeBaseTab>
+      );
+    });
+  };
+
+  if (ANDROID) {
+    return (
+      <Tabs
+        ref={tabView}
+        initialPage={0}
+        style={styles.tabBarStyle(isArabic)}
+        renderTabBar={() => (
+          <ScrollableTab
+            style={{
+              backgroundColor: "#f73957",
+              transform: [{ scaleX: isArabic ? -1 : 1 }]
+            }}
+            tabsContainerStyle={styles.tabBarStyle(isArabic)}
+          />
+        )}
+      >
+        {renderTabs()}
+      </Tabs>
+    );
+  } else {
+    return (
+      <ScrollableTabView
+        ref={tabView}
+        initialPage={0}
+        renderTabBar={() => (
+          <TabBar
+            underlineHeight={3}
+            underlineColor={"#fff"}
+            tabBarStyle={styles.tabBarStyle(isArabic)}
+            renderTab={(
+              tab,
+              page,
+              isTabActive,
+              onPressHandler,
+              onTabLayout
+            ) => (
+              <Tab
+                key={page}
+                tab={tab}
+                page={page}
+                isArabic={isArabic}
+                navigation={navigation}
+                isTabActive={isTabActive}
+                onTabLayout={onTabLayout}
+                styles={interpolators[page]}
+                onPressHandler={onPressHandler}
+              />
+            )}
+          />
+        )}
+        onScroll={x => _scrollX.setValue(x)}
+      >
+        {renderPages()}
+      </ScrollableTabView>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -170,19 +223,24 @@ const styles = StyleSheet.create({
   tabBarStyle: isArabic => ({
     marginTop: 0,
     width: "100%",
-    borderWidth: 1,
     borderColor: "#f73957",
-    backgroundColor: "#f73957",
-    transform: [{ scaleX: isArabic ? -1 : 1 }]
+    borderWidth: ANDROID ? 0 : 1,
+    transform: [{ scaleX: IOS && isArabic ? -1 : 1 }],
+    backgroundColor: ANDROID ? "transparent" : "#f73957"
   }),
   tabStyle: isArabic => ({
     marginHorizontal: 0,
-    paddingVertical: isArabic ? 9 : 12
+    backgroundColor: "#f73957",
+    paddingVertical: isArabic ? 9 : 13
   }),
-  tabTextStyle: isArabic => ({
+  tabTextStyle: (isArabic, active) => ({
     color: "#fff",
+    opacity: active ? 1 : 0.9,
     fontSize: isArabic ? 16 : 14.5,
-    transform: [{ rotateY: isArabic ? "180deg" : "0deg" }],
+    transform: [
+      { rotateY: isArabic ? "180deg" : "0deg" },
+      { scale: active ? 1.1 : 0.9 }
+    ],
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
   })
 });

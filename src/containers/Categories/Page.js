@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Item from "../../components/Item/Item";
 import { backgroundColor } from "../../common/colors";
 import { FlatList, StyleSheet } from "react-native";
@@ -8,7 +8,12 @@ const renderItem = ({ item, isArabic }) => {
 };
 
 export default ({ data, isArabic, ...rest }) => {
+  const [_, setNumber] = useState(0);
   const keyExtractor = (item, index) => item + index;
+
+  useEffect(() => {
+    setNumber(Math.random() * 0.08657);
+  }, [data]);
 
   return (
     data &&
