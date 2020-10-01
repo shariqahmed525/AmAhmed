@@ -48,13 +48,32 @@ const HomeStack = () => {
     <Navigator initialRouteName="HomeScreen">
       <Screen component={Home} name="HomeScreen" options={StackOptions} />
       <Screen component={ItemDetail} name="ItemDetail" options={StackOptions} />
+      <Screen
+        name="Category"
+        options={StackOptions}
+        component={OnBoardingCategory}
+      />
     </Navigator>
   );
 };
 
-const HomeScreensArr = ["ItemDetail"];
+const CategoriesStack = () => {
+  return (
+    <Navigator initialRouteName="CategoriesScreen">
+      <Screen
+        component={Categories}
+        name="CategoriesScreen"
+        options={StackOptions}
+      />
+      <Screen component={ItemDetail} name="ItemDetail" options={StackOptions} />
+    </Navigator>
+  );
+};
+
+const HomeScreensArr = ["ItemDetail", "Category"];
 const SearchScreensArr = [];
 const CartScreensArr = [];
+const CategoriesScreensArr = ["ItemDetail"];
 
 const getTabBarVisible = (route, array) => {
   const routeName =
@@ -71,7 +90,7 @@ const getTabBarVisible = (route, array) => {
 
 const Tab = () => {
   return (
-    <TabNavigator initialRouteName="Categories" tabBarOptions={tabOptions}>
+    <TabNavigator initialRouteName="Home" tabBarOptions={tabOptions}>
       <TabScreen
         name="Home"
         component={HomeStack}
@@ -84,12 +103,12 @@ const Tab = () => {
       />
       <TabScreen
         name="Categories"
-        component={Categories}
+        component={CategoriesStack}
         options={({ route }) => ({
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons size={30} color={color} name={"apps"} />
           ),
-          tabBarVisible: getTabBarVisible(route, SearchScreensArr)
+          tabBarVisible: getTabBarVisible(route, CategoriesScreensArr)
         })}
       />
       <TabScreen

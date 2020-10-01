@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
-import { View, Animated, StyleSheet, TouchableOpacity } from "react-native";
-import { theme, backgroundColor } from "../../common/colors";
+import React, { useEffect, useRef, useState } from "react";
+import { Animated, StyleSheet, TouchableOpacity } from "react-native";
+import { backgroundColor } from "../../common/colors";
 import TabBar from "react-native-underline-tabbar";
 import ScrollableTabView from "react-native-scrollable-tab-view";
 import { useSelector } from "react-redux";
 import { ARABIC, ITEMS } from "../../common/constants";
-import { useNavigation } from "@react-navigation/native";
 import Page from "./Page";
 import _ from "lodash";
+import { useNavigation } from "@react-navigation/native";
 
 let _isMounted = false;
 
@@ -30,9 +30,10 @@ const Tab = ({
   return (
     <TouchableOpacity
       key={page}
+      activeOpacity={0.7}
       onLayout={onTabLayout}
-      style={styles.tabStyle}
       onPress={onPressHandler}
+      style={styles.tabStyle(isArabic)}
     >
       <Animated.View style={tabContainerStyle}>
         <Animated.Text style={styles.tabTextStyle(isArabic)}>
@@ -46,6 +47,7 @@ const Tab = ({
 export default () => {
   const tabView = useRef(null);
   const navigation = useNavigation();
+  const [number, setNumber] = useState(0);
   const { language, category } = useSelector(state => state.app);
   const isArabic = language === ARABIC;
 
@@ -66,15 +68,25 @@ export default () => {
         }
       };
 
-      const unsubscribe = navigation.addListener("focus", () => {
-        const { index, routes } = navigation.dangerouslyGetState();
-        const currentTabParams = routes[index].params;
-        onFocus(currentTabParams);
-      });
+      const unsubscribe = navigation
+        .dangerouslyGetParent()
+        .addListener("focus", () => {
+          const { index, routes } = navigation.dangerouslyGetState();
+          const currentTabParams = routes[index].params;
+          onFocus(currentTabParams);
+        });
 
       return unsubscribe;
     }
   }, []);
+
+  useEffect(() => {
+    _isMounted = true;
+    if (_isMounted) {
+      setNumber(Math.random() * 109279);
+      console.log("need to call api");
+    }
+  }, [category]);
 
   let _scrollX = new Animated.Value(0);
   const interpolators = Array.from({ length: 100 }, (_, i) => i).map(idx => ({
@@ -96,7 +108,7 @@ export default () => {
     backgroundColor: () =>
       _scrollX.interpolate({
         inputRange: [idx - 1, idx, idx + 1],
-        outputRange: [theme, theme, theme],
+        outputRange: ["#f03250", "#f03250", "#f03250"],
         extrapolate: "clamp"
       })
   }));
@@ -110,6 +122,7 @@ export default () => {
         <Page
           key={i}
           data={grouped[v]}
+          isArabic={isArabic}
           tabLabel={{ label: v }}
           navigation={navigation}
         />
@@ -123,6 +136,7 @@ export default () => {
       initialPage={0}
       renderTabBar={() => (
         <TabBar
+          underlineHeight={3}
           underlineColor={"#fff"}
           tabBarStyle={styles.tabBarStyle(isArabic)}
           renderTab={(tab, page, isTabActive, onPressHandler, onTabLayout) => (
@@ -156,18 +170,18 @@ const styles = StyleSheet.create({
   tabBarStyle: isArabic => ({
     marginTop: 0,
     width: "100%",
-    borderTopWidth: 0,
-    borderTopColor: theme,
-    backgroundColor: theme,
+    borderWidth: 1,
+    borderColor: "#f73957",
+    backgroundColor: "#f73957",
     transform: [{ scaleX: isArabic ? -1 : 1 }]
   }),
-  tabStyle: {
+  tabStyle: isArabic => ({
     marginHorizontal: 0,
-    paddingVertical: 5
-  },
+    paddingVertical: isArabic ? 9 : 12
+  }),
   tabTextStyle: isArabic => ({
     color: "#fff",
-    fontSize: 14,
+    fontSize: isArabic ? 16 : 14.5,
     transform: [{ rotateY: isArabic ? "180deg" : "0deg" }],
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
   })

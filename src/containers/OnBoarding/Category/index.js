@@ -6,21 +6,30 @@ import { View, Text, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import ImageButton from "../../../components/ImageButton";
 import OnBoardHeader from "../../../components/OnBoardHeader";
-import { CommonActions, useNavigation } from "@react-navigation/native";
+import {
+  CommonActions,
+  useNavigation,
+  useRoute
+} from "@react-navigation/native";
 import { ARABIC, CATEGORIES, ENGLISH } from "../../../common/constants";
 import { onCategoryAction, onLanguageAction } from "../../../redux/actions/app";
+import Header from "../../../components/Header";
+import { backgroundColor, theme } from "../../../common/colors";
 
 export default () => {
+  const { params } = useRoute();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!params?.fromHome);
   const { language } = useSelector(state => state.app);
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
+    if (!params?.fromHome) {
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+    }
   }, []);
 
   const handleToggleLanguage = () => {
@@ -29,27 +38,50 @@ export default () => {
 
   const handleListItem = code => {
     dispatch(onCategoryAction(code));
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: "MainStack" }]
-      })
-    );
+    if (params?.fromHome) {
+      handleBack();
+    } else {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "MainStack" }]
+        })
+      );
+    }
+  };
+
+  const handleBack = () => {
+    navigation.goBack();
   };
 
   return (
-    <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: params?.fromHome ? theme : backgroundColor
+      }}
+      forceInset={{ bottom: "never" }}
+    >
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.container}
       >
         <View style={styles.mainContainer}>
-          <OnBoardHeader
-            back
-            isArabic={isArabic}
-            showLanguageToggle={false}
-            onPress={handleToggleLanguage}
-          />
+          {params?.fromHome ? (
+            <Header
+              back
+              onBackPress={handleBack}
+              title={isArabic ? "الفئة" : "Category"}
+              titleAlign={isArabic ? "right" : "left"}
+            />
+          ) : (
+            <OnBoardHeader
+              back
+              isArabic={isArabic}
+              showLanguageToggle={false}
+              onPress={handleToggleLanguage}
+            />
+          )}
           {loading ? (
             <View style={styles.loaderWrapper}>
               <LottieView

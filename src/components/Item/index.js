@@ -36,8 +36,14 @@ export default ({ data, name, onSeeAll, isArabic, tabIndex, ...rest }) => {
           <Text style={styles.itemColTopHead(isArabic)}>{name}</Text>
         </View>
         <TouchableOpacity
-          onPress={() => navigation.navigate("Categories", { tabIndex })}
+          activeOpacity={0.7}
           style={styles.seeAll}
+          onPress={() => {
+            navigation.navigate("Categories", {
+              screen: "CategoriesScreen",
+              params: { tabIndex }
+            });
+          }}
         >
           <Text style={styles.seeAllText(isArabic)}>
             {isArabic ? "المزيد" : "MORE"}

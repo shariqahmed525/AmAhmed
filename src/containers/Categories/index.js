@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { SafeAreaView } from "react-navigation";
-import { View, Text, StatusBar } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { View, StatusBar } from "react-native";
+import { useSelector } from "react-redux";
 
 import styles from "./styles";
 import { theme } from "../../common/colors";
@@ -10,7 +10,6 @@ import ItemsTabs from "./ItemsTabs";
 import Header from "../../components/Header";
 
 export default () => {
-  const dispatch = useDispatch();
   const { language } = useSelector(state => state.app);
   const isArabic = language === ARABIC;
 

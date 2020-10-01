@@ -2,19 +2,15 @@ import { StyleSheet } from "react-native";
 import { backgroundColor, theme } from "../../../common/colors";
 import { CONTAINER_PADDING, HEIGHT } from "../../../common/constants";
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: backgroundColor
-  },
   container: {
     flexGrow: 1,
-    backgroundColor: backgroundColor
+    backgroundColor
   },
   mainContainer: {
     flex: 1,
+    backgroundColor,
     alignItems: "center",
-    paddingBottom: HEIGHT * 0.04,
-    backgroundColor: backgroundColor
+    paddingBottom: HEIGHT * 0.04
   },
   logo: {
     width: 115,

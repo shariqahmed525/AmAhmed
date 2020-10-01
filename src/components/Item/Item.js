@@ -84,7 +84,7 @@ export default ({ item, isArabic }) => {
           </View>
         )}
         <TouchableOpacity
-          activeOpacity={0.5}
+          activeOpacity={0.7}
           onPress={handleItemPress}
           style={styles.itemWrapper(inStock)}
         >
@@ -110,7 +110,11 @@ export default ({ item, isArabic }) => {
           )}
           <View style={styles.firstSection}>
             <View style={styles.imageWrapper}>
-              <Image source={image} style={styles.imageStyle} />
+              <Image
+                source={image}
+                resizeMode="contain"
+                style={styles.imageStyle}
+              />
             </View>
             <Text
               numberOfLines={2}
@@ -142,7 +146,7 @@ export default ({ item, isArabic }) => {
               <View style={styles.cartActionsWrapper(isArabic)}>
                 <View style={styles.cartActionsContainer}>
                   <TouchableOpacity
-                    activeOpacity={0.8}
+                    activeOpacity={0.7}
                     style={styles.cartAction}
                     onPress={() => cartAction("-")}
                   >
@@ -154,7 +158,7 @@ export default ({ item, isArabic }) => {
                     </Text>
                   </View>
                   <TouchableOpacity
-                    activeOpacity={0.8}
+                    activeOpacity={0.7}
                     style={styles.cartAction}
                     onPress={() => cartAction("+")}
                   >
@@ -164,7 +168,7 @@ export default ({ item, isArabic }) => {
               </View>
             ) : (
               <TouchableOpacity
-                activeOpacity={0.5}
+                activeOpacity={0.7}
                 onPress={handleItemPress}
                 style={styles.cartBtn(isArabic)}
               >
@@ -186,6 +190,7 @@ const styles = StyleSheet.create({
   container: {
     width: ITEM_WIDTH,
     height: ITEM_HEIGHT,
+    marginVertical: 5,
     marginHorizontal: 5
   },
   itemWrapper: inStock => {

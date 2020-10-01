@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { black, greenColor, theme, backgroundColor } from "../../common/colors";
-import { CONTAINER_PADDING, HEIGHT, WIDTH } from "../../common/constants";
+import { CONTAINER_PADDING, HEIGHT } from "../../common/constants";
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
@@ -9,19 +9,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor
-    // backgroundColor: "#fff"
   },
   scrollContainer: {
     flexGrow: 1,
     paddingBottom: 0,
     paddingHorizontal: 10
   },
-  image: {
+  imageWrapper: {
     height: 350,
     width: "100%",
     borderRadius: 10,
+    overflow: "hidden",
     marginVertical: 10,
     maxHeight: HEIGHT / 4
+  },
+  image: {
+    width: "100%",
+    height: "100%"
   },
   boxWrapper: {
     marginTop: 20,

@@ -42,7 +42,9 @@ const ImageRender = forwardRef(({ animatedObj, item }, ref) => (
         <Text style={styles.animatedViewText}>{animatedObj?.quantityUnit}</Text>
       </Animatable.View>
     )}
-    <Image resizeMode="stretch" source={item.image} style={styles.image} />
+    <View style={styles.imageWrapper}>
+      <Image resizeMode="stretch" source={item.image} style={styles.image} />
+    </View>
   </>
 ));
 
@@ -296,7 +298,7 @@ export default () => {
             <View style={styles.cartActionsWrapper(isArabic)}>
               <View style={styles.cartActionsContainer}>
                 <TouchableOpacity
-                  activeOpacity={0.8}
+                  activeOpacity={0.7}
                   style={styles.cartAction}
                   onPress={() => cartAction("-")}
                 >
@@ -308,7 +310,7 @@ export default () => {
                   </Text>
                 </View>
                 <TouchableOpacity
-                  activeOpacity={0.8}
+                  activeOpacity={0.7}
                   style={styles.cartAction}
                   onPress={() => cartAction("+")}
                 >

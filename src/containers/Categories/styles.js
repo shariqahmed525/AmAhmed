@@ -9,10 +9,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor
   },
+  itemWrapper: {
+    flex: 1,
+    backgroundColor,
+    paddingVertical: 10
+  },
   header: isArabic => ({
     width: "100%",
     alignItems: "center",
-    // paddingVertical: 15,
     paddingHorizontal: 10,
     justifyContent: "space-between",
     flexDirection: isArabic ? "row-reverse" : "row"

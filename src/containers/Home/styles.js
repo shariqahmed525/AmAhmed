@@ -49,6 +49,19 @@ const styles = StyleSheet.create({
   },
   rotateIcon: isArabic => ({
     transform: [{ rotateY: isArabic ? "0deg" : "180deg" }]
+  }),
+  titleWrapper: isArabic => ({
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: isArabic ? "row-reverse" : "row"
+  }),
+  title: isArabic => ({
+    color: "#fff",
+    fontSize: isArabic ? 20 : 18,
+    paddingLeft: isArabic ? 10 : 0,
+    paddingRight: isArabic ? 0 : 7,
+    fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
   })
 });
 

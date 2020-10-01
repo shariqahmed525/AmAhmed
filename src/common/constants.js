@@ -54,14 +54,14 @@ export const CATEGORIES = [
   }
 ];
 
-export const SLIDER_IMAGES = [
-  require("../../assets/images/sliders/1.jpg"),
-  require("../../assets/images/sliders/2.jpeg"),
-  require("../../assets/images/sliders/3.jpeg"),
-  require("../../assets/images/sliders/4.jpeg"),
-  require("../../assets/images/sliders/6.jpeg"),
-  require("../../assets/images/sliders/7.jpeg")
-];
+// export const SLIDER_IMAGES = [
+//   require("../../assets/images/sliders/1.jpg"),
+//   require("../../assets/images/sliders/2.jpeg"),
+//   require("../../assets/images/sliders/3.jpeg"),
+//   require("../../assets/images/sliders/4.jpeg"),
+//   require("../../assets/images/sliders/6.jpeg"),
+//   require("../../assets/images/sliders/7.jpeg")
+// ];
 
 const GOATS_ITEMS = [
   {
@@ -517,4 +517,23 @@ export const ITEMS = [
   ...DAIRY_EGGS_ITEMS,
   ...DRINKS_ITEMS,
   ...OTHER_ITEMS
+];
+
+export const GOAT_MEAT_SLIDERS = [
+  require("../../assets/images/sliders/g1.jpeg"),
+  require("../../assets/images/sliders/g2.jpeg"),
+  require("../../assets/images/sliders/g3.jpeg"),
+  require("../../assets/images/sliders/g4.jpeg"),
+  require("../../assets/images/sliders/m1.jpeg"),
+  require("../../assets/images/sliders/m2.jpeg"),
+  require("../../assets/images/sliders/m3.jpeg")
+];
+
+export const VEGETABLES_FRUITS_SLIDER = [
+  require("../../assets/images/sliders/v1.jpg"),
+  require("../../assets/images/sliders/v2.jpeg"),
+  require("../../assets/images/sliders/v3.jpeg"),
+  require("../../assets/images/sliders/v4.jpeg"),
+  require("../../assets/images/sliders/v6.jpeg"),
+  require("../../assets/images/sliders/v7.jpeg")
 ];

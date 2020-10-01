@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { theme } from "../common/colors";
 import { Entypo } from "../common/icons";
 import { useSelector } from "react-redux";
-import { ARABIC } from "../common/constants";
+import { ARABIC, HEIGHT } from "../common/constants";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 
 export default ({
@@ -24,7 +24,7 @@ export default ({
   rightIcon: RightIcon,
   component: Component
 }) => {
-  const { language } = useSelector(state => state.app);
+  const { language, category } = useSelector(state => state.app);
   const isArabic = language === ARABIC;
   const memo = useMemo(
     () => (
@@ -40,7 +40,11 @@ export default ({
       >
         {/* Back and Left Icon */}
         {back ? (
-          <TouchableOpacity onPress={onBackPress} style={styles.back(isArabic)}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={onBackPress}
+            style={styles.back(isArabic)}
+          >
             <Entypo
               size={25}
               name="chevron-thin-left"
@@ -51,7 +55,11 @@ export default ({
             />
           </TouchableOpacity>
         ) : LeftIcon ? (
-          <TouchableOpacity style={styles.back} {...leftIconProps}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.back}
+            {...leftIconProps}
+          >
             <LeftIcon />
           </TouchableOpacity>
         ) : (
@@ -70,7 +78,7 @@ export default ({
                 style={{
                   ...styles.title(isArabic),
                   textAlign: titleAlign || "center",
-                  fontSize: titleFontSize || (isArabic ? 20 : 22),
+                  fontSize: titleFontSize || (isArabic ? 21 : 20),
                   fontFamily:
                     titleFontFamily ||
                     (isArabic ? "Cairo-SemiBold" : "Rubik-Regular"),
@@ -87,7 +95,11 @@ export default ({
 
         {/* Right Icon */}
         {RightIcon ? (
-          <TouchableOpacity style={styles.back} {...rightIconProps}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.back}
+            {...rightIconProps}
+          >
             <RightIcon />
           </TouchableOpacity>
         ) : (
@@ -95,7 +107,7 @@ export default ({
         )}
       </View>
     ),
-    [language]
+    [language, category]
   );
   return memo;
 };

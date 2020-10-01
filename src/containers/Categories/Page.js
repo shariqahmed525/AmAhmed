@@ -1,14 +1,40 @@
 import React from "react";
+import Item from "../../components/Item/Item";
 import { backgroundColor } from "../../common/colors";
-import { View, Text, StyleSheet } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 
-export default ({ navigation }) => {
-  return <View style={styles.container}></View>;
+const renderItem = ({ item, isArabic }) => {
+  return <Item item={item} isArabic={isArabic} />;
+};
+
+export default ({ data, isArabic, ...rest }) => {
+  const keyExtractor = (item, index) => item + index;
+
+  return (
+    data &&
+    data.length > 0 && (
+      <FlatList
+        extraData={rest}
+        data={data.slice(0, 5)}
+        keyExtractor={keyExtractor}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.container(isArabic)}
+        renderItem={props => renderItem({ ...props, isArabic })}
+      />
+    )
+  );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor
-  }
+  container: isArabic => ({
+    flexGrow: 1,
+    backgroundColor,
+    flexWrap: "wrap",
+    paddingHorizontal: 5,
+    paddingVertical: 10,
+    justifyContent: "space-between",
+    flexDirection: isArabic ? "row-reverse" : "row"
+  })
 });
