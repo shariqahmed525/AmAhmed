@@ -19,8 +19,8 @@ export default ({ data, isArabic, ...rest }) => {
     data &&
     data.length > 0 && (
       <FlatList
+        data={data}
         extraData={rest}
-        data={data.slice(0, 5)}
         keyExtractor={keyExtractor}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}

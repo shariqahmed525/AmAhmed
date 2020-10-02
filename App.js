@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import Route from "./src/routes";
 import { Provider } from "react-redux";
 import { StatusBar } from "react-native";
+import { Root } from "native-base";
 import { store, persistor } from "./src/redux";
 import { ANDROID } from "./src/common/constants";
 import { backgroundColor } from "./src/common/colors";
@@ -21,7 +22,9 @@ export default () => {
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <PaperProvider>
-          <Route />
+          <Root>
+            <Route />
+          </Root>
         </PaperProvider>
       </PersistGate>
     </Provider>

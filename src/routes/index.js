@@ -70,8 +70,17 @@ const CategoriesStack = () => {
   );
 };
 
+const SearchStack = () => {
+  return (
+    <Navigator initialRouteName="SearchScreen">
+      <Screen component={Search} name="SearchScreen" options={StackOptions} />
+      <Screen component={ItemDetail} name="ItemDetail" options={StackOptions} />
+    </Navigator>
+  );
+};
+
 const HomeScreensArr = ["ItemDetail", "Category"];
-const SearchScreensArr = [];
+const SearchScreensArr = ["ItemDetail"];
 const CartScreensArr = [];
 const CategoriesScreensArr = ["ItemDetail"];
 
@@ -113,7 +122,7 @@ const Tab = () => {
       />
       <TabScreen
         name="Search"
-        component={Search}
+        component={SearchStack}
         options={({ route }) => ({
           tabBarIcon: ({ color }) => (
             <Feather size={26} color={color} name={"search"} />

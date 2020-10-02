@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, StyleSheet, TouchableOpacity } from "react-native";
-import { backgroundColor } from "../../common/colors";
+import { backgroundColor, secondaryHeader } from "../../common/colors";
 import TabBar from "react-native-underline-tabbar";
 import ScrollableTabView from "react-native-scrollable-tab-view";
 import { useSelector } from "react-redux";
@@ -109,7 +109,7 @@ export default () => {
     backgroundColor: () =>
       _scrollX.interpolate({
         inputRange: [idx - 1, idx, idx + 1],
-        outputRange: ["#f73957", "#f73957", "#f73957"],
+        outputRange: [secondaryHeader, secondaryHeader, secondaryHeader],
         extrapolate: "clamp"
       })
   }));
@@ -165,7 +165,7 @@ export default () => {
         renderTabBar={() => (
           <ScrollableTab
             style={{
-              backgroundColor: "#f73957",
+              backgroundColor: secondaryHeader,
               transform: [{ scaleX: isArabic ? -1 : 1 }]
             }}
             tabsContainerStyle={styles.tabBarStyle(isArabic)}
@@ -223,14 +223,14 @@ const styles = StyleSheet.create({
   tabBarStyle: isArabic => ({
     marginTop: 0,
     width: "100%",
-    borderColor: "#f73957",
+    borderColor: secondaryHeader,
     borderWidth: ANDROID ? 0 : 1,
     transform: [{ scaleX: IOS && isArabic ? -1 : 1 }],
-    backgroundColor: ANDROID ? "transparent" : "#f73957"
+    backgroundColor: ANDROID ? "transparent" : secondaryHeader
   }),
   tabStyle: isArabic => ({
     marginHorizontal: 0,
-    backgroundColor: "#f73957",
+    backgroundColor: secondaryHeader,
     paddingVertical: isArabic ? 9 : 13
   }),
   tabTextStyle: (isArabic, active) => ({

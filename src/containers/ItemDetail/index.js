@@ -21,14 +21,43 @@ import {
   ANDROID,
   ARABIC,
   PACKING,
-  ERROR_IMG,
   CATEGORIES,
   CUTTINGWAY,
   HEAD_AND_LEGS
 } from "../../common/constants";
-import Alert from "../../components/Alert";
+import { Toast } from "native-base";
 
 let timeOut = null;
+
+const toastOptions = isArabic => ({
+  style: {
+    transform: [
+      {
+        scaleX: isArabic ? -1 : 1
+      }
+    ],
+    top: 100
+  },
+  textStyle: {
+    transform: [
+      {
+        rotateY: isArabic ? "180deg" : "0deg"
+      }
+    ],
+    textAlign: isArabic ? "right" : "left"
+  },
+  buttonTextStyle: {
+    transform: [
+      {
+        rotateY: isArabic ? "180deg" : "0deg"
+      }
+    ]
+  },
+  buttonText: isArabic ? "حسنا" : "Okay",
+  type: "danger",
+  position: "top",
+  duration: 2000
+});
 
 const ImageRender = forwardRef(({ animatedObj, item }, ref) => (
   <>
@@ -91,13 +120,6 @@ export default () => {
   const [checked1, setChecked1] = useState(null);
   const [checked2, setChecked2] = useState(1);
   const [checked3, setChecked3] = useState(null);
-  const [alert, setAlert] = useState({
-    error: false,
-    alert: false,
-    alertImg: "",
-    alertText: "",
-    alertTitle: ""
-  });
   const [animatedObj, setAnimatedObj] = useState(null);
   const isArabic = language === ARABIC;
   const category = CATEGORIES.find(o => o.code === item.category);
@@ -151,7 +173,6 @@ export default () => {
 
   const handleHeadAndLegs = id => {
     setChecked2(id);
-    // setChecked2(checked2 === id ? null : id);
   };
 
   const handlePacking = id => {
@@ -161,41 +182,25 @@ export default () => {
   const handleAddToCart = () => {
     if (!checked1) {
       scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
-      setAlert({
-        error: true,
-        alert: true,
-        alertImg: ERROR_IMG,
-        alertTitle: isArabic ? "خطأ" : "Error",
-        alertText: isArabic
+      Toast.show({
+        text: isArabic
           ? "الرجاء تحديد طريقة القطع"
-          : "Please select cutting way"
+          : "Please select cutting way",
+        ...toastOptions(isArabic)
       });
       return;
     }
     if (!checked3) {
       scrollRef.current.scrollToEnd({ animated: true });
-      setAlert({
-        error: true,
-        alert: true,
-        alertImg: ERROR_IMG,
-        alertTitle: isArabic ? "خطأ" : "Error",
-        alertText: isArabic
+      Toast.show({
+        text: isArabic
           ? "الرجاء تحديد نوع التعبئة"
-          : "Please select packing type"
+          : "Please select packing type",
+        ...toastOptions(isArabic)
       });
       return;
     }
     cartAction("+");
-  };
-
-  const alertClose = () => {
-    setAlert({
-      error: false,
-      alert: false,
-      alertImg: "",
-      alertText: "",
-      alertTitle: ""
-    });
   };
 
   return (
@@ -206,15 +211,6 @@ export default () => {
           onBackPress={handleBack}
           title={category.name(isArabic)}
           titleAlign={isArabic ? "right" : "left"}
-        />
-        <Alert
-          error={alert.error}
-          alert={alert.alert}
-          img={alert.alertImg}
-          text={alert.alertText}
-          onBtnPress={alertClose}
-          title={alert.alertTitle}
-          btnText={isArabic ? "حسنا" : "Ok"}
         />
         <ScrollView
           ref={scrollRef}
