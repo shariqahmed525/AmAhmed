@@ -7,9 +7,10 @@ import { View, StatusBar, TextInput, FlatList, Text } from "react-native";
 import styles from "./styles";
 import Header from "../../components/Header";
 import Item from "../../components/Item/Item";
-import { MaterialIcons } from "../../common/icons";
+import { Octicons, MaterialIcons } from "../../common/icons";
 import { ANDROID, ARABIC, ITEMS, WIDTH } from "../../common/constants";
 import { secondaryHeader, theme } from "../../common/colors";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const renderItem = ({ item, isArabic }) => {
   return <Item item={item} isArabic={isArabic} />;
@@ -41,6 +42,11 @@ export default props => {
     />
   );
 
+  useEffect(() => {
+    setText("");
+    setData([...ITEMS.filter(o => o.category === category)]);
+  }, [category]);
+
   const onSearch = () => {
     setLoading(true);
     const filter = ITEMS.filter(o => {
@@ -54,25 +60,17 @@ export default props => {
     }, 500);
   };
 
+  const handleClear = () => {
+    setText("");
+    setData([...ITEMS.filter(o => o.category === category)]);
+  };
+
   return (
     <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
       <View style={styles.container}>
         {header}
         <View style={styles.inputContainer(isArabic)}>
           <View style={styles.inputWrapper(isArabic)}>
-            <View
-              style={{
-                marginLeft: isArabic ? 0 : 15,
-                marginRight: isArabic ? 15 : 0,
-                transform: [
-                  {
-                    rotateY: isArabic ? "180deg" : "0deg"
-                  }
-                ]
-              }}
-            >
-              <MaterialIcons size={25} name="search" color={secondaryHeader} />
-            </View>
             <TextInput
               blurOnSubmit
               value={text}
@@ -86,18 +84,25 @@ export default props => {
             {text !== "" && (
               <View
                 style={{
-                  marginRight: isArabic ? 0 : 15,
-                  marginLeft: isArabic ? 15 : 0
+                  marginRight: isArabic ? 0 : 7,
+                  marginLeft: isArabic ? 7 : 0
                 }}
               >
                 <MaterialIcons
                   size={25}
                   name="close"
                   color={secondaryHeader}
-                  onPress={() => setText("")}
+                  onPress={handleClear}
                 />
               </View>
             )}
+            <TouchableOpacity
+              onPress={onSearch}
+              activeOpacity={0.7}
+              style={styles.searchIconWrapper(isArabic)}
+            >
+              <Octicons size={23} name="search" color={"#fff"} />
+            </TouchableOpacity>
           </View>
         </View>
         {loading ? (
@@ -105,7 +110,7 @@ export default props => {
             <LottieView
               loop
               autoPlay
-              style={{ width: 150 }}
+              style={{ width: WIDTH * 0.5 }}
               source={require("../../../assets/animations/search.json")}
             />
             <Text style={styles.emptyText(isArabic)}>Searching...</Text>

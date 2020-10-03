@@ -1,5 +1,11 @@
 import { StyleSheet } from "react-native";
-import { backgroundColor, black, darkGray, theme } from "../../common/colors";
+import {
+  backgroundColor,
+  black,
+  darkGray,
+  secondaryHeader,
+  theme
+} from "../../common/colors";
 import { IOS, WIDTH } from "../../common/constants";
 const styles = StyleSheet.create({
   safe: {
@@ -37,10 +43,9 @@ const styles = StyleSheet.create({
     color: black,
     fontSize: 15,
     paddingVertical: 0,
-    paddingLeft: isArabic ? 0 : 10,
-    paddingRight: isArabic ? 10 : 0,
+    paddingLeft: isArabic ? 5 : 20,
+    paddingRight: isArabic ? 20 : 5,
     textAlign: isArabic ? "right" : "left",
-    // paddingVertical: IOS ? (isArabic ? HEIGHT * 0.012 : HEIGHT * 0.015) : 7,
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
   inputWrapper: isArabic => ({
@@ -60,6 +65,7 @@ const styles = StyleSheet.create({
     elevation: 4,
     flex: 1,
     alignItems: "center",
+    overflow: "hidden",
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
   emptyText: (isArabic, color) => ({
@@ -92,7 +98,19 @@ const styles = StyleSheet.create({
   }),
   lottie: {
     width: WIDTH * 0.75
-  }
+  },
+  searchIconWrapper: isArabic => ({
+    flex: 1,
+    width: 55,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: secondaryHeader,
+    transform: [
+      {
+        rotateY: isArabic ? "180deg" : "0deg"
+      }
+    ]
+  })
 });
 
 export default styles;

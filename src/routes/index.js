@@ -99,7 +99,7 @@ const getTabBarVisible = (route, array) => {
 
 const Tab = () => {
   return (
-    <TabNavigator initialRouteName="Home" tabBarOptions={tabOptions}>
+    <TabNavigator initialRouteName="Search" tabBarOptions={tabOptions}>
       <TabScreen
         name="Home"
         component={HomeStack}
@@ -145,7 +145,7 @@ const Tab = () => {
 
 const OnBoardStack = () => {
   return (
-    <Navigator initialRouteName={"OnBoardingCity"}>
+    <Navigator initialRouteName={"MainStack"}>
       <Screen
         options={StackOptions}
         name="OnBoardingCity"
