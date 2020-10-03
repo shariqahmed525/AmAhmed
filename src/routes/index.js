@@ -79,6 +79,15 @@ const SearchStack = () => {
   );
 };
 
+const CartStack = () => {
+  return (
+    <Navigator initialRouteName="CartScreen">
+      <Screen component={Cart} name="CartScreen" options={StackOptions} />
+      <Screen component={ItemDetail} name="ItemDetail" options={StackOptions} />
+    </Navigator>
+  );
+};
+
 const HomeScreensArr = ["ItemDetail", "Category"];
 const SearchScreensArr = ["ItemDetail"];
 const CartScreensArr = [];
@@ -99,7 +108,7 @@ const getTabBarVisible = (route, array) => {
 
 const Tab = () => {
   return (
-    <TabNavigator initialRouteName="Search" tabBarOptions={tabOptions}>
+    <TabNavigator initialRouteName="Cart" tabBarOptions={tabOptions}>
       <TabScreen
         name="Home"
         component={HomeStack}
@@ -132,7 +141,7 @@ const Tab = () => {
       />
       <TabScreen
         name="Cart"
-        component={Cart}
+        component={CartStack}
         options={({ route }) => ({
           tabBarLabel: "Cart",
           tabBarIcon: ({ focused }) => <CartIcon focused={focused} />,

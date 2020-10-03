@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { backgroundColor, theme } from "../../common/colors";
+import { theme, backgroundColor } from "../../common/colors";
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
@@ -8,6 +8,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingVertical: 15,
+    paddingHorizontal: 10
   },
   itemWrapper: {
     flex: 1,

@@ -73,7 +73,7 @@ export default () => {
   }, [category]);
 
   const handleOpenDialer = () => {
-    Linking.openURL("tel:+966505513711");
+    Linking.openURL("tel:+966568042000");
   };
 
   const sliderMemo = useMemo(() => {

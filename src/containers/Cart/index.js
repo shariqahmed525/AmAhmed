@@ -1,21 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { SafeAreaView } from "react-navigation";
-import { View, StatusBar } from "react-native";
+import { View, StatusBar, ScrollView } from "react-native";
 import { useSelector } from "react-redux";
 
 import styles from "./styles";
 import { theme } from "../../common/colors";
 import Header from "../../components/Header";
 import { ANDROID, ARABIC } from "../../common/constants";
+import CartListItem from "../../components/CartListItem";
 
 export default () => {
-  const { language } = useSelector(state => state.app);
+  const {
+    app: { language },
+    user: { cart }
+  } = useSelector(state => state);
   const isArabic = language === ARABIC;
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
     ANDROID && StatusBar.setBackgroundColor(theme);
   }, []);
+
+  console.log(cart, " cart");
 
   const header = (
     <Header
@@ -31,7 +37,14 @@ export default () => {
 
   return (
     <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
-      <View style={styles.container}>{header}</View>
+      <View style={styles.container}>
+        {header}
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {cart.map((v, i) => (
+            <CartListItem key={i} item={v} isArabic={isArabic} />
+          ))}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
