@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import SoundPlayer from "react-native-sound-player";
 import * as Animatable from "react-native-animatable";
 
-import { theme, darkGray } from "../common/colors";
+import { theme, darkGray, lightTheme } from "../common/colors";
 import { addItemToCart } from "../redux/actions/user";
 
 const PriceRender = ({ price, isArabic, offerPrice, quantityType }) => (
@@ -18,7 +18,7 @@ const PriceRender = ({ price, isArabic, offerPrice, quantityType }) => (
       )}
       {isArabic && offerPrice > 1 && "ر.س "}
       <Text style={{ fontSize: 15 }}>/ </Text>
-      {(quantityType && quantityType(isArabic)) || isArabic ? "وحدة " : " Unit"}
+      {quantityType ? quantityType(isArabic) : isArabic ? "وحدة " : " Unit"}
     </Text>
   </View>
 );
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(227, 10, 44, 0.2)"
+    backgroundColor: lightTheme
   }),
   cartItemTotal: isArabic => ({
     width: 80,

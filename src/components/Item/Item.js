@@ -4,7 +4,7 @@ import * as Animatable from "react-native-animatable";
 import { useDispatch, useSelector } from "react-redux";
 import { addItemToCart } from "../../redux/actions/user";
 import { calculatePercentage } from "../../common/functions";
-import { theme, redColor, greenColor } from "../../common/colors";
+import { theme, redColor, greenColor, lightTheme } from "../../common/colors";
 import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
 import { WIDTH } from "../../common/constants";
 import { useNavigation } from "@react-navigation/native";
@@ -174,7 +174,7 @@ export default ({ item, isArabic }) => {
               style={styles.cartBtn(isArabic)}
             >
               <Text style={styles.cartBtnText(isArabic)}>
-                {isArabic ? "أضف إلى السلة" : "ADD TO CART"}
+                {isArabic ? "أضف إلى العربة" : "ADD TO CART"}
               </Text>
             </TouchableOpacity>
           )}
@@ -350,16 +350,16 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: "center",
     flexDirection: "row",
-    backgroundColor: theme,
+    backgroundColor: lightTheme,
     justifyContent: "center"
   },
   cartLeftActionText: {
-    color: "#fff",
+    color: theme,
     fontSize: 25,
     marginTop: -4
   },
   cartRightActionText: {
-    color: "#fff",
+    color: theme,
     fontSize: 20,
     marginTop: -4
   },

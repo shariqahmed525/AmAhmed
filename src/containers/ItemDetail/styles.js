@@ -1,5 +1,11 @@
 import { StyleSheet } from "react-native";
-import { black, greenColor, theme, backgroundColor } from "../../common/colors";
+import {
+  black,
+  greenColor,
+  theme,
+  backgroundColor,
+  lightTheme
+} from "../../common/colors";
 import { CONTAINER_PADDING, HEIGHT } from "../../common/constants";
 const styles = StyleSheet.create({
   safe: {
@@ -64,15 +70,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme,
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: theme,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5
+    borderColor: theme
   },
   btnText: isArabic => ({
     color: "#fff",
@@ -97,26 +95,16 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     alignItems: "center",
     flexDirection: "row",
-    backgroundColor: theme,
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: theme,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5
+    backgroundColor: lightTheme,
+    justifyContent: "center"
   },
   cartLeftActionText: {
-    color: "#fff",
+    color: theme,
     fontSize: 35,
     marginTop: -4
   },
   cartRightActionText: {
-    color: "#fff",
+    color: theme,
     fontSize: 30,
     marginTop: -4
   },

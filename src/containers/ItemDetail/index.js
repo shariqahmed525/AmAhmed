@@ -29,14 +29,14 @@ import { Toast } from "native-base";
 
 let timeOut = null;
 
-const toastOptions = isArabic => ({
+const toastOptions = (isArabic, top) => ({
   style: {
     transform: [
       {
         scaleX: isArabic ? -1 : 1
       }
     ],
-    top: 100
+    top: top - 85
   },
   textStyle: {
     transform: [
@@ -117,6 +117,8 @@ export default () => {
   } = useSelector(state => state);
   const ref = useRef(null);
   const scrollRef = useRef(null);
+  const cuttingRef = useRef(null);
+  const packingRef = useRef(null);
   const [checked1, setChecked1] = useState(null);
   const [checked2, setChecked2] = useState(1);
   const [checked3, setChecked3] = useState(null);
@@ -182,22 +184,32 @@ export default () => {
   const handleAddToCart = () => {
     if (!checked1) {
       scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
-      Toast.show({
-        text: isArabic
-          ? "الرجاء تحديد طريقة القطع"
-          : "Please select cutting way",
-        ...toastOptions(isArabic)
-      });
+      if (cuttingRef && cuttingRef.current) {
+        cuttingRef.current.measure((fx, fy, width, height, px, py) => {
+          Toast.show({
+            text: isArabic
+              ? "الرجاء تحديد طريقة القطع"
+              : "Please select cutting way",
+            ...toastOptions(isArabic, py)
+          });
+        });
+      }
       return;
     }
     if (!checked3) {
       scrollRef.current.scrollToEnd({ animated: true });
-      Toast.show({
-        text: isArabic
-          ? "الرجاء تحديد نوع التعبئة"
-          : "Please select packing type",
-        ...toastOptions(isArabic)
-      });
+      setTimeout(() => {
+        if (packingRef && packingRef.current) {
+          packingRef.current.measure((fx, fy, width, height, px, py) => {
+            Toast.show({
+              text: isArabic
+                ? "الرجاء تحديد نوع التعبئة"
+                : "Please select packing type",
+              ...toastOptions(isArabic, py)
+            });
+          });
+        }
+      }, 500);
       return;
     }
     cartAction("+");
@@ -219,7 +231,7 @@ export default () => {
           <ImageRender animatedObj={animatedObj} item={item} ref={ref} />
           <TitleRender isArabic={isArabic} item={item} />
           <PriceRender isArabic={isArabic} item={item} />
-          <View style={styles.boxWrapper}>
+          <View style={styles.boxWrapper} ref={cuttingRef}>
             <Text style={styles.heading(isArabic)}>
               {isArabic ? "طريقة القطع" : "Cutting Way"}
             </Text>
@@ -265,7 +277,7 @@ export default () => {
               ))}
             </RadioButton.Group>
           </View>
-          <View style={styles.boxWrapper}>
+          <View style={styles.boxWrapper} ref={packingRef}>
             <Text style={styles.heading(isArabic)}>
               {isArabic ? "التعبئة" : "Packing"}
             </Text>
@@ -321,7 +333,7 @@ export default () => {
               onPress={handleAddToCart}
             >
               <Text style={styles.btnText(isArabic)}>
-                {isArabic ? "أضف إلى السلة" : "ADD TO CART"}
+                {isArabic ? "أضف إلى العربة" : "ADD TO CART"}
               </Text>
             </TouchableOpacity>
           )}

@@ -4,6 +4,7 @@ import {
   Home,
   Cart,
   Search,
+  Checkout,
   Language,
   Categories,
   ItemDetail,
@@ -83,14 +84,14 @@ const CartStack = () => {
   return (
     <Navigator initialRouteName="CartScreen">
       <Screen component={Cart} name="CartScreen" options={StackOptions} />
-      <Screen component={ItemDetail} name="ItemDetail" options={StackOptions} />
+      <Screen component={Checkout} name="Checkout" options={StackOptions} />
     </Navigator>
   );
 };
 
 const HomeScreensArr = ["ItemDetail", "Category"];
 const SearchScreensArr = ["ItemDetail"];
-const CartScreensArr = [];
+const CartScreensArr = ["Checkout"];
 const CategoriesScreensArr = ["ItemDetail"];
 
 const getTabBarVisible = (route, array) => {
@@ -108,7 +109,7 @@ const getTabBarVisible = (route, array) => {
 
 const Tab = () => {
   return (
-    <TabNavigator initialRouteName="Cart" tabBarOptions={tabOptions}>
+    <TabNavigator initialRouteName="Home" tabBarOptions={tabOptions}>
       <TabScreen
         name="Home"
         component={HomeStack}
@@ -154,7 +155,7 @@ const Tab = () => {
 
 const OnBoardStack = () => {
   return (
-    <Navigator initialRouteName={"MainStack"}>
+    <Navigator initialRouteName={"OnBoardingCity"}>
       <Screen
         options={StackOptions}
         name="OnBoardingCity"

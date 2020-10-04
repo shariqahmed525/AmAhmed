@@ -24,7 +24,10 @@ export default ({
   rightIcon: RightIcon,
   component: Component
 }) => {
-  const { language, category } = useSelector(state => state.app);
+  const {
+    user: { cart },
+    app: { language, category }
+  } = useSelector(state => state);
   const isArabic = language === ARABIC;
   const memo = useMemo(
     () => (
@@ -107,7 +110,7 @@ export default ({
         )}
       </View>
     ),
-    [language, category]
+    [language, category, cart.length]
   );
   return memo;
 };

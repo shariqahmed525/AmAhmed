@@ -1,19 +1,29 @@
-import React, { useEffect, useState, useRef } from "react";
-import { SafeAreaView } from "react-navigation";
-import { View, StatusBar, ScrollView } from "react-native";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { SafeAreaView } from "react-navigation";
+import {
+  View,
+  Text,
+  StatusBar,
+  ScrollView,
+  TouchableOpacity
+} from "react-native";
 
 import styles from "./styles";
 import { theme } from "../../common/colors";
+import LottieView from "lottie-react-native";
 import Header from "../../components/Header";
-import { ANDROID, ARABIC } from "../../common/constants";
+import { MaterialIcons } from "../../common/icons";
 import CartListItem from "../../components/CartListItem";
+import { useNavigation } from "@react-navigation/native";
+import { ANDROID, ARABIC, WIDTH } from "../../common/constants";
 
 export default () => {
   const {
     app: { language },
     user: { cart }
   } = useSelector(state => state);
+  const navigation = useNavigation();
   const isArabic = language === ARABIC;
 
   useEffect(() => {
@@ -21,17 +31,19 @@ export default () => {
     ANDROID && StatusBar.setBackgroundColor(theme);
   }, []);
 
-  console.log(cart, " cart");
-
   const header = (
     <Header
       titleHeight={55}
       titleColor={"#fff"}
       titleFontSize={isArabic ? 28 : 30}
-      title={isArabic ? "السلة" : "Cart"}
       headerStyle={styles.header(isArabic)}
       titleAlign={isArabic ? "right" : "left"}
       titleFontFamily={isArabic ? "Cairo-Bold" : "Rubik-SemiBold"}
+      title={
+        isArabic
+          ? `العربة ${cart && cart.length > 0 ? `(${cart.length})` : ""}`
+          : `Cart ${cart && cart.length > 0 ? `(${cart.length})` : ""}`
+      }
     />
   );
 
@@ -39,11 +51,62 @@ export default () => {
     <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
       <View style={styles.container}>
         {header}
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {cart.map((v, i) => (
-            <CartListItem key={i} item={v} isArabic={isArabic} />
-          ))}
-        </ScrollView>
+        {cart && cart.length > 0 ? (
+          <>
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+              {cart.map((v, i) => (
+                <CartListItem key={i} item={v} isArabic={isArabic} />
+              ))}
+            </ScrollView>
+            <View style={styles.footer(isArabic)}>
+              <View style={styles.total}>
+                <Text style={styles.totalText(isArabic)}>
+                  {isArabic ? "مجموع" : "TOTAL"}
+                </Text>
+                <Text style={styles.totalPrice(isArabic)}>
+                  {!isArabic && (
+                    <Text style={styles.totalSign(isArabic)}>SAR </Text>
+                  )}
+                  190
+                  {isArabic && (
+                    <Text style={styles.totalSign(isArabic)}>ر.س </Text>
+                  )}
+                </Text>
+              </View>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={styles.btn(isArabic)}
+                onPress={() => navigation.navigate("Checkout")}
+              >
+                <Text style={styles.btnText(isArabic)}>
+                  {isArabic ? "الدفع" : "CHECKOUT"}
+                </Text>
+                <View style={styles.rotateIcon(isArabic)}>
+                  <MaterialIcons
+                    name="arrow-right-alt"
+                    size={35}
+                    color={"#fff"}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </>
+        ) : (
+          <View style={styles.emptyWrapper}>
+            <LottieView
+              loop
+              autoPlay
+              style={{ width: WIDTH * 0.75 }}
+              source={require("../../../assets/animations/emptycart.json")}
+            />
+            <Text style={styles.emptyText(isArabic)}>
+              {isArabic ? "فارغة" : "Empty"}
+            </Text>
+            <Text style={styles.emptySubText(isArabic)}>
+              {isArabic ? "العربة فارغة" : "The cart is empty"}
+            </Text>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );
