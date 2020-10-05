@@ -1,6 +1,8 @@
 #import "AppDelegate.h"
 
 #import <React/RCTBridge.h>
+#import <Firebase.h>
+#import <GoogleMaps/GoogleMaps.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
@@ -43,6 +45,12 @@ static void InitializeFlipper(UIApplication *application) {
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+  
+  [FIRApp configure];
+  
+  [GMSServices provideAPIKey:@"AIzaSyA3X_iki3k_oSwkrDp3zbLeTTKTAnlAX80"];
+  
   return YES;
 }
 

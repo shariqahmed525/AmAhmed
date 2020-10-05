@@ -9,7 +9,8 @@ import {
   Categories,
   ItemDetail,
   OnBoardingCity,
-  OnBoardingCategory
+  OnBoardingCategory,
+  ShowStores
 } from "../containers";
 import CartIcon from "../components/CartIcon";
 import { tabIconColor, theme } from "../common/colors";
@@ -82,16 +83,17 @@ const SearchStack = () => {
 
 const CartStack = () => {
   return (
-    <Navigator initialRouteName="CartScreen">
+    <Navigator initialRouteName="Checkout">
       <Screen component={Cart} name="CartScreen" options={StackOptions} />
       <Screen component={Checkout} name="Checkout" options={StackOptions} />
+      <Screen component={ShowStores} name="ShowStores" options={StackOptions} />
     </Navigator>
   );
 };
 
 const HomeScreensArr = ["ItemDetail", "Category"];
 const SearchScreensArr = ["ItemDetail"];
-const CartScreensArr = ["Checkout"];
+const CartScreensArr = ["Checkout", "ShowStores"];
 const CategoriesScreensArr = ["ItemDetail"];
 
 const getTabBarVisible = (route, array) => {
@@ -109,7 +111,7 @@ const getTabBarVisible = (route, array) => {
 
 const Tab = () => {
   return (
-    <TabNavigator initialRouteName="Home" tabBarOptions={tabOptions}>
+    <TabNavigator initialRouteName="Cart" tabBarOptions={tabOptions}>
       <TabScreen
         name="Home"
         component={HomeStack}
@@ -155,7 +157,7 @@ const Tab = () => {
 
 const OnBoardStack = () => {
   return (
-    <Navigator initialRouteName={"OnBoardingCity"}>
+    <Navigator initialRouteName={"MainStack"}>
       <Screen
         options={StackOptions}
         name="OnBoardingCity"

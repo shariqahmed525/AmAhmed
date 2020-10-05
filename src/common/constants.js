@@ -1,4 +1,8 @@
+import React from "react";
 import { Dimensions, Platform } from "react-native";
+
+import { theme } from "./colors";
+import { Fontisto, MaterialCommunityIcons } from "./icons";
 
 export const WIDTH = Dimensions.get("window").width;
 export const HEIGHT = Dimensions.get("window").height;
@@ -51,6 +55,74 @@ export const CATEGORIES = [
     code: "v/f",
     name: isArabic => (isArabic ? "الخضروات والفواكه‎" : "VEGETABLES & FRUITS"),
     icon: require("../../assets/images/vegetables.jpeg")
+  }
+];
+
+export const addresses = [
+  {
+    name: "Makkah",
+    icon: <Fontisto size={20} name="navigate" color={theme} />
+  },
+  {
+    name: "Madina",
+    icon: <Fontisto size={20} name="navigate" color={theme} />
+  },
+  {
+    name: "Jeddah",
+    icon: <Fontisto size={20} name="navigate" color={theme} />
+  },
+  {
+    name: "Home",
+    icon: <Fontisto size={20} name="navigate" color={theme} />
+  },
+  {
+    name: "Work",
+    icon: <Fontisto size={20} name="navigate" color={theme} />
+  }
+];
+
+export const payments = [
+  {
+    name: "Cash On Delivery",
+    icon: <MaterialCommunityIcons size={27} name="cash" color={theme} />
+  },
+  {
+    name: "Credit/Debit Card",
+    icon: (
+      <MaterialCommunityIcons
+        size={27}
+        color={theme}
+        name="credit-card-multiple-outline"
+      />
+    )
+  }
+];
+
+export const markers = [
+  {
+    name: "Azizyah Store",
+    lat: 21.555126,
+    lng: 39.194558
+  },
+  {
+    name: "Mishrifah Store",
+    lat: 21.540754,
+    lng: 39.200643
+  },
+  {
+    name: "Al-Rehab Store",
+    lat: 21.549775,
+    lng: 39.226393
+  },
+  {
+    name: "Al-Sharafeyah Store",
+    lat: 21.524067,
+    lng: 39.184507
+  },
+  {
+    name: "Al-Hamara'a Store",
+    lat: 21.526862,
+    lng: 39.164337
   }
 ];
 
