@@ -8,9 +8,13 @@ import {
   Language,
   Categories,
   ItemDetail,
+  NewAddress,
+  ShowStores,
+  PinLocation,
+  MyAddresses,
+  Verification,
   OnBoardingCity,
-  OnBoardingCategory,
-  ShowStores
+  OnBoardingCategory
 } from "../containers";
 import CartIcon from "../components/CartIcon";
 import { tabIconColor, theme } from "../common/colors";
@@ -51,6 +55,17 @@ const HomeStack = () => {
       <Screen component={Home} name="HomeScreen" options={StackOptions} />
       <Screen component={ItemDetail} name="ItemDetail" options={StackOptions} />
       <Screen
+        name="MyAddresses"
+        options={StackOptions}
+        component={MyAddresses}
+      />
+      <Screen name="NewAddress" options={StackOptions} component={NewAddress} />
+      <Screen
+        name="PinLocation"
+        options={StackOptions}
+        component={PinLocation}
+      />
+      <Screen
         name="Category"
         options={StackOptions}
         component={OnBoardingCategory}
@@ -83,17 +98,28 @@ const SearchStack = () => {
 
 const CartStack = () => {
   return (
-    <Navigator initialRouteName="Checkout">
+    <Navigator initialRouteName="CartScreen">
       <Screen component={Cart} name="CartScreen" options={StackOptions} />
       <Screen component={Checkout} name="Checkout" options={StackOptions} />
       <Screen component={ShowStores} name="ShowStores" options={StackOptions} />
+      <Screen
+        name="Verification"
+        options={StackOptions}
+        component={Verification}
+      />
     </Navigator>
   );
 };
 
-const HomeScreensArr = ["ItemDetail", "Category"];
+const HomeScreensArr = [
+  "ItemDetail",
+  "Category",
+  "Address",
+  "NewAddress",
+  "PinLocation"
+];
 const SearchScreensArr = ["ItemDetail"];
-const CartScreensArr = ["Checkout", "ShowStores"];
+const CartScreensArr = ["Checkout", "ShowStores", "Verification"];
 const CategoriesScreensArr = ["ItemDetail"];
 
 const getTabBarVisible = (route, array) => {
@@ -111,7 +137,7 @@ const getTabBarVisible = (route, array) => {
 
 const Tab = () => {
   return (
-    <TabNavigator initialRouteName="Cart" tabBarOptions={tabOptions}>
+    <TabNavigator initialRouteName="Home" tabBarOptions={tabOptions}>
       <TabScreen
         name="Home"
         component={HomeStack}

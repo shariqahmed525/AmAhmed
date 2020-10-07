@@ -60,34 +60,35 @@ export const CATEGORIES = [
 
 export const addresses = [
   {
-    name: "Makkah",
+    name: isArabic => (isArabic ? "مكه" : "Makkah"),
     icon: <Fontisto size={20} name="navigate" color={theme} />
   },
   {
-    name: "Madina",
+    name: isArabic => (isArabic ? "مدينة" : "Madina"),
     icon: <Fontisto size={20} name="navigate" color={theme} />
   },
   {
-    name: "Jeddah",
+    name: isArabic => (isArabic ? "جدة" : "Jeddah"),
     icon: <Fontisto size={20} name="navigate" color={theme} />
   },
   {
-    name: "Home",
+    name: isArabic => (isArabic ? "رئيسية" : "Home"),
     icon: <Fontisto size={20} name="navigate" color={theme} />
   },
   {
-    name: "Work",
+    name: isArabic => (isArabic ? "عمل" : "Work"),
     icon: <Fontisto size={20} name="navigate" color={theme} />
   }
 ];
 
 export const payments = [
   {
-    name: "Cash On Delivery",
+    name: isArabic => (isArabic ? "الدفع عند الاستلام" : "Cash On Delivery"),
     icon: <MaterialCommunityIcons size={27} name="cash" color={theme} />
   },
   {
-    name: "Credit/Debit Card",
+    name: isArabic =>
+      isArabic ? "بطاقة الائتمان / الخصم" : "Credit/Debit Card",
     icon: (
       <MaterialCommunityIcons
         size={27}
@@ -131,6 +132,12 @@ const GOATS_ITEMS = [
     id: "1",
     category: "g/s",
     hasCuttingWay: true,
+    hasHeadAndLegs: true,
+    hasPacking: true,
+    description: isArabic =>
+      isArabic
+        ? "من السهل جدًا أن نلاحظ أن الهندسة المعمارية التي يتم إجراؤها تبدو وكأنها طاردة للعيان ، وخطورة شبيهة بالحيوية ، وألام قيسم بياتي."
+        : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab esse eum enim illo maiores architecto obcaecati tenetur incidunt eos quasi repellendus quam, nostrum porro sunt quidem, ullam quisquam beatae quod.",
     subcategory: isArabic => (isArabic ? "الماعز والأغنام" : "GOAT / SHEEPS"),
     name: isArabic => (isArabic ? "الماعز" : "Goat"),
     price: 500,
@@ -143,6 +150,12 @@ const GOATS_ITEMS = [
     id: "2",
     category: "g/s",
     hasCuttingWay: true,
+    hasHeadAndLegs: true,
+    hasPacking: true,
+    description: isArabic =>
+      isArabic
+        ? "من السهل جدًا أن نلاحظ أن الهندسة المعمارية التي يتم إجراؤها تبدو وكأنها طاردة للعيان ، وخطورة شبيهة بالحيوية ، وألام قيسم بياتي."
+        : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab esse eum enim illo maiores architecto obcaecati tenetur incidunt eos quasi repellendus quam, nostrum porro sunt quidem, ullam quisquam beatae quod.",
     subcategory: isArabic => (isArabic ? "الماعز والأغنام" : "GOAT / SHEEPS"),
     name: isArabic => (isArabic ? "الأغنام" : "Sheeps"),
     price: 500.0,
@@ -155,6 +168,12 @@ const GOATS_ITEMS = [
     id: "3",
     category: "g/s",
     hasCuttingWay: true,
+    hasHeadAndLegs: true,
+    hasPacking: true,
+    description: isArabic =>
+      isArabic
+        ? "من السهل جدًا أن نلاحظ أن الهندسة المعمارية التي يتم إجراؤها تبدو وكأنها طاردة للعيان ، وخطورة شبيهة بالحيوية ، وألام قيسم بياتي."
+        : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab esse eum enim illo maiores architecto obcaecati tenetur incidunt eos quasi repellendus quam, nostrum porro sunt quidem, ullam quisquam beatae quod.",
     subcategory: isArabic => (isArabic ? "الماعز والأغنام" : "GOAT / SHEEPS"),
     name: isArabic => (isArabic ? "الماعز" : "Goat"),
     price: 500.0,
@@ -167,6 +186,12 @@ const GOATS_ITEMS = [
     id: "4",
     category: "g/s",
     hasCuttingWay: true,
+    hasHeadAndLegs: true,
+    hasPacking: true,
+    description: isArabic =>
+      isArabic
+        ? "من السهل جدًا أن نلاحظ أن الهندسة المعمارية التي يتم إجراؤها تبدو وكأنها طاردة للعيان ، وخطورة شبيهة بالحيوية ، وألام قيسم بياتي."
+        : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab esse eum enim illo maiores architecto obcaecati tenetur incidunt eos quasi repellendus quam, nostrum porro sunt quidem, ullam quisquam beatae quod.",
     subcategory: isArabic => (isArabic ? "الماعز والأغنام" : "GOAT / SHEEPS"),
     name: isArabic => (isArabic ? "الأغنام" : "Sheeps"),
     price: 500.0,
@@ -179,6 +204,12 @@ const GOATS_ITEMS = [
     id: "5",
     category: "g/s",
     hasCuttingWay: true,
+    hasHeadAndLegs: true,
+    hasPacking: true,
+    description: isArabic =>
+      isArabic
+        ? "من السهل جدًا أن نلاحظ أن الهندسة المعمارية التي يتم إجراؤها تبدو وكأنها طاردة للعيان ، وخطورة شبيهة بالحيوية ، وألام قيسم بياتي."
+        : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab esse eum enim illo maiores architecto obcaecati tenetur incidunt eos quasi repellendus quam, nostrum porro sunt quidem, ullam quisquam beatae quod.",
     subcategory: isArabic => (isArabic ? "الماعز والأغنام" : "GOAT / SHEEPS"),
     name: isArabic => (isArabic ? "الماعز" : "Goat"),
     price: 500.0,
@@ -191,6 +222,12 @@ const GOATS_ITEMS = [
     id: "6",
     category: "g/s",
     hasCuttingWay: true,
+    hasHeadAndLegs: true,
+    hasPacking: true,
+    description: isArabic =>
+      isArabic
+        ? "من السهل جدًا أن نلاحظ أن الهندسة المعمارية التي يتم إجراؤها تبدو وكأنها طاردة للعيان ، وخطورة شبيهة بالحيوية ، وألام قيسم بياتي."
+        : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab esse eum enim illo maiores architecto obcaecati tenetur incidunt eos quasi repellendus quam, nostrum porro sunt quidem, ullam quisquam beatae quod.",
     subcategory: isArabic => (isArabic ? "الماعز والأغنام" : "GOAT / SHEEPS"),
     name: isArabic => (isArabic ? "الأغنام" : "Sheeps"),
     price: 500.0,
@@ -210,6 +247,10 @@ const MEAT_ITEMS = [
     price: 500.0,
     offerPrice: 0,
     inStock: true,
+    description: isArabic =>
+      isArabic
+        ? "من السهل جدًا أن نلاحظ أن الهندسة المعمارية التي يتم إجراؤها تبدو وكأنها طاردة للعيان ، وخطورة شبيهة بالحيوية ، وألام قيسم بياتي."
+        : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab esse eum enim illo maiores architecto obcaecati tenetur incidunt eos quasi repellendus quam, nostrum porro sunt quidem, ullam quisquam beatae quod.",
     quantityType: isArabic => (isArabic ? "كيلو" : "Kilo"),
     image: require("../../assets/images/items/m1.jpeg")
   },

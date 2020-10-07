@@ -106,7 +106,7 @@ export default ({ navigation, drawerClose }) => {
                 isArabic={isArabic}
                 text={isArabic ? "عناويني" : "My Addresses"}
                 onPress={() => {
-                  navigation.navigate("Address", {
+                  navigation.navigate("MyAddresses", {
                     myAddresses: true
                   });
                   setTimeout(() => {

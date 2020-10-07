@@ -66,7 +66,7 @@ export default ({ item, isArabic }) => {
   };
 
   const handleItemPress = () => {
-    if (item.hasCuttingWay) {
+    if (item.description) {
       navigation.navigate("ItemDetail", {
         item
       });

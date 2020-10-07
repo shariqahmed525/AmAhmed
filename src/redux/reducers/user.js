@@ -1,5 +1,8 @@
 import {
   CLEAR_CART,
+  DELETE_ADDRESS,
+  SAVE_ADDRESS,
+  UPDATE_ADDRESS,
   SAVE_USER_DATA,
   CLEAR_USER_DATA,
   ADD_ITEM_TO_CART
@@ -7,6 +10,7 @@ import {
 
 const initialState = {
   cart: [],
+  addresses: [],
   userData: null
 };
 
@@ -16,6 +20,21 @@ export default (state = initialState, { type, payload }) => {
       return {
         ...state,
         userData: payload
+      };
+    case SAVE_ADDRESS:
+      return {
+        ...state,
+        addresses: [...state.addresses, payload]
+      };
+    case UPDATE_ADDRESS:
+      state.addresses[payload.index] = payload.data;
+      return {
+        ...state
+      };
+    case DELETE_ADDRESS:
+      state.addresses.splice(payload, 1);
+      return {
+        ...state
       };
     case CLEAR_USER_DATA:
       return {

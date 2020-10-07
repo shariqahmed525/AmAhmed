@@ -83,9 +83,9 @@ export default () => {
                 </Text>
                 <View style={styles.rotateIcon(isArabic)}>
                   <MaterialIcons
-                    name="arrow-right-alt"
                     size={35}
                     color={"#fff"}
+                    name="arrow-right-alt"
                   />
                 </View>
               </TouchableOpacity>

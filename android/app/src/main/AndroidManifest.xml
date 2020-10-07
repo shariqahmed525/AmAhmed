@@ -2,7 +2,11 @@
   package="amahmed.com.amahmed">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>  
 
     <application
       android:name=".MainApplication"
@@ -17,6 +21,15 @@
         android:name="com.google.firebase.messaging.default_notification_icon" 
         android:resource="@mipmap/ic_notification"
       />
+
+       <meta-data 
+        android:name="com.google.android.geo.API_KEY" 
+        android:value="AIzaSyA3X_iki3k_oSwkrDp3zbLeTTKTAnlAX80"
+      />  
+
+      <meta-data
+        android:name="com.google.android.gms.wallet.api.enabled"
+        android:value="true" />
 
       <activity
           android:name=".SplashActivity"

@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
   }),
   bottomView: {
     backgroundColor: "#fff",
-    borderWidth: 1,
     borderColor: "#fff",
+    borderWidth: 1,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -202,6 +202,11 @@ const styles = StyleSheet.create({
     shadowRadius: 1.0,
     elevation: 1,
     flexDirection: isArabic ? "row-reverse" : "row"
+  }),
+  description: isArabic => ({
+    fontSize: 16,
+    color: black,
+    textAlign: isArabic ? "right" : "left"
   })
 });
 

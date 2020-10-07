@@ -25,39 +25,9 @@ import {
   CUTTINGWAY,
   HEAD_AND_LEGS
 } from "../../common/constants";
-import { Toast } from "native-base";
+import { ShowToastWithScroll } from "../../common/functions";
 
 let timeOut = null;
-
-const toastOptions = (isArabic, top) => ({
-  style: {
-    transform: [
-      {
-        scaleX: isArabic ? -1 : 1
-      }
-    ],
-    top: top - 85
-  },
-  textStyle: {
-    transform: [
-      {
-        rotateY: isArabic ? "180deg" : "0deg"
-      }
-    ],
-    textAlign: isArabic ? "right" : "left"
-  },
-  buttonTextStyle: {
-    transform: [
-      {
-        rotateY: isArabic ? "180deg" : "0deg"
-      }
-    ]
-  },
-  buttonText: isArabic ? "حسنا" : "Okay",
-  type: "danger",
-  position: "top",
-  duration: 2000
-});
 
 const ImageRender = forwardRef(({ animatedObj, item }, ref) => (
   <>
@@ -182,34 +152,26 @@ export default () => {
   };
 
   const handleAddToCart = () => {
-    if (!checked1) {
-      scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
-      if (cuttingRef && cuttingRef.current) {
-        cuttingRef.current.measure((fx, fy, width, height, px, py) => {
-          Toast.show({
-            text: isArabic
-              ? "الرجاء تحديد طريقة القطع"
-              : "Please select cutting way",
-            ...toastOptions(isArabic, py)
-          });
-        });
-      }
+    if (item.hasCuttingWay && !checked1) {
+      ShowToastWithScroll(
+        scrollRef,
+        0,
+        false,
+        cuttingRef,
+        isArabic ? "الرجاء تحديد طريقة القطع" : "Please select cutting way",
+        isArabic
+      );
       return;
     }
-    if (!checked3) {
-      scrollRef.current.scrollToEnd({ animated: true });
-      setTimeout(() => {
-        if (packingRef && packingRef.current) {
-          packingRef.current.measure((fx, fy, width, height, px, py) => {
-            Toast.show({
-              text: isArabic
-                ? "الرجاء تحديد نوع التعبئة"
-                : "Please select packing type",
-              ...toastOptions(isArabic, py)
-            });
-          });
-        }
-      }, 500);
+    if (item.hasPacking && !checked3) {
+      ShowToastWithScroll(
+        scrollRef,
+        0,
+        true,
+        packingRef,
+        isArabic ? "الرجاء تحديد نوع التعبئة" : "Please select packing type",
+        isArabic
+      );
       return;
     }
     cartAction("+");
@@ -231,75 +193,96 @@ export default () => {
           <ImageRender animatedObj={animatedObj} item={item} ref={ref} />
           <TitleRender isArabic={isArabic} item={item} />
           <PriceRender isArabic={isArabic} item={item} />
-          <View style={styles.boxWrapper} ref={cuttingRef}>
-            <Text style={styles.heading(isArabic)}>
-              {isArabic ? "طريقة القطع" : "Cutting Way"}
-            </Text>
-            <RadioButton.Group
-              value={checked1}
-              onValueChange={value => handleCuttingWay(value)}
-            >
-              {CUTTINGWAY.map((v, i) => (
-                <RadioButton.Item
-                  key={i}
-                  style={styles.radioItem(isArabic)}
-                  labelStyle={{
-                    color: "#111111",
-                    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
-                  }}
-                  value={v.id}
-                  color={theme}
-                  label={v.name(isArabic)}
-                />
-              ))}
-            </RadioButton.Group>
-          </View>
-          <View style={styles.boxWrapper}>
-            <Text style={styles.heading(isArabic)}>
-              {isArabic ? "الرأس والساقين" : "Head & Legs"}
-            </Text>
-            <RadioButton.Group
-              value={checked2}
-              onValueChange={value => handleHeadAndLegs(value)}
-            >
-              {HEAD_AND_LEGS.map((v, i) => (
-                <RadioButton.Item
-                  key={i}
-                  style={styles.radioItem(isArabic)}
-                  labelStyle={{
-                    color: "#111111",
-                    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
-                  }}
-                  value={v.id}
-                  color={theme}
-                  label={v.name(isArabic)}
-                />
-              ))}
-            </RadioButton.Group>
-          </View>
-          <View style={styles.boxWrapper} ref={packingRef}>
-            <Text style={styles.heading(isArabic)}>
-              {isArabic ? "التعبئة" : "Packing"}
-            </Text>
-            <RadioButton.Group
-              value={checked3}
-              onValueChange={value => handlePacking(value)}
-            >
-              {PACKING.map((v, i) => (
-                <RadioButton.Item
-                  key={i}
-                  style={styles.radioItem(isArabic)}
-                  labelStyle={{
-                    color: "#111111",
-                    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
-                  }}
-                  value={v.id}
-                  color={theme}
-                  label={v.name(isArabic)}
-                />
-              ))}
-            </RadioButton.Group>
-          </View>
+          {item.hasCuttingWay && (
+            <View style={styles.boxWrapper} ref={cuttingRef}>
+              <Text style={styles.heading(isArabic)}>
+                {isArabic ? "طريقة القطع" : "Cutting Way"}
+              </Text>
+              <RadioButton.Group
+                value={checked1}
+                onValueChange={value => handleCuttingWay(value)}
+              >
+                {CUTTINGWAY.map((v, i) => (
+                  <RadioButton.Item
+                    key={i}
+                    style={styles.radioItem(isArabic)}
+                    labelStyle={{
+                      color: "#111111",
+                      fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
+                    }}
+                    value={v.id}
+                    color={theme}
+                    label={v.name(isArabic)}
+                  />
+                ))}
+              </RadioButton.Group>
+            </View>
+          )}
+          {item.hasHeadAndLegs && (
+            <View style={styles.boxWrapper}>
+              <Text style={styles.heading(isArabic)}>
+                {isArabic ? "الرأس والساقين" : "Head & Legs"}
+              </Text>
+              <RadioButton.Group
+                value={checked2}
+                onValueChange={value => handleHeadAndLegs(value)}
+              >
+                {HEAD_AND_LEGS.map((v, i) => (
+                  <RadioButton.Item
+                    key={i}
+                    style={styles.radioItem(isArabic)}
+                    labelStyle={{
+                      color: "#111111",
+                      fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
+                    }}
+                    value={v.id}
+                    color={theme}
+                    label={v.name(isArabic)}
+                  />
+                ))}
+              </RadioButton.Group>
+            </View>
+          )}
+          {item.hasPacking && (
+            <View style={styles.boxWrapper} ref={packingRef}>
+              <Text style={styles.heading(isArabic)}>
+                {isArabic ? "التعبئة" : "Packing"}
+              </Text>
+              <RadioButton.Group
+                value={checked3}
+                onValueChange={value => handlePacking(value)}
+              >
+                {PACKING.map((v, i) => (
+                  <RadioButton.Item
+                    key={i}
+                    style={styles.radioItem(isArabic)}
+                    labelStyle={{
+                      color: "#111111",
+                      fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
+                    }}
+                    value={v.id}
+                    color={theme}
+                    label={v.name(isArabic)}
+                  />
+                ))}
+              </RadioButton.Group>
+            </View>
+          )}
+          {item.description && (
+            <>
+              <Text
+                style={{
+                  ...styles.heading(isArabic),
+                  marginTop: isArabic ? 7 : 15
+                }}
+              >
+                {isArabic ? "التعبئة" : "Description"}
+              </Text>
+              <Text style={styles.description(isArabic)}>
+                {item.description(isArabic)}
+              </Text>
+            </>
+          )}
         </ScrollView>
         <View style={styles.bottomView}>
           {findItem ? (
@@ -327,16 +310,16 @@ export default () => {
               </View>
             </View>
           ) : (
-            <TouchableOpacity
-              style={styles.btn}
-              activeOpacity={0.7}
-              onPress={handleAddToCart}
-            >
-              <Text style={styles.btnText(isArabic)}>
-                {isArabic ? "أضف إلى العربة" : "ADD TO CART"}
-              </Text>
-            </TouchableOpacity>
-          )}
+              <TouchableOpacity
+                style={styles.btn}
+                activeOpacity={0.7}
+                onPress={handleAddToCart}
+              >
+                <Text style={styles.btnText(isArabic)}>
+                  {isArabic ? "أضف إلى العربة" : "ADD TO CART"}
+                </Text>
+              </TouchableOpacity>
+            )}
         </View>
       </View>
     </SafeAreaView>

@@ -54,6 +54,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingTop: isArabic ? 5 : 15,
     justifyContent: "space-between",
+    borderColor: "#fff",
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
   total: {
@@ -85,6 +95,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 15,
     backgroundColor: theme,
+    marginTop: isArabic ? 10 : 0,
     justifyContent: "space-between",
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
