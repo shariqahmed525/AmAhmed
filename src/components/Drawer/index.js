@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import styles from "./styles";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Share } from "react-native";
 import {
   FontAwesome5,
   AntDesign,
@@ -12,9 +12,10 @@ import {
 } from "../../common/icons";
 import Alert from "../Alert";
 import { SafeAreaView } from "react-navigation";
-import { gray } from "../../common/colors";
-import { useSelector } from "react-redux";
+import { gray, lightTheme } from "../../common/colors";
+import { useDispatch, useSelector } from "react-redux";
 import { ARABIC } from "../../common/constants";
+import { clearUserData } from "../../redux/actions/user";
 
 const List = ({ onPress, text, icon, isArabic }) => (
   <TouchableOpacity
@@ -28,6 +29,7 @@ const List = ({ onPress, text, icon, isArabic }) => (
 );
 
 export default ({ navigation, drawerClose }) => {
+  const dispatch = useDispatch();
   const {
     user: { userData },
     app: { language }
@@ -36,7 +38,6 @@ export default ({ navigation, drawerClose }) => {
   const [alert, setAlert] = useState({
     error: false,
     alert: false,
-    btnText: "OK",
     alertImg: "",
     alertText: "",
     alertTitle: ""
@@ -46,14 +47,48 @@ export default ({ navigation, drawerClose }) => {
     setAlert({
       error: false,
       alert: false,
-      btnText: "OK",
       alertImg: "",
       alertText: "",
       alertTitle: ""
     });
   };
 
-  const confirmation = () => {};
+  const confirmation = () => {
+    drawerClose();
+    setAlert({
+      alert: true,
+      error: false,
+      btnPress: logout,
+      alertText: isArabic
+        ? "هل أنت متأكد من تسجيل الخروج من هذا؟"
+        : "Are you sure to logout from this?"
+    });
+  };
+
+  const logout = () => {
+    dispatch(clearUserData());
+    alertClose();
+  };
+
+  const handleListItem = route => {
+    navigation.navigate(route);
+    setTimeout(() => {
+      drawerClose();
+    }, 300);
+  };
+
+  const onShare = async () => {
+    try {
+      await Share.share({
+        title: "AmAhmed's Share",
+        message: "Please install this app and stay safe"
+        // url:
+        //   "https://play.google.com/store/apps/details?id=nic.goi.aarogyasetu&hl=en"
+      });
+    } catch (error) {
+      console.log("error ", error);
+    }
+  };
 
   const memo = useMemo(
     () => (
@@ -65,12 +100,15 @@ export default ({ navigation, drawerClose }) => {
           error={alert.error}
           alert={alert.alert}
           img={alert.alertImg}
-          cancelText={"Cancel"}
+          btnColor={lightTheme}
           text={alert.alertText}
-          btnText={alert.btnText}
           title={alert.alertTitle}
           onCancelPress={alertClose}
+          btnText={isArabic ? "حسنا" : "OK"}
+          cancelText={isArabic ? "إلغاء" : "Cancel"}
+          onBtnPress={alert.btnPress || alertClose}
         />
+
         <View style={styles.main(isArabic)}>
           <View style={styles.container(isArabic)}>
             <TouchableOpacity
@@ -86,7 +124,7 @@ export default ({ navigation, drawerClose }) => {
                   ellipsizeMode="tail"
                   style={styles.profileName(isArabic)}
                 >
-                  {isArabic ? "حساب زائر" : "Guest User"}
+                  {isArabic ? "عم احمد" : "AmAhmed"}
                 </Text>
                 <Text style={styles.listText(isArabic, false)}>
                   {isArabic ? "الملف الشخصي" : "Profile"}
@@ -99,20 +137,13 @@ export default ({ navigation, drawerClose }) => {
               <List
                 isArabic={isArabic}
                 text={isArabic ? "طلباتي" : "My Orders"}
-                onPress={() => navigation.navigate("MyOrdersScreen")}
+                onPress={() => handleListItem("MyOrders")}
                 icon={<MaterialIcons size={25} color={gray} name="restore" />}
               />
               <List
                 isArabic={isArabic}
                 text={isArabic ? "عناويني" : "My Addresses"}
-                onPress={() => {
-                  navigation.navigate("MyAddresses", {
-                    myAddresses: true
-                  });
-                  setTimeout(() => {
-                    drawerClose();
-                  }, 300);
-                }}
+                onPress={() => handleListItem("MyAddresses")}
                 icon={
                   <MaterialCommunityIcons
                     size={25}
@@ -124,12 +155,7 @@ export default ({ navigation, drawerClose }) => {
               <List
                 isArabic={isArabic}
                 text={isArabic ? "لغة" : "Language"}
-                onPress={() => {
-                  navigation.navigate("Language");
-                  setTimeout(() => {
-                    drawerClose();
-                  }, 300);
-                }}
+                onPress={() => handleListItem("Language")}
                 icon={
                   <MaterialCommunityIcons
                     size={25}
@@ -143,7 +169,7 @@ export default ({ navigation, drawerClose }) => {
                 text={isArabic ? "شارك التطبيق" : "Share App"}
                 onPress={() => {
                   drawerClose();
-                  setTimeout(() => {}, 0);
+                  onShare();
                 }}
                 icon={
                   <Icon name="share-social-outline" size={25} color={gray} />
@@ -152,27 +178,28 @@ export default ({ navigation, drawerClose }) => {
               <List
                 isArabic={isArabic}
                 text={isArabic ? "معلومات عنا" : "About Us"}
-                onPress={() => navigation.navigate("AboutUs")}
+                onPress={() => handleListItem("AboutUs")}
                 icon={<Entypo name="info" size={20} color={gray} />}
               />
               <List
                 isArabic={isArabic}
                 text={isArabic ? "اتصل بنا" : "Contact Us"}
-                onPress={() => navigation.navigate("ContactUs")}
+                onPress={() => handleListItem("ContactUs")}
                 icon={<Feather name="message-circle" size={20} color={gray} />}
               />
             </View>
 
             <View style={[styles.line, { height: 0.5 }]} />
-
-            <View style={[styles.listWrapper, styles.bottomIcons]}>
-              <List
-                isArabic={isArabic}
-                onPress={confirmation}
-                text={isArabic ? "تسجيل خروج" : "Logout"}
-                icon={<AntDesign name="poweroff" size={20} color={gray} />}
-              />
-            </View>
+            {userData && (
+              <View style={[styles.listWrapper, styles.bottomIcons]}>
+                <List
+                  isArabic={isArabic}
+                  onPress={confirmation}
+                  text={isArabic ? "تسجيل خروج" : "Logout"}
+                  icon={<AntDesign name="poweroff" size={20} color={gray} />}
+                />
+              </View>
+            )}
           </View>
         </View>
       </SafeAreaView>

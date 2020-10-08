@@ -25,15 +25,15 @@ export const isIphoneXorAbove = () => {
   );
 };
 
-export const removePreviousRoute = (
+export const removePreviousRoutes = (
   navigation,
   route,
-  removeRoute,
+  removeRoute = [],
   params = {}
 ) => {
   navigation.navigate(route, params);
   navigation.dispatch(state => {
-    const routes = state.routes.filter(r => r.name !== removeRoute);
+    const routes = state.routes.filter(r => !removeRoute.includes(r.name));
     return CommonActions.reset({
       ...state,
       routes,
@@ -92,16 +92,23 @@ export const ShowToastWithScroll = (
       scrollRef.current.scrollTo({ x: 0, y, animated: true });
     }
   }
-  setTimeout(() => {
-    if (componentRef && componentRef.current) {
-      componentRef.current.measure((fx, fy, width, height, px, py) => {
-        Toast.show({
-          text,
-          ...toastOptions(isArabic, py)
+  if (componentRef) {
+    setTimeout(() => {
+      if (componentRef && componentRef.current) {
+        componentRef.current.measure((fx, fy, width, height, px, py) => {
+          Toast.show({
+            text,
+            ...toastOptions(isArabic, py)
+          });
         });
-      });
-    }
-  }, 500);
+      }
+    }, 500);
+  } else {
+    Toast.show({
+      text,
+      ...toastOptions(isArabic, 0)
+    });
+  }
   return;
 };
 
@@ -112,13 +119,13 @@ export const convertSecondstoTime = sec => {
   let timeString =
     hours > 0
       ? hours.toString().padStart(2, "0") +
-      ":" +
-      minutes.toString().padStart(2, "0") +
-      ":" +
-      seconds.toString().padStart(2, "0")
+        ":" +
+        minutes.toString().padStart(2, "0") +
+        ":" +
+        seconds.toString().padStart(2, "0")
       : minutes.toString().padStart(2, "0") +
-      ":" +
-      seconds.toString().padStart(2, "0");
+        ":" +
+        seconds.toString().padStart(2, "0");
   return timeString;
 };
 

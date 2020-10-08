@@ -29,12 +29,12 @@ export const deleteAddressAction = payload => {
   };
 };
 
-export const updateAddressAction = (data, index) => {
+export const updateAddressAction = (data, id) => {
   return {
     type: UPDATE_ADDRESS,
     payload: {
       data,
-      index
+      id
     }
   };
 };

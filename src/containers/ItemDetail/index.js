@@ -23,9 +23,10 @@ import {
   PACKING,
   CATEGORIES,
   CUTTINGWAY,
+  ERROR_IMG,
   HEAD_AND_LEGS
 } from "../../common/constants";
-import { ShowToastWithScroll } from "../../common/functions";
+import Alert from "../../components/Alert";
 
 let timeOut = null;
 
@@ -89,6 +90,13 @@ export default () => {
   const scrollRef = useRef(null);
   const cuttingRef = useRef(null);
   const packingRef = useRef(null);
+  const [alert, setAlert] = useState({
+    alert: false,
+    error: false,
+    alertImg: "",
+    alertText: "",
+    alertTitle: ""
+  });
   const [checked1, setChecked1] = useState(null);
   const [checked2, setChecked2] = useState(1);
   const [checked3, setChecked3] = useState(null);
@@ -151,27 +159,40 @@ export default () => {
     setChecked3(id);
   };
 
+  const alertClose = () =>
+    setAlert({
+      alert: false,
+      error: false,
+      alertImg: "",
+      alertText: "",
+      alertTitle: ""
+    });
+
   const handleAddToCart = () => {
     if (item.hasCuttingWay && !checked1) {
-      ShowToastWithScroll(
-        scrollRef,
-        0,
-        false,
-        cuttingRef,
-        isArabic ? "الرجاء تحديد طريقة القطع" : "Please select cutting way",
-        isArabic
-      );
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "الرجاء تحديد طريقة القطع"
+          : "Please select cutting way"
+      });
+      scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
       return;
     }
     if (item.hasPacking && !checked3) {
-      ShowToastWithScroll(
-        scrollRef,
-        0,
-        true,
-        packingRef,
-        isArabic ? "الرجاء تحديد نوع التعبئة" : "Please select packing type",
-        isArabic
-      );
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "الرجاء تحديد نوع التعبئة"
+          : "Please select packing type"
+      });
+      scrollRef.current.scrollToEnd({ animated: true });
       return;
     }
     cartAction("+");
@@ -185,6 +206,15 @@ export default () => {
           onBackPress={handleBack}
           title={category.name(isArabic)}
           titleAlign={isArabic ? "right" : "left"}
+        />
+        <Alert
+          error={alert.error}
+          alert={alert.alert}
+          img={alert.alertImg}
+          text={alert.alertText}
+          title={alert.alertTitle}
+          btnText={isArabic ? "حسنا" : "OK"}
+          onBtnPress={alert.btnPress || alertClose}
         />
         <ScrollView
           ref={scrollRef}
@@ -310,16 +340,16 @@ export default () => {
               </View>
             </View>
           ) : (
-              <TouchableOpacity
-                style={styles.btn}
-                activeOpacity={0.7}
-                onPress={handleAddToCart}
-              >
-                <Text style={styles.btnText(isArabic)}>
-                  {isArabic ? "أضف إلى العربة" : "ADD TO CART"}
-                </Text>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              style={styles.btn}
+              activeOpacity={0.7}
+              onPress={handleAddToCart}
+            >
+              <Text style={styles.btnText(isArabic)}>
+                {isArabic ? "أضف إلى العربة" : "ADD TO CART"}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </SafeAreaView>

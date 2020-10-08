@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { backgroundColor, theme, darkGray, black } from "../../common/colors";
-import { CONTAINER_PADDING, WIDTH } from "../../common/constants";
+import { CONTAINER_PADDING, HEIGHT, WIDTH } from "../../common/constants";
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
@@ -97,7 +97,8 @@ const styles = StyleSheet.create({
   }),
   mapBox: isArabic => ({
     width: "100%",
-    height: 250,
+    height: HEIGHT * 0.35,
+    maxHeight: 300,
     borderRadius: 4,
     backgroundColor: "#ffffff",
     borderColor: "#fff",
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
-  secondaryText: isArabic => ({
+  secondaryWrapperText: isArabic => ({
     color: black,
     fontSize: 16,
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
@@ -258,6 +259,7 @@ const styles = StyleSheet.create({
   }),
   secondaryText: (isArabic, bold) => ({
     color: darkGray,
+    maxWidth: "39%",
     textAlign: isArabic ? "right" : "left",
     fontSize: isArabic ? WIDTH * 0.042 : WIDTH * 0.04,
     fontFamily: isArabic

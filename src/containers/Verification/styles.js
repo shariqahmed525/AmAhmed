@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   secondLineDesc: isArabic => ({
     width: "100%",
     alignItems: "center",
-    marginTop: isArabic ? 0 : -12,
+    marginTop: isArabic ? 0 : -14,
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
   resend: isArabic => ({

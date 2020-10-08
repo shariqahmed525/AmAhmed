@@ -14,6 +14,14 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 10
   },
+  activityLoader: {
+    zIndex: 1,
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    position: "absolute",
+    justifyContent: "center"
+  },
   heading: isArabic => ({
     color: theme,
     marginVertical: 10,

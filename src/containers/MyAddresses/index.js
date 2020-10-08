@@ -3,7 +3,8 @@ import { SafeAreaView } from "react-navigation";
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, TouchableOpacity, StatusBar } from "react-native";
 import styles from "./styles";
-import { theme } from "../../common/colors";
+import { lightTheme, theme } from "../../common/colors";
+import Alert from "../../components/Alert";
 import { ANDROID, ARABIC, WIDTH } from "../../common/constants";
 import Header from "../../components/Header";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,27 +12,38 @@ import LottieView from "lottie-react-native";
 import { Text as NativeBaseText } from "native-base";
 import { EvilIcons, Feather } from "../../common/icons";
 import { FAB } from "react-native-paper";
+import { deleteAddressAction } from "../../redux/actions/user";
 
-const ListItem = ({ isArabic }) => (
+const ListItem = ({ isArabic, data, navigation, onDeletePress }) => (
   <View icon style={styles.listItem(isArabic)}>
     <View style={styles.listItemLeft(isArabic)}>
       <EvilIcons size={25} color={theme} name="location" />
     </View>
     <View style={styles.listItemCenter(isArabic)}>
-      <NativeBaseText style={styles.listTitle(isArabic)}>Home</NativeBaseText>
-      <NativeBaseText style={styles.listSubTitle(isArabic)}>
-        Jeddah
+      <NativeBaseText style={styles.listTitle(isArabic)}>
+        {data.name}
       </NativeBaseText>
-      <NativeBaseText note numberOfLines={1}>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde cupiditate
-        minus rem debitis delectus tempore sunt esse beatae voluptatibus
-        perspiciatis incidunt, aspernatur quo aliquam. Ullam rerum provident
-        consequuntur sit exercitationem!
+      <NativeBaseText style={styles.listSubTitle(isArabic)}>
+        {data.city}
+      </NativeBaseText>
+      <NativeBaseText
+        note
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={styles.noteText(isArabic)}
+      >
+        {data.address}
       </NativeBaseText>
     </View>
     <View style={styles.listItemRight(isArabic)}>
       <TouchableOpacity
         activeOpacity={0.7}
+        onPress={() => {
+          navigation.navigate("PinLocation", {
+            ...data,
+            isEdit: true
+          });
+        }}
         style={{
           transform: [
             {
@@ -47,7 +59,10 @@ const ListItem = ({ isArabic }) => (
           style={{ paddingHorizontal: 10 }}
         />
       </TouchableOpacity>
-      <TouchableOpacity activeOpacity={0.7}>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => onDeletePress(data.id)}
+      >
         <EvilIcons size={25} color={theme} name="trash" />
       </TouchableOpacity>
     </View>
@@ -57,6 +72,13 @@ const ListItem = ({ isArabic }) => (
 export default () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const [alert, setAlert] = useState({
+    alert: false,
+    error: false,
+    alertImg: "",
+    alertText: "",
+    alertTitle: ""
+  });
   const [loading, setLoading] = useState(true);
   const {
     app: { language },
@@ -76,6 +98,31 @@ export default () => {
     navigation.goBack();
   };
 
+  const handleConfirm = id => {
+    setAlert({
+      alert: true,
+      error: false,
+      btnPress: () => onDeletePress(id),
+      alertText: isArabic
+        ? "هل أنت متأكد من حذف العنوان؟"
+        : "Are you sure to delete the address?"
+    });
+  };
+
+  const alertClose = () =>
+    setAlert({
+      alert: false,
+      error: false,
+      alertImg: "",
+      alertText: "",
+      alertTitle: ""
+    });
+
+  const onDeletePress = id => {
+    dispatch(deleteAddressAction(id));
+    alertClose();
+  };
+
   return (
     <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
       <View style={styles.container}>
@@ -84,6 +131,18 @@ export default () => {
           onBackPress={handleBack}
           titleAlign={isArabic ? "right" : "left"}
           title={isArabic ? "عناويني" : "My Addresses"}
+        />
+        <Alert
+          error={alert.error}
+          alert={alert.alert}
+          img={alert.alertImg}
+          btnColor={lightTheme}
+          text={alert.alertText}
+          title={alert.alertTitle}
+          onCancelPress={alertClose}
+          btnText={isArabic ? "حسنا" : "OK"}
+          cancelText={isArabic ? "إلغاء" : "Cancel"}
+          onBtnPress={alert.btnPress || alertClose}
         />
         <FAB
           icon="plus"
@@ -119,8 +178,14 @@ export default () => {
           </View>
         ) : (
           <View style={styles.listWrapper}>
-            {[0, 1, 2, 3].map((v, i) => (
-              <ListItem key={i} isArabic={isArabic} />
+            {addresses.map((v, i) => (
+              <ListItem
+                key={i}
+                data={v}
+                isArabic={isArabic}
+                navigation={navigation}
+                onDeletePress={handleConfirm}
+              />
             ))}
           </View>
         )}

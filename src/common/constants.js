@@ -13,6 +13,7 @@ export const ARABIC = "ar-sa";
 export const ENGLISH = "en";
 
 export const ERROR_IMG = require("../../assets/images/error.png");
+export const THANKS_IMG = require("../../assets/images/thanks.jpg");
 
 export const LANGUAGES = [
   {
@@ -641,3 +642,5 @@ export const VEGETABLES_FRUITS_SLIDER = [
   require("../../assets/images/sliders/v6.jpeg"),
   require("../../assets/images/sliders/v7.jpeg")
 ];
+
+export const MAP_API_KEY = "AIzaSyA3X_iki3k_oSwkrDp3zbLeTTKTAnlAX80";

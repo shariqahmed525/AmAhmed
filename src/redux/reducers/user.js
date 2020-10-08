@@ -27,14 +27,18 @@ export default (state = initialState, { type, payload }) => {
         addresses: [...state.addresses, payload]
       };
     case UPDATE_ADDRESS:
-      state.addresses[payload.index] = payload.data;
+      const findAddressIndex = state.addresses.findIndex(
+        o => o.id === payload.id
+      );
+      state.addresses[findAddressIndex] = payload.data;
       return {
         ...state
       };
     case DELETE_ADDRESS:
-      state.addresses.splice(payload, 1);
+      const addresses = state.addresses.filter(o => o.id !== payload);
       return {
-        ...state
+        ...state,
+        addresses
       };
     case CLEAR_USER_DATA:
       return {

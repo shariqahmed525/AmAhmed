@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-navigation";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -17,23 +17,43 @@ import { useDispatch, useSelector } from "react-redux";
 import MapView from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
 import { ANDROID, ARABIC, CITIES } from "../../common/constants";
-import { ShowToastWithScroll } from "../../common/functions";
+import { ERROR_IMG } from "../../common/constants";
+import Alert from "../../components/Alert";
 
 export default () => {
   const dispatch = useDispatch();
   const ref = useRef(null);
+  const { params } = useRoute();
   const navigation = useNavigation();
   const [coords, setCoords] = useState(null);
+  const [alert, setAlert] = useState({
+    alert: false,
+    error: false,
+    alertImg: "",
+    alertText: "",
+    alertTitle: ""
+  });
   const [selectedCity, setSelectedCity] = useState(null);
   const { language } = useSelector(state => state.app);
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    Geolocation.getCurrentPosition(info => {
-      if (info?.coords) {
-        setCoords({ ...info?.coords });
-      }
-    });
+    if (params?.latitude && params?.longitude) {
+      setCoords({
+        latitude: params?.latitude,
+        longitude: params?.longitude
+      });
+    } else {
+      Geolocation.getCurrentPosition(info => {
+        if (info?.coords) {
+          setCoords({ ...info?.coords });
+        }
+      });
+    }
+    if (params?.cityCode) {
+      const code = params.cityCode;
+      setSelectedCity(CITIES.find(o => o.code === code));
+    }
     StatusBar.setBarStyle("light-content");
     ANDROID && StatusBar.setBackgroundColor(theme);
   }, []);
@@ -49,20 +69,31 @@ export default () => {
 
   const handleNext = () => {
     if (!selectedCity) {
-      ShowToastWithScroll(
-        undefined,
-        0,
-        false,
-        ref,
-        isArabic ? "الرجاء تحديد المدينة" : "Please select city",
-        isArabic
-      );
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic ? "الرجاء تحديد المدينة" : "Please select city"
+      });
       return;
     }
     navigation.navigate("NewAddress", {
-      city: selectedCity
+      ...params,
+      coords,
+      cityCode: selectedCity.code,
+      city: selectedCity.name(isArabic)
     });
   };
+
+  const alertClose = () =>
+    setAlert({
+      alert: false,
+      error: false,
+      alertImg: "",
+      alertText: "",
+      alertTitle: ""
+    });
 
   const handleRegionChange = e => {
     if (coords) {
@@ -82,6 +113,15 @@ export default () => {
           onBackPress={handleBack}
           titleAlign={isArabic ? "right" : "left"}
           title={isArabic ? "عنوان جديد" : "New Address"}
+        />
+        <Alert
+          btnText={"OK"}
+          error={alert.error}
+          alert={alert.alert}
+          img={alert.alertImg}
+          text={alert.alertText}
+          onBtnPress={alertClose}
+          title={alert.alertTitle}
         />
         <View style={styles.mainContainer}>
           <View style={styles.topContainer}>

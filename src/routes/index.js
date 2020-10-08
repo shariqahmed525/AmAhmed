@@ -14,7 +14,10 @@ import {
   MyAddresses,
   Verification,
   OnBoardingCity,
-  OnBoardingCategory
+  OnBoardingCategory,
+  MyOrders,
+  ContactUs,
+  AboutUs
 } from "../containers";
 import CartIcon from "../components/CartIcon";
 import { tabIconColor, theme } from "../common/colors";
@@ -59,6 +62,9 @@ const HomeStack = () => {
         options={StackOptions}
         component={MyAddresses}
       />
+      <Screen name="AboutUs" options={StackOptions} component={AboutUs} />
+      <Screen name="ContactUs" options={StackOptions} component={ContactUs} />
+      <Screen name="MyOrders" options={StackOptions} component={MyOrders} />
       <Screen name="NewAddress" options={StackOptions} component={NewAddress} />
       <Screen
         name="PinLocation"
@@ -107,6 +113,12 @@ const CartStack = () => {
         options={StackOptions}
         component={Verification}
       />
+      <Screen name="NewAddress" options={StackOptions} component={NewAddress} />
+      <Screen
+        name="PinLocation"
+        options={StackOptions}
+        component={PinLocation}
+      />
     </Navigator>
   );
 };
@@ -115,11 +127,21 @@ const HomeScreensArr = [
   "ItemDetail",
   "Category",
   "Address",
+  "MyAddresses",
+  "NewAddress",
+  "PinLocation",
+  "AboutUs",
+  "ContactUs",
+  "MyOrders"
+];
+const SearchScreensArr = ["ItemDetail"];
+const CartScreensArr = [
+  "Checkout",
+  "ShowStores",
+  "Verification",
   "NewAddress",
   "PinLocation"
 ];
-const SearchScreensArr = ["ItemDetail"];
-const CartScreensArr = ["Checkout", "ShowStores", "Verification"];
 const CategoriesScreensArr = ["ItemDetail"];
 
 const getTabBarVisible = (route, array) => {

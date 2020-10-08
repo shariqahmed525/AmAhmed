@@ -1,6 +1,5 @@
 import { StyleSheet } from "react-native";
 import { backgroundColor, darkGray, theme, black } from "../../common/colors";
-import { CONTAINER_PADDING, HEIGHT } from "../../common/constants";
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
@@ -23,6 +22,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 10,
     flexDirection: "row",
+    flexDirection: isArabic ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "space-between",
     borderBottomWidth: 1,
@@ -30,22 +30,30 @@ const styles = StyleSheet.create({
     marginBottom: 10
   }),
   listItemLeft: isArabic => ({
-    paddingRight: 10
+    paddingLeft: isArabic ? 10 : 0,
+    paddingRight: isArabic ? 0 : 10
   }),
   listItemCenter: isArabic => ({
     flex: 1
   }),
   listTitle: isArabic => ({
     color: black,
-    paddingBottom: 5
+    paddingBottom: isArabic ? 0 : 5,
+    textAlign: isArabic ? "right" : "left",
+    fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
+  }),
+  noteText: isArabic => ({
+    textAlign: isArabic ? "right" : "left"
   }),
   listSubTitle: isArabic => ({
     color: darkGray,
-    paddingBottom: 5
+    paddingBottom: isArabic ? 0 : 5,
+    textAlign: isArabic ? "right" : "left",
+    fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
   }),
   listItemRight: isArabic => ({
-    flexDirection: "row"
-    // paddingVertical: CONTAINER_PADDING
+    flexDirection: isArabic ? "row-reverse" : "row",
+    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
   loaderWrapper: {
     flex: 1,
