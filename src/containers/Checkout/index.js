@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, forwardRef } from "react";
 import { SafeAreaView } from "react-navigation";
-import { Entypo, Fontisto, MaterialCommunityIcons } from "../../common/icons";
 import { useNavigation } from "@react-navigation/native";
+import { Entypo, Fontisto, MaterialCommunityIcons } from "../../common/icons";
 import {
   View,
   Text,
@@ -11,30 +11,30 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  ActivityIndicator
+  ActivityIndicator,
+  KeyboardAvoidingView
 } from "react-native";
 import styles from "./styles";
-import { lightTheme, theme } from "../../common/colors";
 import Header from "../../components/Header";
 import { Menu, Divider } from "react-native-paper";
+import { lightTheme, theme } from "../../common/colors";
 import { useDispatch, useSelector } from "react-redux";
 import {
   IOS,
   WIDTH,
+  HEIGHT,
   ARABIC,
   ANDROID,
   markers,
   payments,
   ERROR_IMG,
-  THANKS_IMG,
-  HEIGHT
+  THANKS_IMG
 } from "../../common/constants";
+import Alert from "../../components/Alert";
+import { clearCart } from "../../redux/actions/user";
 import * as Animatable from "react-native-animatable";
 import MapView, { MarkerAnimated } from "react-native-maps";
 import { RNSlidingButton, SlideDirection } from "rn-sliding-button";
-import Alert from "../../components/Alert";
-import { clearCart } from "../../redux/actions/user";
 
 export const DropdownSection = forwardRef(
   (
@@ -533,7 +533,8 @@ export default () => {
                   spellCheck={false}
                   autoCorrect={false}
                   keyboardType="phone-pad"
-                  placeholder={"0561234567"}
+                  // 0505513711
+                  placeholder={"0501234567"}
                   style={styles.input(isArabic)}
                   onChangeText={text => setText(text)}
                   onSubmitEditing={() => handleSubmit(true)}

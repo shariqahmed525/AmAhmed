@@ -30,6 +30,13 @@
             {
               "client_id": "672328723505-b28p2bcsrnk6qvdfh9n6ciukei511m5i.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "672328723505-c6f34f4j1lb0e9vcbl313lekrgpu1pvd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "amahmed.com.amahmed"
+              }
             }
           ]
         }

@@ -29,11 +29,6 @@
         android:value="AIzaSyA3X_iki3k_oSwkrDp3zbLeTTKTAnlAX80"
       />  
 
-      <!--  For gms wallet -->
-      <meta-data
-        android:name="com.google.android.gms.wallet.api.enabled"
-        android:value="true" />
-
       <activity
           android:name=".SplashActivity"
           android:theme="@style/SplashTheme"

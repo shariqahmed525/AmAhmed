@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ShowAlert from "../components/ShowAlert";
 import {
   Home,
@@ -21,6 +21,7 @@ import {
 } from "../containers";
 import CartIcon from "../components/CartIcon";
 import { tabIconColor, theme } from "../common/colors";
+import messaging from "@react-native-firebase/messaging";
 import { TransitionPresets } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -225,6 +226,31 @@ const OnBoardStack = () => {
 };
 
 export default () => {
+  useEffect(() => {
+    // Assume a message-notification contains a "type" property in the data payload of the screen to open
+
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log(
+        "Notification caused app to open from background state:",
+        remoteMessage
+      );
+      // navigation.navigate(remoteMessage.data.type);
+    });
+
+    // Check whether an initial notification is available
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            "Notification caused app to open from quit state:",
+            remoteMessage
+          );
+          // setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
+        }
+      });
+  }, []);
+
   return (
     <>
       <ShowAlert />

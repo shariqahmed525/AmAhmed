@@ -20,14 +20,17 @@ import {
   ITEMS,
   GOAT_MEAT_SLIDERS,
   VEGETABLES_FRUITS_SLIDER,
-  CATEGORIES
+  CATEGORIES,
+  IOS
 } from "../../common/constants";
 import Header from "../../components/Header";
 import Drawer from "../../components/Drawer";
 import HomeItem from "../../components/Item";
 import SideMenu from "react-native-side-menu";
-import { Entypo, Icon, MaterialCommunityIcons } from "../../common/icons";
+import messaging from "@react-native-firebase/messaging";
 import { useNavigation } from "@react-navigation/native";
+import PushNotification from "react-native-push-notification";
+import { Entypo, Icon, MaterialCommunityIcons } from "../../common/icons";
 
 let _isMounted = false;
 
@@ -62,9 +65,39 @@ export default () => {
     if (_isMounted) {
       StatusBar.setBarStyle("light-content");
       ANDROID && StatusBar.setBackgroundColor(theme);
+      IOS ? requestPermission() : checkPermission();
     }
   }, []);
 
+  // notification listner
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(remoteMessage => {
+      const {
+        notification: android,
+        data: { notification: ios }
+      } = remoteMessage;
+      let obj = {};
+      if (IOS) {
+        obj = {
+          title: ios.title,
+          message: ios.body
+        };
+      } else {
+        obj = {
+          title: android.title,
+          message: android.body,
+          color: android.android.color
+        };
+      }
+      PushNotification.localNotification({
+        ...obj,
+        smallIcon: "ic_notification"
+      });
+    });
+    return unsubscribe;
+  }, []);
+
+  // Api listner
   useEffect(() => {
     _isMounted = true;
     if (_isMounted) {
@@ -72,11 +105,51 @@ export default () => {
     }
   }, [category]);
 
+  const getToken = async () => {
+    const fcmToken = await messaging().getToken();
+    console.log(fcmToken, " fcmToken");
+    await fetch("https://db49e47b5202.ngrok.io/fcm-test", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        token: fcmToken,
+        // apnsToken: apnsToken,
+        platform: IOS ? "Ios" : "android"
+      })
+    });
+  };
+
+  const checkPermission = async () => {
+    const enabled = await messaging().hasPermission();
+    if (enabled) {
+      getToken();
+    } else {
+      requestPermission();
+    }
+  };
+
+  const requestPermission = async () => {
+    try {
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+      if ((ANDROID && authStatus) || (IOS && enabled)) {
+        getToken();
+      }
+    } catch (error) {
+      console.log(error, " error in notification request permission ");
+    }
+  };
+
   const handleOpenDialer = () => {
     Linking.openURL("tel:+966568042000");
   };
 
-  const sliderMemo = useMemo(() => {
+  const _renderSliderMemo = useMemo(() => {
     const SLIDERS =
       category === "g/s" ? GOAT_MEAT_SLIDERS : VEGETABLES_FRUITS_SLIDER;
     return (
@@ -106,7 +179,7 @@ export default () => {
 
   const catName = CATEGORIES.find(o => o.code === category).name(isArabic);
 
-  const headerMemo = (
+  const _renderHeader = (
     <Header
       leftIcon={() => <Icon name="md-menu-outline" color={"#fff"} size={30} />}
       rightIcon={() => (
@@ -130,7 +203,7 @@ export default () => {
     />
   );
 
-  const items = () => {
+  const _renderItems = () => {
     const filter = ITEMS.filter(v => v.category === category);
     const grouped = _.groupBy(filter, o => o.subcategory(isArabic));
     const keys = Object.keys(grouped);
@@ -158,13 +231,13 @@ export default () => {
     >
       <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
         <View style={styles.container}>
-          {headerMemo}
+          {_renderHeader}
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollView}
           >
-            {sliderMemo}
-            {items()}
+            {_renderSliderMemo}
+            {_renderItems()}
           </ScrollView>
         </View>
       </SafeAreaView>
