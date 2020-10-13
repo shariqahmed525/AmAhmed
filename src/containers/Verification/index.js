@@ -67,7 +67,7 @@ export default () => {
       }
     }, 1000);
     setTimeout(() => {
-      setCode(567589);
+      setCode("567589");
       // setCode(generateCode().toString());
     }, 1500);
   };

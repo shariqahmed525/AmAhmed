@@ -13,6 +13,7 @@ export const ARABIC = "ar-sa";
 export const ENGLISH = "en";
 
 export const ERROR_IMG = require("../../assets/images/error.png");
+export const THUMB_IMG = require("../../assets/images/like.png");
 export const THANKS_IMG = require("../../assets/images/thanks.jpg");
 
 export const LANGUAGES = [

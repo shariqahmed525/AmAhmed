@@ -4,8 +4,13 @@ import {
   Home,
   Cart,
   Search,
+  AboutUs,
+  Payment,
+  CardScan,
   Checkout,
   Language,
+  MyOrders,
+  ContactUs,
   Categories,
   ItemDetail,
   NewAddress,
@@ -14,10 +19,7 @@ import {
   MyAddresses,
   Verification,
   OnBoardingCity,
-  OnBoardingCategory,
-  MyOrders,
-  ContactUs,
-  AboutUs
+  OnBoardingCategory
 } from "../containers";
 import CartIcon from "../components/CartIcon";
 import { tabIconColor, theme } from "../common/colors";
@@ -109,6 +111,8 @@ const CartStack = () => {
     <Navigator initialRouteName="CartScreen">
       <Screen component={Cart} name="CartScreen" options={StackOptions} />
       <Screen component={Checkout} name="Checkout" options={StackOptions} />
+      <Screen component={CardScan} name="CardScan" options={StackOptions} />
+      <Screen component={Payment} name="Payment" options={StackOptions} />
       <Screen component={ShowStores} name="ShowStores" options={StackOptions} />
       <Screen
         name="Verification"
@@ -143,6 +147,8 @@ const CartScreensArr = [
   "ShowStores",
   "Verification",
   "NewAddress",
+  "CardScan",
+  "Payment",
   "PinLocation"
 ];
 const CategoriesScreensArr = ["ItemDetail"];

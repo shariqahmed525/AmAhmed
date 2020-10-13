@@ -191,10 +191,10 @@ export default () => {
   const mapRef = useRef(null);
   const inputRef = useRef(null);
   const scrollRef = useRef(null);
-  const animatedRef = useRef(null);
   const addressRef = useRef(null);
   const paymentRef = useRef(null);
   const contactRef = useRef(null);
+  const animatedRef = useRef(null);
   const [alert, setAlert] = useState({
     alert: false,
     error: false,
@@ -533,7 +533,6 @@ export default () => {
                   spellCheck={false}
                   autoCorrect={false}
                   keyboardType="phone-pad"
-                  // 0505513711
                   placeholder={"0501234567"}
                   style={styles.input(isArabic)}
                   onChangeText={text => setText(text)}
@@ -541,29 +540,6 @@ export default () => {
                 />
               </>
             )}
-            {/* {!userData?.isVerify && (
-              <>
-                <Text ref={contactRef} style={styles.heading(isArabic)}>
-                  {isArabic ? "رقم الاتصال" : "Contact Number"}
-                </Text>
-                <TextInput
-                  blurOnSubmit
-                  value={text}
-                  ref={inputRef}
-                  spellCheck={false}
-                  autoCorrect={false}
-                  keyboardType="phone-pad"
-                  style={styles.input(isArabic)}
-                  onSubmitEditing={() => handleSubmit(true)}
-                  onChangeText={text => setText(text)}
-                  placeholder={
-                    isArabic
-                      ? "أدخل رقم الاتصال (0561234567)"
-                      : "Enter contact number (0561234567)"
-                  }
-                />
-              </>
-            )} */}
           </ScrollView>
           <View style={styles.footer(isArabic)}>
             <Animatable.View
