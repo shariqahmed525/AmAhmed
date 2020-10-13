@@ -44,22 +44,25 @@ export default () => {
   };
 
   const handleListItem = code => {
-    if (params?.fromHome) {
-      if (code === city) {
-        alertClose();
+    if (code === city) {
+      alertClose();
+      if (params?.fromHome) {
         handleBack();
-        return;
-      }
-      if (cart && cart.length > 0) {
-        handleConfirm(code);
       } else {
-        alertClose();
-        dispatch(onCityAction(code));
-        handleBack();
+        navigation.navigate("OnBoardingCategory");
       }
+      return;
+    }
+    if (cart && cart.length > 0) {
+      handleConfirm(code);
+      return;
     } else {
       dispatch(onCityAction(code));
-      navigation.navigate("OnBoardingCategory");
+      if (params?.fromHome) {
+        handleBack();
+      } else {
+        navigation.navigate("OnBoardingCategory");
+      }
     }
   };
 
@@ -86,7 +89,11 @@ export default () => {
     alertClose();
     dispatch(clearCart());
     dispatch(onCityAction(code));
-    handleBack();
+    if (params?.fromHome) {
+      handleBack();
+    } else {
+      navigation.navigate("OnBoardingCategory");
+    }
   };
 
   const handleBack = () => {
@@ -155,7 +162,7 @@ export default () => {
                     key={i}
                     source={v.icon}
                     isArabic={isArabic}
-                    selected={params?.fromHome && v.code === city}
+                    selected={v.code === city}
                     onPress={() => handleListItem(v.code)}
                     text={`${v.name(isArabic)}${isArabic ? "؟" : "?"}`}
                     primaryText={isArabic ? "هل انت من" : "Are you from"}

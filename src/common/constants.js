@@ -89,8 +89,7 @@ export const payments = [
     icon: <MaterialCommunityIcons size={27} name="cash" color={theme} />
   },
   {
-    name: isArabic =>
-      isArabic ? "بطاقة الائتمان / الخصم" : "Credit/Debit Card",
+    name: isArabic => (isArabic ? "بطاقة الائتمان/الخصم" : "Credit/Debit Card"),
     icon: (
       <MaterialCommunityIcons
         size={27}

@@ -31,7 +31,7 @@ export default () => {
           title={isArabic ? "معلومات عنا" : "About Us"}
           titleAlign={isArabic ? "right" : "left"}
         />
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <ScrollView contentContainerStyle={styles.scrollContainer(isArabic)}>
           {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((v, i) => (
             <View
               key={i}
@@ -42,7 +42,7 @@ export default () => {
               </Text>
               <Text style={styles.text(isArabic)}>
                 {isArabic
-                  ? "من السهل جدًا أن نلاحظ أن الهندسة المعمارية التي يتم إجراؤها تبدو وكأنها طاردة للعيان ، وخطورة شبيهة بالحيوية ، وألام قيسم بياتي."
+                  ? " نلاحظ أن الهندسة التي يتم إجراؤها تبدو وكأنها طاردة وخطورة شبيهة بالحيوية ، وألام قيسم بياتي. من السهل جدًا ."
                   : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab esse eum enim illo maiores architecto obcaecati tenetur incidunt eos quasi repellendus quam, nostrum porro sunt quidem, ullam quisquam beatae quod."}
               </Text>
             </View>

@@ -6,7 +6,6 @@ import {
   Search,
   AboutUs,
   Payment,
-  CardScan,
   Checkout,
   Language,
   MyOrders,
@@ -111,7 +110,6 @@ const CartStack = () => {
     <Navigator initialRouteName="CartScreen">
       <Screen component={Cart} name="CartScreen" options={StackOptions} />
       <Screen component={Checkout} name="Checkout" options={StackOptions} />
-      <Screen component={CardScan} name="CardScan" options={StackOptions} />
       <Screen component={Payment} name="Payment" options={StackOptions} />
       <Screen component={ShowStores} name="ShowStores" options={StackOptions} />
       <Screen
@@ -147,7 +145,6 @@ const CartScreensArr = [
   "ShowStores",
   "Verification",
   "NewAddress",
-  "CardScan",
   "Payment",
   "PinLocation"
 ];

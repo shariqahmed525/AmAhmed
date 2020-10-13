@@ -9,11 +9,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: backgroundColor
   },
-  scrollContainer: {
+  scrollContainer: isArabic => ({
     flexGrow: 1,
+    paddingTop: 10,
     backgroundColor,
-    paddingHorizontal: 12
-  },
+    paddingHorizontal: 12,
+    paddingBottom: isArabic ? 20 : 10
+  }),
   heading: isArabic => ({
     color: theme,
     fontSize: isArabic ? 23 : 22,

@@ -14,7 +14,13 @@ import styles from "./styles";
 import { lightTheme, theme } from "../../common/colors";
 import { validateEmail } from "../../common/functions";
 import Header from "../../components/Header";
-import { ANDROID, ARABIC, ERROR_IMG, THUMB_IMG } from "../../common/constants";
+import {
+  ANDROID,
+  ARABIC,
+  ERROR_IMG,
+  IOS,
+  THUMB_IMG
+} from "../../common/constants";
 import { useSelector } from "react-redux";
 import Alert from "../../components/Alert";
 
@@ -234,7 +240,9 @@ export default () => {
               keyboardType="default"
               style={{
                 ...styles.input(isArabic),
-                textAlignVertical: "top"
+                textAlignVertical: "top",
+                paddingTop: 15,
+                height: IOS ? 200 : undefined
               }}
               onChangeText={text => setMessage(text)}
               placeholder={

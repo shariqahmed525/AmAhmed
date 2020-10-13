@@ -4,8 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import { View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
 import styles from "./styles";
 import { theme } from "../../common/colors";
-import { ANDROID, ARABIC, LANGUAGES } from "../../common/constants";
 import Header from "../../components/Header";
+import { ANDROID, ARABIC } from "../../common/constants";
 import { useDispatch, useSelector } from "react-redux";
 
 export default () => {
@@ -29,8 +29,8 @@ export default () => {
         <Header
           back
           onBackPress={handleBack}
-          title={isArabic ? "عنوان" : "Address"}
           titleAlign={isArabic ? "right" : "left"}
+          title={isArabic ? "بطاقة الائتمان/الخصم" : "Credit/Debit Card"}
         />
       </View>
     </SafeAreaView>
