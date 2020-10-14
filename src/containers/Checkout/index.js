@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useRef, useMemo, forwardRef } from "react";
 import { SafeAreaView } from "react-navigation";
 import { useNavigation } from "@react-navigation/native";
-import { Entypo, Fontisto, MaterialCommunityIcons } from "../../common/icons";
+import {
+  Entypo,
+  Fontisto,
+  MaterialCommunityIcons,
+  MaterialIcons
+} from "../../common/icons";
 import {
   View,
   Text,
@@ -100,6 +105,28 @@ export const DropdownSection = forwardRef(
                 title={
                   <View style={styles.listItem(isArabic)}>
                     <View style={styles.listIcon(isArabic)}>
+                      <MaterialIcons
+                        size={25}
+                        color={theme}
+                        name="my-location"
+                      />
+                    </View>
+                    <View style={styles.textWrapper(isArabic)}>
+                      <Text style={styles.listItemText(isArabic)}>
+                        {isArabic ? "الموقع الحالي" : "Current Location"}
+                      </Text>
+                    </View>
+                  </View>
+                }
+                titleStyle={{ width: WIDTH - 52 }}
+                onPress={() => handleListItem(true)}
+                style={styles.menuItem(isArabic)}
+              />
+              <Divider />
+              <Menu.Item
+                title={
+                  <View style={styles.listItem(isArabic)}>
+                    <View style={styles.listIcon(isArabic)}>
                       <MaterialCommunityIcons
                         size={25}
                         color={theme}
@@ -110,6 +137,13 @@ export const DropdownSection = forwardRef(
                       <Text style={styles.listItemText(isArabic)}>
                         {isArabic ? "عنوان جديد" : "New Address"}
                       </Text>
+                    </View>
+                    <View style={styles.listIconRight(isArabic)}>
+                      <Entypo
+                        size={20}
+                        color={theme}
+                        name="chevron-thin-right"
+                      />
                     </View>
                   </View>
                 }

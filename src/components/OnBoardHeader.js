@@ -5,7 +5,13 @@ import { HEIGHT } from "../common/constants";
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
-export default ({ back, onPress, isArabic, showLanguageToggle = true }) => {
+export default ({
+  back,
+  onPress,
+  isArabic,
+  showLanguageToggle = true,
+  noImage = false
+}) => {
   const navigation = useNavigation();
   return (
     <View style={styles.header}>
@@ -20,11 +26,14 @@ export default ({ back, onPress, isArabic, showLanguageToggle = true }) => {
       ) : (
         <View style={styles.leftIcon} />
       )}
-
-      <Image
-        style={styles.logo}
-        source={require("../../assets/images/logo.png")}
-      />
+      {noImage ? (
+        <View style={styles.noImage} />
+      ) : (
+        <Image
+          style={styles.logo}
+          source={require("../../assets/images/logo.png")}
+        />
+      )}
       {showLanguageToggle ? (
         <TouchableOpacity
           activeOpacity={0.7}
@@ -90,5 +99,9 @@ const styles = StyleSheet.create({
   leftIcon: {
     width: 100,
     height: 35
+  },
+  noImage: {
+    width: 115,
+    height: 115
   }
 });

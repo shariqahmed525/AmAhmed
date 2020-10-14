@@ -107,7 +107,7 @@ const SearchStack = () => {
 
 const CartStack = () => {
   return (
-    <Navigator initialRouteName="CartScreen">
+    <Navigator initialRouteName="Checkout">
       <Screen component={Cart} name="CartScreen" options={StackOptions} />
       <Screen component={Checkout} name="Checkout" options={StackOptions} />
       <Screen component={Payment} name="Payment" options={StackOptions} />

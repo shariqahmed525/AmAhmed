@@ -13,8 +13,12 @@ import { backgroundColor, theme } from "../../../common/colors";
 import Header from "../../../components/Header";
 import Alert from "../../../components/Alert";
 import { clearCart } from "../../../redux/actions/user";
+import NoInternet from "../../../components/NoInternet";
+import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
+import Axios from "axios";
 
 export default () => {
+  const netInfo = useNetInfo();
   const { params } = useRoute();
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -24,6 +28,7 @@ export default () => {
     alertText: "",
     alertTitle: ""
   });
+  const [internet, setInternet] = useState(true);
   const [loading, setLoading] = useState(!params?.fromHome);
   const {
     user: { cart },
@@ -32,12 +37,37 @@ export default () => {
   const isArabic = language === ARABIC;
 
   useEffect(() => {
+    checkConnection();
     if (!params?.fromHome) {
       setTimeout(() => {
         setLoading(false);
       }, 500);
     }
   }, []);
+
+  const checkConnection = () => {
+    NetInfo.fetch().then(state => {
+      if (!state.isConnected) {
+        setLoading(false);
+        setInternet(false);
+      } else {
+        setInternet(true);
+        getCities();
+      }
+    });
+  };
+
+  const getCities = async () => {
+    try {
+      setLoading(true);
+      const { data } = await Axios.get("http://api.amahmed.com/Locations");
+      console.log(data, " res");
+    } catch (error) {
+      console.log(error, " error in getting cities");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleToggleLanguage = () => {
     dispatch(onLanguageAction(isArabic ? ENGLISH : ARABIC));
@@ -100,6 +130,10 @@ export default () => {
     navigation.goBack();
   };
 
+  const handleRetry = () => {
+    checkConnection();
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -130,6 +164,7 @@ export default () => {
           cancelText={isArabic ? "إلغاء" : "Cancel"}
         />
         <ScrollView
+          scrollEnabled={internet}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.container}
         >
@@ -149,7 +184,7 @@ export default () => {
                   source={require("../../../../assets/animations/loader.json")}
                 />
               </View>
-            ) : (
+            ) : internet ? (
               <View style={styles.centerContainer}>
                 <Text style={styles.heading(isArabic)}>
                   {isArabic
@@ -169,6 +204,8 @@ export default () => {
                   />
                 ))}
               </View>
+            ) : (
+              <NoInternet isArabic={isArabic} onPress={handleRetry} />
             )}
           </View>
         </ScrollView>

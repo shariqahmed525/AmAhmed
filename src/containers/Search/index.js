@@ -2,15 +2,21 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import LottieView from "lottie-react-native";
 import { SafeAreaView } from "react-navigation";
-import { View, StatusBar, TextInput, FlatList, Text } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StatusBar,
+  TextInput,
+  TouchableOpacity
+} from "react-native";
 
 import styles from "./styles";
 import Header from "../../components/Header";
 import Item from "../../components/Item/Item";
+import { secondaryHeader, theme } from "../../common/colors";
 import { Octicons, MaterialIcons } from "../../common/icons";
 import { ANDROID, ARABIC, ITEMS, WIDTH } from "../../common/constants";
-import { secondaryHeader, theme } from "../../common/colors";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 const renderItem = ({ item, isArabic }) => {
   return <Item item={item} isArabic={isArabic} />;

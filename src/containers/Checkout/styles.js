@@ -75,6 +75,15 @@ const styles = StyleSheet.create({
       }
     ]
   }),
+  listIconRight: isArabic => ({
+    // width: 40,
+    // backgroundColor: "purple",
+    transform: [
+      {
+        rotateY: isArabic ? "180deg" : "0deg"
+      }
+    ]
+  }),
   optionRight: isArabic => ({
     flex: 1,
     alignItems: "center",
