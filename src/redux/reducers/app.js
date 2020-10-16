@@ -1,5 +1,12 @@
 import { ARABIC } from "../../common/constants";
-import { CITY, SHOW_ALERT, CATEGORY, LANGUAGE } from "../types/app";
+import {
+  CITIES,
+  SHOW_ALERT,
+  CATEGORY,
+  LANGUAGE,
+  SELECTED_CITY,
+  SELECTED_CAT
+} from "../types/app";
 
 const initialState = {
   showAlert: {
@@ -10,17 +17,29 @@ const initialState = {
     alertTitle: "",
     callBack: false
   },
-  city: "",
+  cities: [],
   category: "",
-  language: ARABIC
+  language: ARABIC,
+  selectedCity: null,
+  selectedCategory: null
 };
 
 export default (state = initialState, { type, payload }) => {
   switch (type) {
-    case CITY:
+    case CITIES:
       return {
         ...state,
-        city: payload
+        cities: payload
+      };
+    case SELECTED_CITY:
+      return {
+        ...state,
+        selectedCity: payload
+      };
+    case SELECTED_CAT:
+      return {
+        ...state,
+        selectedCategory: payload
       };
     case LANGUAGE:
       return {

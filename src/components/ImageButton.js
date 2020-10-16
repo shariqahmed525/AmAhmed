@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ImageBackground
 } from "react-native";
+import { theme } from "../common/colors";
 import DeviceInfo from "react-native-device-info";
 
 export default ({
@@ -33,8 +34,8 @@ export default ({
         </View>
       )}
       <ImageBackground
-        resizeMode="cover"
         source={source}
+        resizeMode="cover"
         style={styles.listBackground}
       >
         <View style={styles.textWrapper(isCity)}>
@@ -74,7 +75,8 @@ const styles = StyleSheet.create({
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
   listBackground: {
-    flex: 1
+    flex: 1,
+    backgroundColor: theme
   },
   primaryText: (isArabic, isCity) => ({
     color: "#fff",

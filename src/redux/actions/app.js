@@ -1,9 +1,30 @@
-import { CITY, SHOW_ALERT, CATEGORY, LANGUAGE } from "../types/app";
+import {
+  SELECTED_CITY,
+  SELECTED_CAT,
+  CITIES,
+  SHOW_ALERT,
+  CATEGORY,
+  LANGUAGE
+} from "../types/app";
 
-export const onCityAction = city => {
+export const onSelectedCityAction = city => {
   return {
-    type: CITY,
+    type: SELECTED_CITY,
     payload: city
+  };
+};
+
+export const onSelectedCategoryAction = cat => {
+  return {
+    type: SELECTED_CAT,
+    payload: cat
+  };
+};
+
+export const onCitiesAction = cities => {
+  return {
+    type: CITIES,
+    payload: cities
   };
 };
 

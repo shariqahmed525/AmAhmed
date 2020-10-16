@@ -6,19 +6,24 @@ import { View, Text, ScrollView } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import ImageButton from "../../../components/ImageButton";
 import OnBoardHeader from "../../../components/OnBoardHeader";
-import { ARABIC, CITIES, ENGLISH } from "../../../common/constants";
+import { ARABIC, BASE_URL, ENGLISH } from "../../../common/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { onCityAction, onLanguageAction } from "../../../redux/actions/app";
+import {
+  onCitiesAction,
+  onLanguageAction,
+  onSelectedCategoryAction,
+  onSelectedCityAction
+} from "../../../redux/actions/app";
 import { backgroundColor, theme } from "../../../common/colors";
 import Header from "../../../components/Header";
 import Alert from "../../../components/Alert";
+import NetInfo from "@react-native-community/netinfo";
 import { clearCart } from "../../../redux/actions/user";
 import NoInternet from "../../../components/NoInternet";
-import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
 import Axios from "axios";
+import NotFound from "../../../components/NotFound";
 
 export default () => {
-  const netInfo = useNetInfo();
   const { params } = useRoute();
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -28,21 +33,17 @@ export default () => {
     alertText: "",
     alertTitle: ""
   });
+  const [cities, setCities] = useState([]);
   const [internet, setInternet] = useState(true);
   const [loading, setLoading] = useState(!params?.fromHome);
   const {
     user: { cart },
-    app: { language, city }
+    app: { language, selectedCity }
   } = useSelector(state => state);
   const isArabic = language === ARABIC;
 
   useEffect(() => {
     checkConnection();
-    if (!params?.fromHome) {
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
-    }
   }, []);
 
   const checkConnection = () => {
@@ -60,8 +61,12 @@ export default () => {
   const getCities = async () => {
     try {
       setLoading(true);
-      const { data } = await Axios.get("http://api.amahmed.com/Locations");
-      console.log(data, " res");
+      const { data } = await Axios.get(`${BASE_URL}/Locations`);
+      if (data && data.length > 0) {
+        setCities([...data]);
+        makeCities(data);
+      }
+      console.log(data);
     } catch (error) {
       console.log(error, " error in getting cities");
     } finally {
@@ -69,30 +74,43 @@ export default () => {
     }
   };
 
+  const makeCities = data => {
+    if (selectedCity && selectedCity.id) {
+      const find = data.find(o => o.id === selectedCity.id);
+      if (!find) {
+        dispatch(onSelectedCityAction(null));
+        dispatch(onSelectedCategoryAction(null));
+      }
+    }
+    dispatch(onCitiesAction([...data]));
+  };
+
   const handleToggleLanguage = () => {
     dispatch(onLanguageAction(isArabic ? ENGLISH : ARABIC));
   };
 
-  const handleListItem = code => {
-    if (code === city) {
-      alertClose();
-      if (params?.fromHome) {
-        handleBack();
-      } else {
-        navigation.navigate("OnBoardingCategory");
-      }
-      return;
-    }
-    if (cart && cart.length > 0) {
-      handleConfirm(code);
-      return;
+  const navigate = () => {
+    if (params?.fromHome) {
+      handleBack();
     } else {
-      dispatch(onCityAction(code));
-      if (params?.fromHome) {
-        handleBack();
-      } else {
-        navigation.navigate("OnBoardingCategory");
-      }
+      navigation.navigate("OnBoardingCategory");
+    }
+  };
+
+  const handleListItem = city => {
+    if (selectedCity && selectedCity.id === city.id) {
+      alertClose();
+      navigate();
+    } else if (
+      selectedCity &&
+      selectedCity.id !== city.id &&
+      cart &&
+      cart.length > 0
+    ) {
+      handleConfirm(city);
+    } else {
+      dispatch(onSelectedCityAction(city));
+      navigate();
     }
   };
 
@@ -104,26 +122,23 @@ export default () => {
       alertTitle: ""
     });
 
-  const handleConfirm = code => {
+  const handleConfirm = city => {
     setAlert({
       alert: true,
       error: false,
-      btnPress: () => handleAccept(code),
+      btnPress: () => handleAccept(city),
       alertText: isArabic
         ? "إذا قمت بتغيير المدينة ، ستكون عربة التسوق الخاصة بك فارغة. هل توافق؟"
         : "If you change the city, your cart will be empty. Do you agree?"
     });
   };
 
-  const handleAccept = code => {
+  const handleAccept = city => {
     alertClose();
     dispatch(clearCart());
-    dispatch(onCityAction(code));
-    if (params?.fromHome) {
-      handleBack();
-    } else {
-      navigation.navigate("OnBoardingCategory");
-    }
+    dispatch(onSelectedCategoryAction(null));
+    dispatch(onSelectedCityAction(city));
+    navigate();
   };
 
   const handleBack = () => {
@@ -175,7 +190,9 @@ export default () => {
                 onPress={handleToggleLanguage}
               />
             )}
-            {loading ? (
+            {!internet ? (
+              <NoInternet isArabic={isArabic} onPress={handleRetry} />
+            ) : loading ? (
               <View style={styles.loaderWrapper}>
                 <LottieView
                   loop
@@ -184,28 +201,38 @@ export default () => {
                   source={require("../../../../assets/animations/loader.json")}
                 />
               </View>
-            ) : internet ? (
+            ) : cities && cities.length > 0 ? (
               <View style={styles.centerContainer}>
                 <Text style={styles.heading(isArabic)}>
                   {isArabic
                     ? "اختر مدينتك، من فضلك"
                     : "Choose your city, please"}
                 </Text>
-                {CITIES.map((v, i) => (
+                {cities.map((v, i) => (
                   <ImageButton
                     isCity
                     key={i}
-                    source={v.icon}
                     isArabic={isArabic}
-                    selected={v.code === city}
-                    onPress={() => handleListItem(v.code)}
-                    text={`${v.name(isArabic)}${isArabic ? "؟" : "?"}`}
+                    source={{ uri: v.pictureUrl }}
+                    text={`${isArabic ? v.nameAr : v.nameEn}${
+                      isArabic ? "؟" : "?"
+                    }`}
+                    onPress={() => handleListItem(v)}
+                    selected={v.id === selectedCity?.id}
                     primaryText={isArabic ? "هل انت من" : "Are you from"}
                   />
                 ))}
               </View>
             ) : (
-              <NoInternet isArabic={isArabic} onPress={handleRetry} />
+              <NotFound
+                isArabic={isArabic}
+                text={isArabic ? "لم يتم العثور على نتائج" : "No results found"}
+                secondaryText={
+                  isArabic
+                    ? "عذرا ، لم نتمكن من العثور على أي مدينة"
+                    : "Sorry, we couldn't find any city"
+                }
+              />
             )}
           </View>
         </ScrollView>

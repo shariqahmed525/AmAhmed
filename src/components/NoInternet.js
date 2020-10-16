@@ -10,7 +10,11 @@ export default ({ isArabic, onPress }) => {
       <LottieView
         loop
         autoPlay
-        style={{ width: WIDTH * 0.75 }}
+        // style={{ width: WIDTH * 0.75 }}
+        style={{
+          width: WIDTH * 0.75,
+          height: WIDTH * 0.75
+        }}
         source={require("../../assets/animations/no-internet.json")}
       />
       <View style={styles.textWrapper}>
@@ -38,6 +42,7 @@ export default ({ isArabic, onPress }) => {
 
 const styles = StyleSheet.create({
   emptyText: (isArabic, color) => ({
+    marginTop: 20,
     textAlign: "center",
     color: color || theme,
     paddingTop: isArabic ? 0 : 5,

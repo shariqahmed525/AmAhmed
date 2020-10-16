@@ -165,7 +165,7 @@ export default () => {
               loop
               autoPlay
               style={{ width: WIDTH * 0.75 }}
-              source={require("../../../assets/animations/notfound.json")}
+              source={require("../../../assets/animations/notfoundaddress.json")}
             />
             <Text style={styles.emptyText(isArabic)}>
               {isArabic ? "لا يوجد عنوان" : "No Address"}

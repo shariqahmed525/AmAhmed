@@ -4,7 +4,8 @@ import { CONTAINER_PADDING, HEIGHT } from "../../../common/constants";
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor
+    backgroundColor,
+    paddingBottom: 10
   },
   wrapper: {
     flex: 1,
