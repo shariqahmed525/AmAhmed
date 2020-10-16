@@ -5,14 +5,17 @@ import { View, Text, TouchableOpacity, StatusBar } from "react-native";
 import styles from "./styles";
 import { lightTheme, theme } from "../../common/colors";
 import Alert from "../../components/Alert";
-import { ANDROID, ARABIC, WIDTH } from "../../common/constants";
+import { ANDROID, ARABIC, BASE_URL, WIDTH } from "../../common/constants";
 import Header from "../../components/Header";
 import { useDispatch, useSelector } from "react-redux";
 import LottieView from "lottie-react-native";
 import { Text as NativeBaseText } from "native-base";
 import { EvilIcons, Feather } from "../../common/icons";
 import { FAB } from "react-native-paper";
+import NetInfo from "@react-native-community/netinfo";
 import { deleteAddressAction } from "../../redux/actions/user";
+import Axios from "axios";
+import NoInternet from "../../components/NoInternet";
 
 const ListItem = ({ isArabic, data, navigation, onDeletePress }) => (
   <View icon style={styles.listItem(isArabic)}>
@@ -72,6 +75,7 @@ const ListItem = ({ isArabic, data, navigation, onDeletePress }) => (
 export default () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const [internet, setInternet] = useState(true);
   const [alert, setAlert] = useState({
     alert: false,
     error: false,
@@ -79,20 +83,47 @@ export default () => {
     alertText: "",
     alertTitle: ""
   });
+  const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
   const {
     app: { language },
-    user: { addresses }
+    user: { addresses: storeAddresses }
   } = useSelector(state => state);
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
     StatusBar.setBarStyle("light-content");
     ANDROID && StatusBar.setBackgroundColor(theme);
+    checkConnection();
   }, []);
+
+  const checkConnection = () => {
+    NetInfo.fetch().then(state => {
+      if (!state.isConnected) {
+        setLoading(false);
+        setInternet(false);
+      } else {
+        setInternet(true);
+        getAddresses();
+      }
+    });
+  };
+
+  const getAddresses = async () => {
+    try {
+      setLoading(true);
+      const { data } = await Axios.get(`${BASE_URL}/Locations`);
+      if (data && data.length > 0) {
+        setCities([...data]);
+        makeCities(data);
+      }
+      console.log(data);
+    } catch (error) {
+      console.log(error, " error in getting cities");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleBack = () => {
     navigation.goBack();
@@ -123,6 +154,10 @@ export default () => {
     alertClose();
   };
 
+  const handleRetry = () => {
+    checkConnection();
+  };
+
   return (
     <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
       <View style={styles.container}>
@@ -144,13 +179,17 @@ export default () => {
           cancelText={isArabic ? "إلغاء" : "Cancel"}
           onBtnPress={alert.btnPress || alertClose}
         />
-        <FAB
-          icon="plus"
-          color="#fff"
-          style={styles.fab}
-          onPress={() => navigation.navigate("PinLocation")}
-        />
-        {loading ? (
+        {internet && !loading && (
+          <FAB
+            icon="plus"
+            color="#fff"
+            style={styles.fab}
+            onPress={() => navigation.navigate("PinLocation")}
+          />
+        )}
+        {!internet ? (
+          <NoInternet isArabic={isArabic} onPress={handleRetry} />
+        ) : loading ? (
           <View style={styles.loaderWrapper}>
             <LottieView
               loop
@@ -159,24 +198,7 @@ export default () => {
               source={require("../../../assets/animations/loader.json")}
             />
           </View>
-        ) : !addresses || addresses.length < 1 ? (
-          <View style={styles.loaderWrapper}>
-            <LottieView
-              loop
-              autoPlay
-              style={{ width: WIDTH * 0.75 }}
-              source={require("../../../assets/animations/notfoundaddress.json")}
-            />
-            <Text style={styles.emptyText(isArabic)}>
-              {isArabic ? "لا يوجد عنوان" : "No Address"}
-            </Text>
-            <Text style={styles.emptySubText(isArabic)}>
-              {isArabic
-                ? "لم تقم بإضافة أي عنوان"
-                : "You didn't add any address"}
-            </Text>
-          </View>
-        ) : (
+        ) : addresses && addresses.length > 0 ? (
           <View style={styles.listWrapper}>
             {addresses.map((v, i) => (
               <ListItem
@@ -187,6 +209,23 @@ export default () => {
                 onDeletePress={handleConfirm}
               />
             ))}
+          </View>
+        ) : (
+          <View style={styles.loaderWrapper}>
+            <LottieView
+              loop
+              autoPlay
+              style={{ width: WIDTH * 0.75 }}
+              source={require("../../../assets/animations/notfoundaddress.json")}
+            />
+            <Text style={styles.emptyText(isArabic)}>
+              {isArabic ? "لم يتم العثور على نتائج" : "No results found"}
+            </Text>
+            <Text style={styles.emptySubText(isArabic)}>
+              {isArabic
+                ? "لم تقم بإضافة أي عنوان"
+                : "You didn't add any address"}
+            </Text>
           </View>
         )}
       </View>

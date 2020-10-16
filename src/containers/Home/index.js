@@ -57,7 +57,10 @@ const CenterComponent = ({ text, isArabic, navigation }) => (
 export default () => {
   const navigation = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
-  const { language, category } = useSelector(state => state.app);
+  const [internet, setInternet] = useState(true);
+  const { language, selectedCategory, selectedCity } = useSelector(
+    state => state.app
+  );
   const isArabic = language === ARABIC;
 
   useEffect(() => {
@@ -103,7 +106,7 @@ export default () => {
     if (_isMounted) {
       console.log("need to call api");
     }
-  }, [category]);
+  }, [selectedCategory]);
 
   const getToken = async () => {
     const fcmToken = await messaging().getToken();
@@ -151,7 +154,7 @@ export default () => {
 
   const _renderSliderMemo = useMemo(() => {
     const SLIDERS =
-      category === "g/s" ? GOAT_MEAT_SLIDERS : VEGETABLES_FRUITS_SLIDER;
+      selectedCategory === "g/s" ? GOAT_MEAT_SLIDERS : VEGETABLES_FRUITS_SLIDER;
     return (
       <View style={styles.sliderWrapper}>
         <Swiper
@@ -175,49 +178,60 @@ export default () => {
         </Swiper>
       </View>
     );
-  }, [category]);
+  }, [selectedCategory]);
 
-  const catName = CATEGORIES.find(o => o.code === category).name(isArabic);
-
-  const _renderHeader = (
-    <Header
-      leftIcon={() => <Icon name="md-menu-outline" color={"#fff"} size={30} />}
-      rightIcon={() => (
-        <View style={styles.rotateIcon(isArabic)}>
-          <MaterialCommunityIcons size={30} color={"#fff"} name="phone" />
-        </View>
-      )}
-      component={() => (
-        <CenterComponent
-          text={catName}
-          isArabic={isArabic}
-          navigation={navigation}
-        />
-      )}
-      leftIconProps={{
-        onPress: () => setIsOpen(true)
-      }}
-      rightIconProps={{
-        onPress: handleOpenDialer
-      }}
-    />
-  );
+  const _renderHeader = () => {
+    const catName =
+      selectedCategory && selectedCategory.nameAr && selectedCategory.nameEn
+        ? isArabic
+          ? selectedCategory.nameAr
+          : selectedCategory.nameEn
+        : isArabic
+        ? "اختر الفئة"
+        : "Select Category";
+    return (
+      <Header
+        leftIcon={() => (
+          <Icon name="md-menu-outline" color={"#fff"} size={30} />
+        )}
+        rightIcon={() => (
+          <View style={styles.rotateIcon(isArabic)}>
+            <MaterialCommunityIcons size={30} color={"#fff"} name="phone" />
+          </View>
+        )}
+        component={() => (
+          <CenterComponent
+            text={catName}
+            isArabic={isArabic}
+            navigation={navigation}
+          />
+        )}
+        leftIconProps={{
+          onPress: () => setIsOpen(true)
+        }}
+        rightIconProps={{
+          onPress: handleOpenDialer
+        }}
+      />
+    );
+  };
 
   const _renderItems = () => {
-    const filter = ITEMS.filter(v => v.category === category);
-    const grouped = _.groupBy(filter, o => o.subcategory(isArabic));
-    const keys = Object.keys(grouped);
-    return keys.map((v, i) => {
-      return (
-        <HomeItem
-          key={i}
-          name={v}
-          tabIndex={i}
-          data={grouped[v]}
-          isArabic={isArabic}
-        />
-      );
-    });
+    // const filter = ITEMS.filter(v => v.category === category);
+    // const grouped = _.groupBy(filter, o => o.subcategory(isArabic));
+    // const keys = Object.keys(grouped);
+    return <View />;
+    // return keys.map((v, i) => {
+    //   return (
+    //     <HomeItem
+    //       key={i}
+    //       name={v}
+    //       tabIndex={i}
+    //       data={grouped[v]}
+    //       isArabic={isArabic}
+    //     />
+    //   );
+    // });
   };
 
   return (
@@ -231,7 +245,7 @@ export default () => {
     >
       <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
         <View style={styles.container}>
-          {_renderHeader}
+          {_renderHeader()}
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollView}

@@ -26,7 +26,7 @@ export default ({
 }) => {
   const {
     user: { cart },
-    app: { language, category }
+    app: { language, selectedCategory }
   } = useSelector(state => state);
   const isArabic = language === ARABIC;
   const memo = useMemo(
@@ -110,7 +110,7 @@ export default ({
         )}
       </View>
     ),
-    [language, category, cart.length]
+    [language, selectedCategory, cart.length]
   );
   return memo;
 };

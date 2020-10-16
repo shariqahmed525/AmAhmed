@@ -177,8 +177,8 @@ export default () => {
               text={isArabic ? "لم يتم العثور على نتائج" : "No results found"}
               secondaryText={
                 isArabic
-                  ? "عذرا ، لم نتمكن من العثور على أي فئة"
-                  : "Sorry, we couldn't find any category"
+                  ? "عذرا ، لم نتمكن من العثور على أي بيانات"
+                  : "Sorry, we couldn't find any بيانات"
               }
             />
           )}
