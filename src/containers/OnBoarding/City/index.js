@@ -66,7 +66,6 @@ export default () => {
         setCities([...data]);
         makeCities(data);
       }
-      console.log(data);
     } catch (error) {
       console.log(error, " error in getting cities");
     } finally {

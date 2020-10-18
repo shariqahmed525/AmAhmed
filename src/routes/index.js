@@ -56,7 +56,7 @@ const StackOptions = {
 
 const HomeStack = () => {
   return (
-    <Navigator initialRouteName="MyAddresses">
+    <Navigator initialRouteName="HomeScreen">
       <Screen component={Home} name="HomeScreen" options={StackOptions} />
       <Screen component={ItemDetail} name="ItemDetail" options={StackOptions} />
       <Screen

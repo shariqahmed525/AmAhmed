@@ -62,7 +62,15 @@ const styles = StyleSheet.create({
     paddingLeft: isArabic ? 10 : 0,
     paddingRight: isArabic ? 0 : 7,
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
-  })
+  }),
+  loaderWrapper: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  loader: {
+    width: 120
+  }
 });
 
 export default styles;

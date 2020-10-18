@@ -36,6 +36,7 @@
     "react-native": "0.63.3",
     "react-native-android-location-enabler": "^1.2.1",
     "react-native-device-info": "^6.2.0",
+    "react-native-fast-image": "^8.3.2",
     "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "^1.8.0",
     "react-native-maps": "https://github.com/react-community/react-native-maps.git",

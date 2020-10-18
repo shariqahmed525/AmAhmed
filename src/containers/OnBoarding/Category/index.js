@@ -24,13 +24,6 @@ export default () => {
   const { params } = useRoute();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-
-  const [alert, setAlert] = useState({
-    alert: false,
-    alertImg: "",
-    alertText: "",
-    alertTitle: ""
-  });
   const [internet, setInternet] = useState(true);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(!params?.fromHome);
@@ -69,7 +62,6 @@ export default () => {
         setCategories([...data]);
         checkCategory(data);
       }
-      console.log(data);
     } catch (error) {
       console.log(error, " error in getting cities");
     } finally {
@@ -178,7 +170,7 @@ export default () => {
               secondaryText={
                 isArabic
                   ? "عذرا ، لم نتمكن من العثور على أي بيانات"
-                  : "Sorry, we couldn't find any بيانات"
+                  : "Sorry, we couldn't find any data"
               }
             />
           )}

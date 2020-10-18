@@ -13,6 +13,7 @@ export const tabIconColor = "rgba(227, 10, 44, 0.4)";
 export const redColor = "#ff0100";
 export const greenColor = "#8fc94d";
 export const backgroundColor = "#f9f4f5";
+export const placeholderColor = "#f9f4f5";
 
 export const pending = "#ffc107";
 export const delivered = "#28a745";

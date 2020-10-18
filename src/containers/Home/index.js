@@ -10,10 +10,11 @@ import {
   TouchableOpacity
 } from "react-native";
 import _ from "lodash";
-import { useSelector } from "react-redux";
-import Swiper from "react-native-swiper";
 import styles from "./styles";
-import { theme } from "../../common/colors";
+import Swiper from "react-native-swiper";
+import { useSelector } from "react-redux";
+import { backgroundColor, theme } from "../../common/colors";
+import FastImage from "react-native-fast-image";
 import {
   ANDROID,
   ARABIC,
@@ -21,16 +22,22 @@ import {
   GOAT_MEAT_SLIDERS,
   VEGETABLES_FRUITS_SLIDER,
   CATEGORIES,
-  IOS
+  IOS,
+  BASE_URL
 } from "../../common/constants";
 import Header from "../../components/Header";
 import Drawer from "../../components/Drawer";
 import HomeItem from "../../components/Item";
+import LottieView from "lottie-react-native";
 import SideMenu from "react-native-side-menu";
+import NoInternet from "../../components/NoInternet";
+import NetInfo from "@react-native-community/netinfo";
 import messaging from "@react-native-firebase/messaging";
 import { useNavigation } from "@react-navigation/native";
 import PushNotification from "react-native-push-notification";
 import { Entypo, Icon, MaterialCommunityIcons } from "../../common/icons";
+import Axios from "axios";
+import NotFound from "../../components/NotFound";
 
 let _isMounted = false;
 
@@ -56,8 +63,12 @@ const CenterComponent = ({ text, isArabic, navigation }) => (
 
 export default () => {
   const navigation = useNavigation();
+  const [sliders, setSliders] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [internet, setInternet] = useState(true);
+  const [subCategories, setSubCategories] = useState([]);
+  const [sliderLoading, setSliderLoading] = useState(true);
   const { language, selectedCategory, selectedCity } = useSelector(
     state => state.app
   );
@@ -68,6 +79,7 @@ export default () => {
     if (_isMounted) {
       StatusBar.setBarStyle("light-content");
       ANDROID && StatusBar.setBackgroundColor(theme);
+      checkConnection(getSliders);
       IOS ? requestPermission() : checkPermission();
     }
   }, []);
@@ -104,7 +116,9 @@ export default () => {
   useEffect(() => {
     _isMounted = true;
     if (_isMounted) {
-      console.log("need to call api");
+      if (typeof getSubCategories === "function") {
+        checkConnection(getSubCategories);
+      }
     }
   }, [selectedCategory]);
 
@@ -123,6 +137,51 @@ export default () => {
         platform: IOS ? "Ios" : "android"
       })
     });
+  };
+
+  const checkConnection = func => {
+    NetInfo.fetch().then(state => {
+      if (!state.isConnected) {
+        setLoading(false);
+        setSliderLoading(false);
+        setInternet(false);
+      } else {
+        setInternet(true);
+        func();
+      }
+    });
+  };
+
+  const getSliders = async () => {
+    try {
+      setSliderLoading(true);
+      const { data } = await Axios.get(`${BASE_URL}/sliders`);
+      if (data && data.length > 0) {
+        setSliders([...data]);
+      }
+    } catch (error) {
+      console.log(error, " error in getting sliders");
+    } finally {
+      setSliderLoading(false);
+    }
+  };
+
+  const getSubCategories = async () => {
+    const locationId = selectedCity?.id;
+    const categoryId = selectedCategory?.id;
+    try {
+      setLoading(true);
+      const { data } = await Axios.get(
+        `${BASE_URL}/Categories/loc/${locationId}/cat/${categoryId}/sub`
+      );
+      if (data && data.length > 0) {
+        setSubCategories([...data]);
+      }
+    } catch (error) {
+      console.log(error, " error in getting sub categories");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const checkPermission = async () => {
@@ -152,33 +211,67 @@ export default () => {
     Linking.openURL("tel:+966568042000");
   };
 
-  const _renderSliderMemo = useMemo(() => {
-    const SLIDERS =
-      selectedCategory === "g/s" ? GOAT_MEAT_SLIDERS : VEGETABLES_FRUITS_SLIDER;
-    return (
-      <View style={styles.sliderWrapper}>
-        <Swiper
-          bounces
-          autoplay
-          horizontal={false}
-          activeDotColor={theme}
-          removeClippedSubviews={false}
-          containerStyle={styles.swiperWrapper}
-        >
-          {SLIDERS.map((v, i) => (
-            <View key={i} style={styles.sliderImageWrapper}>
-              <Image
-                source={v}
-                resizeMode="stretch"
-                resizeMethod="resize"
-                style={styles.sliderImage}
-              />
-            </View>
-          ))}
-        </Swiper>
+  const _renderSliderLoadingOrNotGetting = (loading = true) => (
+    <View style={styles.sliderWrapper}>
+      <View
+        style={{
+          ...styles.sliderImageWrapper,
+          borderWidth: 1,
+          borderRadius: 10,
+          alignItems: "center",
+          backgroundColor: "#fff",
+          justifyContent: "center",
+          borderColor: backgroundColor
+        }}
+      >
+        {loading ? (
+          <LottieView
+            loop
+            autoPlay
+            style={styles.loader}
+            source={require("../../../assets/animations/loader.json")}
+          />
+        ) : (
+          <Image
+            resizeMode="contain"
+            style={styles.loader}
+            source={require("../../../assets/images/logo.png")}
+          />
+        )}
       </View>
-    );
-  }, [selectedCategory]);
+    </View>
+  );
+
+  const _renderSliderMemo = useMemo(() => {
+    if (sliderLoading) {
+      return _renderSliderLoadingOrNotGetting();
+    } else if (sliders && sliders.length > 0) {
+      return (
+        <View style={styles.sliderWrapper}>
+          <Swiper
+            bounces
+            autoplay
+            horizontal={false}
+            activeDotColor={theme}
+            removeClippedSubviews={false}
+            containerStyle={styles.swiperWrapper}
+          >
+            {sliders.map((v, i) => (
+              <View key={i} style={styles.sliderImageWrapper}>
+                <FastImage
+                  source={{ uri: v.value }}
+                  style={styles.sliderImage}
+                  resizeMode={FastImage.resizeMode.stretch}
+                />
+              </View>
+            ))}
+          </Swiper>
+        </View>
+      );
+    } else {
+      return _renderSliderLoadingOrNotGetting(false);
+    }
+  }, [internet, sliderLoading, sliders]);
 
   const _renderHeader = () => {
     const catName =
@@ -217,10 +310,19 @@ export default () => {
   };
 
   const _renderItems = () => {
+    return subCategories.map((v, i) => (
+      <HomeItem
+        key={i}
+        tabIndex={i}
+        isArabic={isArabic}
+        subCategoryId={v.id}
+        name={isArabic ? v.nameAr : v.nameEn}
+      />
+    ));
     // const filter = ITEMS.filter(v => v.category === category);
     // const grouped = _.groupBy(filter, o => o.subcategory(isArabic));
     // const keys = Object.keys(grouped);
-    return <View />;
+    // return <View />;
     // return keys.map((v, i) => {
     //   return (
     //     <HomeItem
@@ -232,6 +334,11 @@ export default () => {
     //     />
     //   );
     // });
+  };
+
+  const handleRetry = () => {
+    checkConnection(getSliders);
+    checkConnection(getSubCategories);
   };
 
   return (
@@ -246,13 +353,43 @@ export default () => {
       <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
         <View style={styles.container}>
           {_renderHeader()}
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scrollView}
-          >
-            {_renderSliderMemo}
-            {_renderItems()}
-          </ScrollView>
+          {!internet ? (
+            <NoInternet isArabic={isArabic} onPress={handleRetry} />
+          ) : (
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.scrollView}
+              scrollEnabled={
+                !loading && subCategories && subCategories.length > 0
+              }
+            >
+              {_renderSliderMemo}
+              {loading ? (
+                <View style={styles.loaderWrapper}>
+                  <LottieView
+                    loop
+                    autoPlay
+                    style={styles.loader}
+                    source={require("../../../assets/animations/loader.json")}
+                  />
+                </View>
+              ) : subCategories && subCategories.length > 0 ? (
+                _renderItems()
+              ) : (
+                <NotFound
+                  isArabic={isArabic}
+                  text={
+                    isArabic ? "لم يتم العثور على نتائج" : "No results found"
+                  }
+                  secondaryText={
+                    isArabic
+                      ? "عذرا ، لم نتمكن من العثور على أي بيانات"
+                      : "Sorry, we couldn't find any data"
+                  }
+                />
+              )}
+            </ScrollView>
+          )}
         </View>
       </SafeAreaView>
     </SideMenu>

@@ -4,7 +4,13 @@ import * as Animatable from "react-native-animatable";
 import { useDispatch, useSelector } from "react-redux";
 import { addItemToCart } from "../../redux/actions/user";
 import { calculatePercentage } from "../../common/functions";
-import { theme, redColor, greenColor, lightTheme } from "../../common/colors";
+import {
+  theme,
+  redColor,
+  greenColor,
+  lightTheme,
+  placeholderColor
+} from "../../common/colors";
 import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
 import { WIDTH } from "../../common/constants";
 import { useNavigation } from "@react-navigation/native";
@@ -14,7 +20,7 @@ const IMAGE_WIDTH = ITEM_WIDTH - 20;
 
 let timeOut = null;
 
-export default ({ item, isArabic }) => {
+export default ({ item = {}, isArabic, dummy }) => {
   const {
     id,
     name,
@@ -31,7 +37,7 @@ export default ({ item, isArabic }) => {
   const {
     user: { cart }
   } = useSelector(state => state);
-  let findItem = cart.find(v => v.id === id);
+  let findItem = !dummy && cart.find(v => v?.id === id);
 
   const playSound = sound => {
     try {
@@ -90,6 +96,23 @@ export default ({ item, isArabic }) => {
     cartAction("+");
   };
 
+  if (dummy) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.itemWrapper(true)}>
+          <View>
+            <View style={styles.imageDummy} />
+            <View style={{ ...styles.textDummy, marginTop: 10 }} />
+          </View>
+          <View>
+            <View style={styles.textDummy} />
+            <View style={styles.textDummy} />
+            <View style={styles.buttonDummy} />
+          </View>
+        </View>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       {!inStock && (
@@ -412,5 +435,24 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textAlign: "center",
     fontFamily: "Rubik-SemiBold"
+  },
+  imageDummy: {
+    width: IMAGE_WIDTH,
+    height: (110 / 150) * IMAGE_WIDTH,
+    alignSelf: "center",
+    position: "relative",
+    backgroundColor: placeholderColor
+  },
+  textDummy: {
+    height: 17,
+    marginBottom: 10,
+    width: IMAGE_WIDTH,
+    backgroundColor: placeholderColor
+  },
+  buttonDummy: {
+    height: 22,
+    borderRadius: 5,
+    width: IMAGE_WIDTH,
+    backgroundColor: placeholderColor
   }
 });

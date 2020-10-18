@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Text,
   View,
@@ -7,17 +7,49 @@ import {
   TouchableOpacity
 } from "react-native";
 import Item from "./Item";
-import { theme } from "../../common/colors";
+import { darkGray, theme } from "../../common/colors";
 import { useNavigation } from "@react-navigation/native";
+import Axios from "axios";
+import { BASE_URL, WIDTH } from "../../common/constants";
 
 const renderItem = ({ item, isArabic }) => {
   return <Item item={item} isArabic={isArabic} />;
 };
 
-export default ({ data, name, onSeeAll, isArabic, tabIndex, ...rest }) => {
+export default ({
+  data,
+  name,
+  onSeeAll,
+  isArabic,
+  tabIndex,
+  subCategoryId,
+  ...rest
+}) => {
   const ref = useRef(null);
   const navigation = useNavigation();
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const keyExtractor = (item, index) => item + index;
+
+  const getItems = async () => {
+    try {
+      setLoading(true);
+      // we need this API
+      const { data } = await Axios.get(`${BASE_URL}/sliders`);
+      if (data && data.length > 0) {
+        // setItems([...data]);
+      }
+      console.log(data, " getItems");
+    } catch (error) {
+      console.log(error, " error in getting items");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getItems();
+  }, []);
 
   useEffect(() => {
     if (
@@ -35,35 +67,52 @@ export default ({ data, name, onSeeAll, isArabic, tabIndex, ...rest }) => {
         <View style={styles.itemColTopHeadTextWrapper(isArabic)}>
           <Text style={styles.itemColTopHead(isArabic)}>{name}</Text>
         </View>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={styles.seeAll}
-          onPress={() => {
-            navigation.navigate("Categories", {
-              screen: "CategoriesScreen",
-              params: { tabIndex }
-            });
-          }}
-        >
-          <Text style={styles.seeAllText(isArabic)}>
-            {isArabic ? "المزيد" : "MORE"}
-          </Text>
-        </TouchableOpacity>
+        {!loading && items.length > 0 && (
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.seeAll}
+            onPress={() => {
+              navigation.navigate("Categories", {
+                screen: "CategoriesScreen",
+                params: { tabIndex }
+              });
+            }}
+          >
+            <Text style={styles.seeAllText(isArabic)}>
+              {isArabic ? "المزيد" : "MORE"}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
-      {data && data.length > 0 && (
-        <FlatList
-          ref={ref}
-          extraData={rest}
-          horizontal={true}
-          inverted={isArabic}
-          data={data.slice(0, 5)}
-          keyExtractor={keyExtractor}
-          keyboardShouldPersistTaps="handled"
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.itemsCollectionScrollView}
-          renderItem={props => renderItem({ ...props, isArabic })}
-        />
-      )}
+      <FlatList
+        ref={ref}
+        data={items}
+        extraData={rest}
+        horizontal={true}
+        inverted={isArabic}
+        keyExtractor={keyExtractor}
+        keyboardShouldPersistTaps="handled"
+        showsHorizontalScrollIndicator={false}
+        ListEmptyComponent={() => {
+          if (loading) {
+            return new Array(5)
+              .fill("dummy")
+              .map((_, i) => <Item key={i} dummy />);
+          } else {
+            return (
+              <View style={styles.nothing}>
+                <Text style={styles.emptySubText(isArabic)}>
+                  {isArabic
+                    ? "عذرا ، لم نتمكن من العثور على أي بيانات"
+                    : "Sorry, we couldn't find any data"}
+                </Text>
+              </View>
+            );
+          }
+        }}
+        contentContainerStyle={styles.itemsCollectionScrollView}
+        renderItem={props => renderItem({ ...props, isArabic })}
+      />
     </View>
   );
 };
@@ -111,5 +160,16 @@ const styles = StyleSheet.create({
     color: "#fff",
     textAlign: "center",
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
+  }),
+  nothing: {
+    width: WIDTH - 20,
+    marginVertical: 10
+  },
+  emptySubText: isArabic => ({
+    color: darkGray,
+    textAlign: "center",
+    paddingHorizontal: 12,
+    fontSize: isArabic ? 16 : 18,
+    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   })
 });
