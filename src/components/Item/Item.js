@@ -11,9 +11,10 @@ import {
   lightTheme,
   placeholderColor
 } from "../../common/colors";
-import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
 import { WIDTH } from "../../common/constants";
+import FastImage from "react-native-fast-image";
 import { useNavigation } from "@react-navigation/native";
+import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 const ITEM_WIDTH = WIDTH / 2 - 17.5;
 const ITEM_HEIGHT = (270 / 160) * ITEM_WIDTH;
 const IMAGE_WIDTH = ITEM_WIDTH - 20;
@@ -23,12 +24,11 @@ let timeOut = null;
 export default ({ item = {}, isArabic, dummy }) => {
   const {
     id,
-    name,
-    image,
     price = 0,
     quantityType,
-    offerPrice = 0,
-    inStock = true
+    discount = 0,
+    stockQuantity,
+    thumbnailPictureUrl
   } = item;
   const ref = useRef(null);
   const dispatch = useDispatch();
@@ -115,7 +115,7 @@ export default ({ item = {}, isArabic, dummy }) => {
   }
   return (
     <View style={styles.container}>
-      {!inStock && (
+      {stockQuantity < 1 && (
         <View style={styles.outOfStockWrapper}>
           <Text style={styles.outOfStockWrapperLabel(isArabic)}>
             {isArabic ? "إنتهى من المخزن" : "OUT OF STOCK"}
@@ -125,7 +125,7 @@ export default ({ item = {}, isArabic, dummy }) => {
       <TouchableOpacity
         activeOpacity={0.7}
         onPress={handleItemPress}
-        style={styles.itemWrapper(inStock)}
+        style={styles.itemWrapper(stockQuantity > 1)}
       >
         {animatedObj && (
           <Animatable.View
@@ -139,20 +139,20 @@ export default ({ item = {}, isArabic, dummy }) => {
             </Text>
           </Animatable.View>
         )}
-        {offerPrice > 0 && inStock && (
+        {discount > 0 && stockQuantity > 1 && (
           <View style={styles.labelWrapper()}>
             <Text style={styles.label()}>
-              {calculatePercentage(price, offerPrice)}%
+              {calculatePercentage(price, discount)}%
               {isArabic ? "\nخصم" : "\nOFF"}
             </Text>
           </View>
         )}
         <View style={styles.firstSection}>
           <View style={styles.imageWrapper}>
-            <Image
-              source={image}
-              resizeMode="contain"
+            <FastImage
               style={styles.imageStyle}
+              resizeMode={FastImage.resizeMode.contain}
+              source={{ uri: thumbnailPictureUrl }}
             />
           </View>
           <Text
@@ -160,22 +160,24 @@ export default ({ item = {}, isArabic, dummy }) => {
             ellipsizeMode="tail"
             style={styles.name(isArabic)}
           >
-            {name(isArabic)}
+            {isArabic ? item?.nameAr : item?.nameEn}
           </Text>
         </View>
         <View style={styles.secondSection}>
           <Text style={styles.perQuantity(isArabic)}>
-            {quantityType(isArabic)}
+            {/* {quantityType(isArabic)} */}
           </Text>
           <View style={styles.priceContainer}>
             <Text style={styles.priceWrapper(isArabic)}>
               {!isArabic && "SAR "}
-              <Text style={styles.price(isArabic)}>{price} </Text>
+              <Text style={styles.price(isArabic)}>
+                {discount > 0 ? discount : price}{" "}
+              </Text>
               {isArabic && "ر.س "}
-              {offerPrice > 0 && inStock && (
+              {discount > 0 && stockQuantity > 1 && (
                 <Text style={styles.offerWrapper(isArabic)}>
                   {!isArabic && "SAR "}
-                  <Text>{price + offerPrice}</Text>
+                  <Text>{price}</Text>
                   {isArabic && " ر.س"}
                 </Text>
               )}

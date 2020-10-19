@@ -13,18 +13,9 @@ import _ from "lodash";
 import styles from "./styles";
 import Swiper from "react-native-swiper";
 import { useSelector } from "react-redux";
-import { backgroundColor, theme } from "../../common/colors";
 import FastImage from "react-native-fast-image";
-import {
-  ANDROID,
-  ARABIC,
-  ITEMS,
-  GOAT_MEAT_SLIDERS,
-  VEGETABLES_FRUITS_SLIDER,
-  CATEGORIES,
-  IOS,
-  BASE_URL
-} from "../../common/constants";
+import { theme, backgroundColor } from "../../common/colors";
+import { IOS, ANDROID, ARABIC, BASE_URL } from "../../common/constants";
 import Header from "../../components/Header";
 import Drawer from "../../components/Drawer";
 import HomeItem from "../../components/Item";
@@ -319,21 +310,6 @@ export default () => {
         name={isArabic ? v.nameAr : v.nameEn}
       />
     ));
-    // const filter = ITEMS.filter(v => v.category === category);
-    // const grouped = _.groupBy(filter, o => o.subcategory(isArabic));
-    // const keys = Object.keys(grouped);
-    // return <View />;
-    // return keys.map((v, i) => {
-    //   return (
-    //     <HomeItem
-    //       key={i}
-    //       name={v}
-    //       tabIndex={i}
-    //       data={grouped[v]}
-    //       isArabic={isArabic}
-    //     />
-    //   );
-    // });
   };
 
   const handleRetry = () => {

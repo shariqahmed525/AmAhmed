@@ -12,6 +12,8 @@ import { useNavigation } from "@react-navigation/native";
 import Axios from "axios";
 import { BASE_URL, WIDTH } from "../../common/constants";
 
+let _isMounted = false;
+
 const renderItem = ({ item, isArabic }) => {
   return <Item item={item} isArabic={isArabic} />;
 };
@@ -34,10 +36,11 @@ export default ({
   const getItems = async () => {
     try {
       setLoading(true);
-      // we need this API
-      const { data } = await Axios.get(`${BASE_URL}/sliders`);
+      const { data } = await Axios.get(
+        `${BASE_URL}/products/loc/2/cat/${subCategoryId}/pgNo/1/pgSize/5`
+      );
       if (data && data.length > 0) {
-        // setItems([...data]);
+        setItems([...data]);
       }
       console.log(data, " getItems");
     } catch (error) {
@@ -48,7 +51,10 @@ export default ({
   };
 
   useEffect(() => {
-    getItems();
+    _isMounted = true;
+    if (_isMounted) {
+      getItems();
+    }
   }, []);
 
   useEffect(() => {

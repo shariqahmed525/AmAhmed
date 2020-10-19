@@ -4,7 +4,8 @@ import {
   greenColor,
   theme,
   backgroundColor,
-  lightTheme
+  lightTheme,
+  redColor
 } from "../../common/colors";
 import { CONTAINER_PADDING, HEIGHT } from "../../common/constants";
 const styles = StyleSheet.create({
@@ -136,6 +137,44 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "Rubik-SemiBold"
   },
+  labelWrapper: isArabic => {
+    let obj = {};
+    if (isArabic) {
+      obj = {
+        left: 10
+      };
+    } else {
+      obj = {
+        right: 10
+      };
+    }
+    return {
+      ...obj,
+      top: 10,
+      zIndex: 1,
+      width: 60,
+      height: 60,
+      position: "absolute",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: redColor,
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2
+      },
+      elevation: 5,
+      borderRadius: 100,
+      shadowRadius: 3.84,
+      shadowOpacity: 0.25
+    };
+  },
+  label: () => ({
+    color: "#fff",
+    fontSize: 14,
+    textAlign: "center",
+    fontFamily: "Rubik-SemiBold"
+  }),
   nameWrapper: isArabic => ({
     width: "100%",
     paddingHorizontal: 5,
@@ -203,11 +242,24 @@ const styles = StyleSheet.create({
     elevation: 1,
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
+  radioItemText: isArabic => ({
+    color: "#111111",
+    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
+  }),
   description: isArabic => ({
     fontSize: 16,
     color: black,
+    marginLeft: isArabic ? 0 : 3,
+    marginRight: isArabic ? 3 : 0,
     textAlign: isArabic ? "right" : "left"
-  })
+  }),
+  miniLoaderWrapper: {
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  miniLoader: {
+    width: 85
+  }
 });
 
 export default styles;

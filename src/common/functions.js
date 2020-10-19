@@ -52,8 +52,8 @@ export const removePreviousRoutes = (
   });
 };
 
-export const calculatePercentage = (price, offerPrice) => {
-  const percentage = Math.round((price / (price + offerPrice)) * 100);
+export const calculatePercentage = (price, discount) => {
+  const percentage = Math.round((discount / price) * 100);
   return 100 - percentage;
 };
 
