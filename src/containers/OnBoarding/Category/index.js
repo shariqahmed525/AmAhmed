@@ -166,7 +166,7 @@ export default () => {
           ) : (
             <NotFound
               isArabic={isArabic}
-              text={isArabic ? "لم يتم العثور على نتائج" : "No results found"}
+              text={isArabic ? "لم يتم العثور على نتائج" : "No Results Found"}
               secondaryText={
                 isArabic
                   ? "عذرا ، لم نتمكن من العثور على أي بيانات"

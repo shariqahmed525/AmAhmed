@@ -24,6 +24,7 @@ export default ({
   onSeeAll,
   isArabic,
   tabIndex,
+  locationId,
   subCategoryId,
   ...rest
 }) => {
@@ -32,17 +33,17 @@ export default ({
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const keyExtractor = (item, index) => item + index;
-
   const getItems = async () => {
     try {
       setLoading(true);
       const { data } = await Axios.get(
-        `${BASE_URL}/products/loc/2/cat/${subCategoryId}/pgNo/1/pgSize/5`
+        `${BASE_URL}/products/loc/${locationId}/cat/${subCategoryId}/pgNo/1/pgSize/5`
       );
       if (data && data.length > 0) {
         setItems([...data]);
+      } else {
+        setItems([]);
       }
-      console.log(data, " getItems");
     } catch (error) {
       console.log(error, " error in getting items");
     } finally {

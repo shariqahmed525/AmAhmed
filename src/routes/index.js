@@ -211,7 +211,7 @@ const Tab = () => {
 
 const OnBoardStack = () => {
   return (
-    <Navigator initialRouteName={"MainStack"}>
+    <Navigator initialRouteName={"OnBoardingCity"}>
       <Screen
         options={StackOptions}
         name="OnBoardingCity"

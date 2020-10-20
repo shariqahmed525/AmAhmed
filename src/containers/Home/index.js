@@ -167,6 +167,8 @@ export default () => {
       );
       if (data && data.length > 0) {
         setSubCategories([...data]);
+      } else {
+        setSubCategories([]);
       }
     } catch (error) {
       console.log(error, " error in getting sub categories");
@@ -301,12 +303,14 @@ export default () => {
   };
 
   const _renderItems = () => {
+    const locationId = selectedCity?.id;
     return subCategories.map((v, i) => (
       <HomeItem
         key={i}
         tabIndex={i}
         isArabic={isArabic}
         subCategoryId={v.id}
+        locationId={locationId}
         name={isArabic ? v.nameAr : v.nameEn}
       />
     ));
@@ -355,7 +359,7 @@ export default () => {
                 <NotFound
                   isArabic={isArabic}
                   text={
-                    isArabic ? "لم يتم العثور على نتائج" : "No results found"
+                    isArabic ? "لم يتم العثور على نتائج" : "No Results Found"
                   }
                   secondaryText={
                     isArabic

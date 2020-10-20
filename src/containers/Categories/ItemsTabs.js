@@ -1,14 +1,19 @@
-import React, { useEffect, useRef } from "react";
-import { Animated, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
 import { backgroundColor, secondaryHeader } from "../../common/colors";
 import TabBar from "react-native-underline-tabbar";
 import ScrollableTabView from "react-native-scrollable-tab-view";
 import { useSelector } from "react-redux";
-import { ANDROID, ARABIC, IOS, ITEMS } from "../../common/constants";
+import { ANDROID, ARABIC, BASE_URL, IOS } from "../../common/constants";
 import Page from "./Page";
 import _ from "lodash";
+import LottieView from "lottie-react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Tab as NativeBaseTab, Tabs, ScrollableTab } from "native-base";
+import NoInternet from "../../components/NoInternet";
+import NetInfo from "@react-native-community/netinfo";
+import Axios from "axios";
+import NotFound from "../../components/NotFound";
 
 let _isMounted = false;
 
@@ -48,9 +53,16 @@ const Tab = ({
 export default () => {
   const tabView = useRef(null);
   const navigation = useNavigation();
-  const { language, category } = useSelector(state => state.app);
+  const [loading, setLoading] = useState(true);
+  const [internet, setInternet] = useState(true);
+  const [subCategories, setSubCategories] = useState([]);
+
+  const { language, selectedCategory, selectedCity } = useSelector(
+    state => state.app
+  );
   const isArabic = language === ARABIC;
 
+  // tab redirection
   useEffect(() => {
     _isMounted = true;
     if (_isMounted) {
@@ -82,12 +94,47 @@ export default () => {
     }
   }, []);
 
+  // Api listner
   useEffect(() => {
     _isMounted = true;
     if (_isMounted) {
-      console.log("need to call api");
+      if (typeof getSubCategories === "function") {
+        checkConnection(getSubCategories);
+      }
     }
-  }, [category]);
+  }, [selectedCategory]);
+
+  const checkConnection = func => {
+    NetInfo.fetch().then(state => {
+      if (!state.isConnected) {
+        setLoading(false);
+        setInternet(false);
+      } else {
+        setInternet(true);
+        func();
+      }
+    });
+  };
+
+  const getSubCategories = async () => {
+    const locationId = selectedCity?.id;
+    const categoryId = selectedCategory?.id;
+    try {
+      setLoading(true);
+      const { data } = await Axios.get(
+        `${BASE_URL}/Categories/loc/${locationId}/cat/${categoryId}/sub`
+      );
+      if (data && data.length > 0) {
+        setSubCategories([...data]);
+      } else {
+        setSubCategories([]);
+      }
+    } catch (error) {
+      console.log(error, " error in getting sub categories");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   let _scrollX = new Animated.Value(0);
   const interpolators = Array.from({ length: 100 }, (_, i) => i).map(idx => ({
@@ -115,101 +162,127 @@ export default () => {
   }));
 
   const renderPages = () => {
-    const filter = ITEMS.filter(v => v.category === category);
-    const grouped = _.groupBy(filter, o => o.subcategory(isArabic));
-    const keys = Object.keys(grouped);
-    return keys.map((v, i) => {
+    const locationId = selectedCity?.id;
+    return subCategories.map((v, i) => {
       return (
         <Page
           key={i}
-          data={grouped[v]}
           isArabic={isArabic}
-          tabLabel={{ label: v }}
-          navigation={navigation}
+          subCategoryId={v.id}
+          locationId={locationId}
+          tabLabel={{ label: isArabic ? v.nameAr : v.nameEn }}
         />
       );
     });
   };
 
   const renderTabs = () => {
-    const filter = ITEMS.filter(v => v.category === category);
-    const grouped = _.groupBy(filter, o => o.subcategory(isArabic));
-    const keys = Object.keys(grouped);
-    return keys.map((v, i) => {
+    const locationId = selectedCity?.id;
+    return subCategories.map((v, i) => {
       return (
         <NativeBaseTab
           key={i}
-          heading={v}
           tabStyle={styles.tabStyle(isArabic)}
+          heading={isArabic ? v.nameAr : v.nameEn}
           textStyle={styles.tabTextStyle(isArabic)}
           activeTabStyle={styles.tabStyle(isArabic)}
           activeTextStyle={styles.tabTextStyle(isArabic, true)}
         >
           <Page
             key={i}
-            data={grouped[v]}
             isArabic={isArabic}
-            navigation={navigation}
+            subCategoryId={v.id}
+            locationId={locationId}
+            // tabLabel={{ label: isArabic ? v.nameAr : v.nameEn }}
           />
         </NativeBaseTab>
       );
     });
   };
 
-  if (ANDROID) {
+  const handleRetry = () => {};
+
+  if (!internet) {
+    return <NoInternet isArabic={isArabic} onPress={handleRetry} />;
+  } else if (loading) {
     return (
-      <Tabs
-        ref={tabView}
-        initialPage={0}
-        style={styles.tabBarStyle(isArabic)}
-        renderTabBar={() => (
-          <ScrollableTab
-            style={{
-              backgroundColor: secondaryHeader,
-              transform: [{ scaleX: isArabic ? -1 : 1 }]
-            }}
-            tabsContainerStyle={styles.tabBarStyle(isArabic)}
-          />
-        )}
-      >
-        {renderTabs()}
-      </Tabs>
+      <View style={styles.loaderWrapper}>
+        <LottieView
+          loop
+          autoPlay
+          style={styles.loader}
+          source={require("../../../assets/animations/loader.json")}
+        />
+      </View>
     );
+  } else if (subCategories && subCategories.length > 0) {
+    if (ANDROID) {
+      return (
+        <Tabs
+          ref={tabView}
+          initialPage={0}
+          style={styles.tabBarStyle(isArabic)}
+          renderTabBar={() => (
+            <ScrollableTab
+              style={{
+                backgroundColor: secondaryHeader,
+                transform: [{ scaleX: isArabic ? -1 : 1 }]
+              }}
+              tabsContainerStyle={styles.tabBarStyle(isArabic)}
+            />
+          )}
+        >
+          {renderTabs()}
+        </Tabs>
+      );
+    } else {
+      return (
+        <ScrollableTabView
+          ref={tabView}
+          initialPage={0}
+          renderTabBar={() => (
+            <TabBar
+              underlineHeight={3}
+              underlineColor={"#fff"}
+              tabBarStyle={styles.tabBarStyle(isArabic)}
+              renderTab={(
+                tab,
+                page,
+                isTabActive,
+                onPressHandler,
+                onTabLayout
+              ) => (
+                <Tab
+                  key={page}
+                  tab={tab}
+                  page={page}
+                  isArabic={isArabic}
+                  navigation={navigation}
+                  isTabActive={isTabActive}
+                  onTabLayout={onTabLayout}
+                  styles={interpolators[page]}
+                  onPressHandler={onPressHandler}
+                />
+              )}
+            />
+          )}
+          onScroll={x => _scrollX.setValue(x)}
+        >
+          {renderPages()}
+        </ScrollableTabView>
+      );
+    }
   } else {
     return (
-      <ScrollableTabView
-        ref={tabView}
-        initialPage={0}
-        renderTabBar={() => (
-          <TabBar
-            underlineHeight={3}
-            underlineColor={"#fff"}
-            tabBarStyle={styles.tabBarStyle(isArabic)}
-            renderTab={(
-              tab,
-              page,
-              isTabActive,
-              onPressHandler,
-              onTabLayout
-            ) => (
-              <Tab
-                key={page}
-                tab={tab}
-                page={page}
-                isArabic={isArabic}
-                navigation={navigation}
-                isTabActive={isTabActive}
-                onTabLayout={onTabLayout}
-                styles={interpolators[page]}
-                onPressHandler={onPressHandler}
-              />
-            )}
-          />
-        )}
-        onScroll={x => _scrollX.setValue(x)}
-      >
-        {renderPages()}
-      </ScrollableTabView>
+      <NotFound
+        isArabic={isArabic}
+        text={isArabic ? "لم يتم العثور على نتائج" : "No Results Found"}
+        secondaryText={
+          isArabic
+            ? "عذرا ، لم نتمكن من العثور على أي بيانات"
+            : "Sorry, we couldn't find any data"
+        }
+      />
     );
   }
 };
@@ -242,5 +315,13 @@ const styles = StyleSheet.create({
       { scale: active ? 1.1 : 0.9 }
     ],
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
-  })
+  }),
+  loaderWrapper: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  loader: {
+    width: 120
+  }
 });

@@ -219,7 +219,7 @@ export default () => {
               source={require("../../../assets/animations/notfoundaddress.json")}
             />
             <Text style={styles.emptyText(isArabic)}>
-              {isArabic ? "لم يتم العثور على نتائج" : "No results found"}
+              {isArabic ? "لم يتم العثور على نتائج" : "No Results Found"}
             </Text>
             <Text style={styles.emptySubText(isArabic)}>
               {isArabic

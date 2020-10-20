@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
   ImageBackground
 } from "react-native";
-import { theme } from "../common/colors";
+import { lightTheme, theme } from "../common/colors";
 import DeviceInfo from "react-native-device-info";
+import FastImage from "react-native-fast-image";
 
 export default ({
   text,
@@ -33,10 +34,10 @@ export default ({
           />
         </View>
       )}
-      <ImageBackground
+      <FastImage
         source={source}
-        resizeMode="cover"
         style={styles.listBackground}
+        resizeMode={FastImage.resizeMode.cover}
       >
         <View style={styles.textWrapper(isCity)}>
           {primaryText && (
@@ -46,7 +47,7 @@ export default ({
           )}
           <Text style={styles.listText(isArabic)}>{text}</Text>
         </View>
-      </ImageBackground>
+      </FastImage>
     </TouchableOpacity>
   );
 };
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
   }),
   listBackground: {
     flex: 1,
-    backgroundColor: theme
+    backgroundColor: lightTheme
   },
   primaryText: (isArabic, isCity) => ({
     color: "#fff",

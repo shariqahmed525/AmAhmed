@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import LottieView from "lottie-react-native";
 import { SafeAreaView } from "react-navigation";
@@ -16,18 +16,34 @@ import Header from "../../components/Header";
 import Item from "../../components/Item/Item";
 import { secondaryHeader, theme } from "../../common/colors";
 import { Octicons, MaterialIcons } from "../../common/icons";
-import { ANDROID, ARABIC, ITEMS, WIDTH } from "../../common/constants";
+import { ANDROID, ARABIC, BASE_URL, WIDTH } from "../../common/constants";
+import NoInternet from "../../components/NoInternet";
+import NetInfo from "@react-native-community/netinfo";
+import Axios from "axios";
 
 const renderItem = ({ item, isArabic }) => {
   return <Item item={item} isArabic={isArabic} />;
 };
 
+const Loader = ({ length = 10 }) =>
+  new Array(length).fill("dummy").map((_, i) => <Item key={i} dummy />);
+
 export default props => {
+  const scrollRef = useRef(null);
   const [text, setText] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { language, category } = useSelector(state => state.app);
+  const [internet, setInternet] = useState(true);
+
+  const [page, setPage] = useState(1);
+  const [moreFetching, setMoreFetching] = useState(false);
+  const [lastItemsLength, setLastItemsLength] = useState(0);
+
+  const { language, selectedCategory, selectedCity } = useSelector(
+    state => state.app
+  );
   const isArabic = language === ARABIC;
-  const [data, setData] = useState(ITEMS.filter(o => o.category === category));
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
@@ -49,110 +65,191 @@ export default props => {
   );
 
   useEffect(() => {
+    setPage(1);
     setText("");
-    setData([...ITEMS.filter(o => o.category === category)]);
-  }, [category]);
+    setItems([]);
+    setSearchText("");
+    setLoading(false);
+    setLastItemsLength(0);
+  }, [selectedCategory]);
+
+  const checkConnection = () => {
+    NetInfo.fetch().then(state => {
+      if (!state.isConnected) {
+        setLoading(false);
+        setInternet(false);
+      } else {
+        getItems();
+      }
+    });
+  };
+
+  const getItems = async moreFetch => {
+    const locationId = selectedCity?.id;
+    try {
+      moreFetch && setMoreFetching(true);
+      const { data } = await Axios.get(
+        `${BASE_URL}/products/loc/${locationId}/search/${text}/pgNo/${page}/pgSize/10`
+      );
+      if (data && data.length > 0) {
+        !moreFetch && setItems([...data]);
+        moreFetch && setItems(state => [...state, ...data]);
+        moreFetch && setPage(state => state + 1);
+        setLastItemsLength(data.length);
+      } else {
+        !moreFetch && setItems([]);
+        moreFetch && setItems([...data]);
+        setLastItemsLength(0);
+      }
+    } catch (error) {
+      console.log(error, " error in getting search items");
+    } finally {
+      !moreFetch && setLoading(false);
+      moreFetch && setMoreFetching(false);
+    }
+  };
 
   const onSearch = () => {
+    if (!text.trim()) return;
+    scrollRef.current.scrollToOffset({ animated: true, offset: 0 });
+    setItems([]);
     setLoading(true);
-    const filter = ITEMS.filter(o => {
-      const itemLowerCase = o.name(isArabic).toLocaleLowerCase();
-      const textLowerCase = text.toLocaleLowerCase();
-      return itemLowerCase.includes(textLowerCase) && o.category === category;
-    });
-    setData([...filter]);
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
+    setSearchText(text);
+    checkConnection();
   };
 
   const handleClear = () => {
+    setPage(1);
     setText("");
-    setData([...ITEMS.filter(o => o.category === category)]);
+    setSearchText("");
   };
+
+  const handleRetry = () => {
+    checkConnection();
+  };
+
+  const fetchMoreItems = () => {
+    if (lastItemsLength < 10) return;
+    getItems(true);
+  };
+
+  const _renderInput = () => (
+    <View style={styles.inputContainer(isArabic)}>
+      <View style={styles.inputWrapper(isArabic)}>
+        <TextInput
+          blurOnSubmit
+          value={text}
+          spellCheck={false}
+          autoCorrect={false}
+          onSubmitEditing={onSearch}
+          style={styles.input(isArabic)}
+          onChangeText={text => setText(text)}
+          placeholder={isArabic ? "بحث عن البند" : "Search Item"}
+        />
+        {text !== "" && (
+          <View
+            style={{
+              marginRight: isArabic ? 0 : 7,
+              marginLeft: isArabic ? 7 : 0
+            }}
+          >
+            <MaterialIcons
+              size={25}
+              name="close"
+              color={secondaryHeader}
+              onPress={handleClear}
+            />
+          </View>
+        )}
+        <TouchableOpacity
+          onPress={onSearch}
+          activeOpacity={0.7}
+          style={styles.searchIconWrapper(isArabic)}
+        >
+          <Octicons size={23} name="search" color={"#fff"} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
       <View style={styles.container}>
         {header}
-        <View style={styles.inputContainer(isArabic)}>
-          <View style={styles.inputWrapper(isArabic)}>
-            <TextInput
-              blurOnSubmit
-              value={text}
-              spellCheck={false}
-              autoCorrect={false}
-              onSubmitEditing={onSearch}
-              style={styles.input(isArabic)}
-              onChangeText={text => setText(text)}
-              placeholder={isArabic ? "بحث عن البند" : "Search Item"}
-            />
-            {text !== "" && (
-              <View
-                style={{
-                  marginRight: isArabic ? 0 : 7,
-                  marginLeft: isArabic ? 7 : 0
-                }}
-              >
-                <MaterialIcons
-                  size={25}
-                  name="close"
-                  color={secondaryHeader}
-                  onPress={handleClear}
-                />
-              </View>
-            )}
-            <TouchableOpacity
-              onPress={onSearch}
-              activeOpacity={0.7}
-              style={styles.searchIconWrapper(isArabic)}
-            >
-              <Octicons size={23} name="search" color={"#fff"} />
-            </TouchableOpacity>
-          </View>
-        </View>
-        {loading ? (
-          <View style={styles.emptyWrapper}>
-            <LottieView
-              loop
-              autoPlay
-              style={{ width: WIDTH * 0.5 }}
-              source={require("../../../assets/animations/search.json")}
-            />
-            <Text style={styles.emptyText(isArabic)}>Searching...</Text>
-          </View>
-        ) : data.length > 0 ? (
+        {_renderInput()}
+        {!internet ? (
+          <NoInternet isArabic={isArabic} onPress={handleRetry} />
+        ) : (
           <FlatList
-            data={data}
+            ref={scrollRef}
             extraData={props}
+            data={items || []}
             keyExtractor={keyExtractor}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.itemContainer(isArabic)}
+            ListEmptyComponent={() => {
+              if (loading) {
+                return (
+                  <View style={styles.emptyWrapper}>
+                    <LottieView
+                      loop
+                      autoPlay
+                      style={{ width: WIDTH * 0.5, alignSelf: "center" }}
+                      source={require("../../../assets/animations/search.json")}
+                    />
+                    <Text style={styles.emptyText(isArabic)}>Searching...</Text>
+                  </View>
+                );
+              } else if (searchText === "" && items.length < 1) {
+                return (
+                  <View style={styles.emptyWrapper}>
+                    <LottieView
+                      loop
+                      autoPlay
+                      style={{ width: WIDTH * 0.75 }}
+                      source={require("../../../assets/animations/search-empty.json")}
+                    />
+                  </View>
+                );
+              } else {
+                return (
+                  <View style={styles.emptyWrapper}>
+                    <LottieView
+                      loop
+                      autoPlay
+                      style={{ width: WIDTH * 0.75 }}
+                      source={require("../../../assets/animations/nosearch.json")}
+                    />
+                    <Text style={styles.emptyText(isArabic)}>
+                      {isArabic
+                        ? "لم يتم العثور على نتائج"
+                        : "No Results Found"}
+                    </Text>
+                    <Text style={styles.emptySubText(isArabic)}>
+                      {isArabic
+                        ? "عذرا، لاتوجد أية نتيجة تتعلق بهذا البحث"
+                        : "Sorry, there are no results for this search"}{" "}
+                      {"\n"}
+                      {isArabic
+                        ? "يرجى محاولة عبارة أخرى."
+                        : "please try another phrase."}
+                    </Text>
+                  </View>
+                );
+              }
+            }}
+            onEndReachedThreshold={0.5}
+            onEndReached={fetchMoreItems}
+            ListFooterComponentStyle={styles.loadingMore}
+            ListFooterComponent={() => moreFetching && <Loader />}
             renderItem={props => renderItem({ ...props, isArabic })}
+            contentContainerStyle={{
+              ...styles.flatListContainer(isArabic),
+              justifyContent:
+                loading || items.length < 1 ? "center" : "space-between"
+            }}
           />
-        ) : (
-          <View style={styles.emptyWrapper}>
-            <LottieView
-              loop
-              autoPlay
-              style={{ width: WIDTH * 0.75 }}
-              source={require("../../../assets/animations/nosearch.json")}
-            />
-            <Text style={styles.emptyText(isArabic)}>
-              {isArabic ? "لم يتم العثور على نتائج" : "No Results Found"}
-            </Text>
-            <Text style={styles.emptySubText(isArabic)}>
-              {isArabic
-                ? "عذرا، لاتوجد أية نتيجة تتعلق بهذا البحث"
-                : "Sorry, there are no results for this search"}{" "}
-              {"\n"}
-              {isArabic
-                ? "يرجى محاولة عبارة أخرى."
-                : "please try another phrase."}
-            </Text>
-          </View>
         )}
       </View>
     </SafeAreaView>

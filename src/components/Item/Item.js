@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   container: {
     width: ITEM_WIDTH,
     height: ITEM_HEIGHT,
-    marginVertical: 5,
+    marginVertical: 7,
     marginHorizontal: 5
   },
   itemWrapper: inStock => {
@@ -330,8 +330,8 @@ const styles = StyleSheet.create({
     position: "relative"
   },
   labelWrapper: () => ({
-    top: 1,
-    right: 1,
+    top: 3,
+    right: 3,
     zIndex: 1,
     width: 60,
     height: 60,

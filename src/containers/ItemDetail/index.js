@@ -105,7 +105,7 @@ export default () => {
   const hasPacking = item?.hasPacking;
   const hasCuttingWay = item?.hasCuttingWay;
   const hasHeadAndLegs = item?.hasHeadAndLegs;
-
+  console.log(item, " item");
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const {
@@ -167,7 +167,7 @@ export default () => {
   const getCuttingWays = async () => {
     try {
       setCuttingLoading(true);
-      const { data } = await Axios.get(`${BASE_URL}/CuttingWays/${item.id}`);
+      const { data } = await Axios.get(`${BASE_URL}/CuttingWays`);
       if (data && data.length > 0) {
         setCuttingWays([...data]);
       }
@@ -182,7 +182,7 @@ export default () => {
   const getHeadAndLegs = async () => {
     try {
       setHeadAndLegsLoading(true);
-      const { data } = await Axios.get(`${BASE_URL}/HeadAndLegs/${item.id}`);
+      const { data } = await Axios.get(`${BASE_URL}/HeadAndLegs`);
       if (data && data.length > 0) {
         setHeadAndLegs([...data]);
       }
@@ -197,7 +197,7 @@ export default () => {
   const getPackings = async () => {
     try {
       setPackingLoading(true);
-      const { data } = await Axios.get(`${BASE_URL}/packings/${item.id}`);
+      const { data } = await Axios.get(`${BASE_URL}/packings`);
       if (data && data.length > 0) {
         setPackings([...data]);
       }
@@ -464,7 +464,7 @@ export default () => {
                       marginRight: isArabic ? 3 : 0
                     }}
                   >
-                    {isArabic ? "التعبئة" : "Description"}
+                    {isArabic ? "الوصف" : "Description"}
                   </Text>
                   <Text style={styles.description(isArabic)}>
                     {isArabic ? item?.summaryAr : item?.summaryEn}

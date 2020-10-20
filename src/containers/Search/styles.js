@@ -16,6 +16,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor
   },
+  flatListContainer: isArabic => ({
+    flexGrow: 1,
+    backgroundColor,
+    flexWrap: "wrap",
+    paddingHorizontal: 5,
+    paddingVertical: 10,
+    justifyContent: "space-between",
+    flexDirection: isArabic ? "row-reverse" : "row"
+  }),
   itemWrapper: {
     flex: 1,
     backgroundColor,
@@ -56,6 +65,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 25,
     borderWidth: 0,
     shadowColor: "#000",
+    height: 47,
     shadowOffset: {
       width: 0,
       height: IOS ? 0 : 2
@@ -83,7 +93,6 @@ const styles = StyleSheet.create({
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
   emptyWrapper: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center"
   },
@@ -100,8 +109,8 @@ const styles = StyleSheet.create({
     width: WIDTH * 0.75
   },
   searchIconWrapper: isArabic => ({
-    flex: 1,
     width: 55,
+    height: "100%",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: secondaryHeader,
@@ -110,7 +119,12 @@ const styles = StyleSheet.create({
         rotateY: isArabic ? "180deg" : "0deg"
       }
     ]
-  })
+  }),
+  loadingMore: {
+    flexWrap: "wrap",
+    flexDirection: "row",
+    justifyContent: "space-between"
+  }
 });
 
 export default styles;
