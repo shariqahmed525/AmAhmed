@@ -25,8 +25,8 @@ export default ({ item = {}, isArabic, dummy }) => {
   const {
     id,
     price = 0,
-    quantityType,
     discount = 0,
+    minOrderQty,
     stockQuantity,
     thumbnailPictureUrl
   } = item;
@@ -38,7 +38,6 @@ export default ({ item = {}, isArabic, dummy }) => {
     user: { cart }
   } = useSelector(state => state);
   let findItem = !dummy && cart.find(v => v?.id === id);
-
   const playSound = sound => {
     try {
       SoundPlayer.playSoundFile(sound, "mp3");
@@ -115,7 +114,7 @@ export default ({ item = {}, isArabic, dummy }) => {
   }
   return (
     <View style={styles.container}>
-      {stockQuantity < 1 && (
+      {stockQuantity < minOrderQty && (
         <View style={styles.outOfStockWrapper}>
           <Text style={styles.outOfStockWrapperLabel(isArabic)}>
             {isArabic ? "إنتهى من المخزن" : "OUT OF STOCK"}
@@ -125,7 +124,7 @@ export default ({ item = {}, isArabic, dummy }) => {
       <TouchableOpacity
         activeOpacity={0.7}
         onPress={handleItemPress}
-        style={styles.itemWrapper(stockQuantity > 1)}
+        style={styles.itemWrapper(stockQuantity >= minOrderQty)}
       >
         {animatedObj && (
           <Animatable.View
@@ -139,7 +138,7 @@ export default ({ item = {}, isArabic, dummy }) => {
             </Text>
           </Animatable.View>
         )}
-        {discount > 0 && stockQuantity > 1 && (
+        {discount > 0 && stockQuantity >= minOrderQty && (
           <View style={styles.labelWrapper()}>
             <Text style={styles.label()}>
               {calculatePercentage(price, discount)}%
@@ -165,7 +164,7 @@ export default ({ item = {}, isArabic, dummy }) => {
         </View>
         <View style={styles.secondSection}>
           <Text style={styles.perQuantity(isArabic)}>
-            {/* {quantityType(isArabic)} */}
+            {isArabic ? item?.unitTypeAr : item?.unitTypeEn}
           </Text>
           <View style={styles.priceContainer}>
             <Text style={styles.priceWrapper(isArabic)}>
@@ -174,7 +173,7 @@ export default ({ item = {}, isArabic, dummy }) => {
                 {discount > 0 ? discount : price}{" "}
               </Text>
               {isArabic && "ر.س "}
-              {discount > 0 && stockQuantity > 1 && (
+              {discount > 0 && stockQuantity >= minOrderQty && (
                 <Text style={styles.offerWrapper(isArabic)}>
                   {!isArabic && "SAR "}
                   <Text>{price}</Text>

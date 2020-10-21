@@ -69,6 +69,10 @@ export default (state = initialState, { type, payload }) => {
         if (payload.action == "x") {
           cart.splice(findIndex, 1);
         }
+        if (payload.action == "!") {
+          // console.log(payload.item, " payload.item");
+          cart[findIndex] = { ...payload.item };
+        }
       } else {
         if (payload.action == "+") {
           cart.push({

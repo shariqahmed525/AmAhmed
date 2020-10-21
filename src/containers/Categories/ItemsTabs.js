@@ -193,7 +193,6 @@ export default () => {
             isArabic={isArabic}
             subCategoryId={v.id}
             locationId={locationId}
-            // tabLabel={{ label: isArabic ? v.nameAr : v.nameEn }}
           />
         </NativeBaseTab>
       );

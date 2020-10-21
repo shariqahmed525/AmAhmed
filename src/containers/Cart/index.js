@@ -47,6 +47,28 @@ export default () => {
     />
   );
 
+  const total = () => {
+    const sum = cart.reduce((partialSum, val) => {
+      const pp = val?.discount > 0 ? val?.discount : val?.price;
+      const cuttingWayPrice =
+        val?.hasCuttingWay && val?.cuttingWay && val?.cuttingWay?.cost
+          ? val?.cuttingWay?.cost
+          : 0;
+      const headAndLegsPrice =
+        val?.hasHeadAndLegs && val?.headAndLeg && val?.headAndLeg?.cost
+          ? val?.headAndLeg?.cost
+          : 0;
+      const packingPrice =
+        val?.hasPacking && val?.packing && val?.packing?.cost
+          ? val?.packing?.cost
+          : 0;
+      const totalItemCost =
+        pp + cuttingWayPrice + headAndLegsPrice + packingPrice;
+      return partialSum + totalItemCost;
+    }, 0);
+    return sum;
+  };
+
   return (
     <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
       <View style={styles.container}>
@@ -67,7 +89,7 @@ export default () => {
                   {!isArabic && (
                     <Text style={styles.totalSign(isArabic)}>SAR </Text>
                   )}
-                  190
+                  {total()}
                   {isArabic && (
                     <Text style={styles.totalSign(isArabic)}>ر.س </Text>
                   )}

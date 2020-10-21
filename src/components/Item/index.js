@@ -81,7 +81,7 @@ export default ({
             onPress={() => {
               navigation.navigate("Categories", {
                 screen: "CategoriesScreen",
-                params: { tabIndex }
+                params: { tabIndex, subCategoryId }
               });
             }}
           >

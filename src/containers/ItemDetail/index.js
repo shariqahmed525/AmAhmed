@@ -24,11 +24,9 @@ import { backgroundColor, gray, theme } from "../../common/colors";
 import {
   ANDROID,
   ARABIC,
-  PACKING,
   ERROR_IMG,
-  CUTTINGWAY,
-  HEAD_AND_LEGS,
-  BASE_URL
+  BASE_URL,
+  HEIGHT
 } from "../../common/constants";
 import Axios from "axios";
 import NoInternet from "../../components/NoInternet";
@@ -93,7 +91,7 @@ const PriceRender = ({ isArabic, item }) => (
       </Text>
     </View>
     <Text style={styles.perQuantity(isArabic)}>
-      {/* {item?.quantityType(isArabic)} */}
+      {isArabic ? item?.unitTypeAr : item?.unitTypeEn}
     </Text>
   </View>
 );
@@ -102,10 +100,10 @@ export default () => {
   const {
     params: { item }
   } = useRoute();
+
   const hasPacking = item?.hasPacking;
   const hasCuttingWay = item?.hasCuttingWay;
   const hasHeadAndLegs = item?.hasHeadAndLegs;
-  console.log(item, " item");
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const {
@@ -127,31 +125,75 @@ export default () => {
     alertText: "",
     alertTitle: ""
   });
-  const [checked1, setChecked1] = useState(null);
-  const [checked2, setChecked2] = useState(1);
-  const [checked3, setChecked3] = useState(null);
-  const [animatedObj, setAnimatedObj] = useState(null);
+  const [update, setUpdate] = useState(false);
   const [internet, setInternet] = useState(true);
-  const [cuttingLoading, setCuttingLoading] = useState(
-    !findItem && hasCuttingWay
-  );
+  const [animatedObj, setAnimatedObj] = useState(null);
+
+  const [checked1, setChecked1] = useState(null);
   const [cuttingWays, setCuttingWays] = useState([]);
-  const [packingLoading, setPackingLoading] = useState(!findItem && hasPacking);
-  const [packings, setPackings] = useState([]);
-  const [headAndLegsLoading, setHeadAndLegsLoading] = useState(
-    !findItem && hasHeadAndLegs
+  const [cuttingLoading, setCuttingLoading] = useState(
+    !findItem &&
+      hasCuttingWay &&
+      (!item?.cuttingWays || item?.cuttingWays.length < 1)
   );
+
+  const [checked2, setChecked2] = useState(null);
+  const [packings, setPackings] = useState([]);
+  const [packingLoading, setPackingLoading] = useState(
+    !findItem && hasPacking && (!item?.packings || item?.packings.length < 1)
+  );
+
+  const [checked3, setChecked3] = useState(null);
   const [headAndLegs, setHeadAndLegs] = useState([]);
+  const [headAndLegsLoading, setHeadAndLegsLoading] = useState(
+    !findItem &&
+      hasHeadAndLegs &&
+      (!item?.headAndLegs || item?.headAndLegs.length < 1)
+  );
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
     ANDROID && StatusBar.setBackgroundColor(theme);
-    if (!findItem) {
-      if (hasCuttingWay) checkConnection(getCuttingWays);
-      if (hasHeadAndLegs) checkConnection(getHeadAndLegs);
-      if (hasPacking) checkConnection(getPackings);
-    }
   }, []);
+
+  useEffect(() => {
+    if (!findItem) {
+      if (
+        hasCuttingWay &&
+        (!item?.cuttingWays || item?.cuttingWays.length < 1)
+      ) {
+        checkConnection(getCuttingWays);
+      } else {
+        setCuttingWays([...item?.cuttingWays]);
+      }
+      if (
+        hasHeadAndLegs &&
+        (!item?.headAndLegs || item?.headAndLegs.length < 1)
+      ) {
+        checkConnection(getHeadAndLegs);
+      } else {
+        setHeadAndLegs([...item?.headAndLegs]);
+      }
+      if (hasPacking && (!item?.packings || item?.packings.length < 1)) {
+        checkConnection(getHeadAndLegs);
+      } else {
+        setPackings([...item?.packings]);
+      }
+    } else {
+      if (hasCuttingWay) {
+        setChecked1(findItem?.cuttingWay?.id);
+        setCuttingWays([...findItem?.cuttingWays]);
+      }
+      if (hasHeadAndLegs) {
+        setChecked2(findItem?.headAndLeg?.id);
+        setHeadAndLegs([...findItem?.headAndLegs]);
+      }
+      if (hasPacking) {
+        setChecked3(findItem?.packing?.id);
+        setPackings([...findItem?.packings]);
+      }
+    }
+  }, [cart]);
 
   const checkConnection = func => {
     NetInfo.fetch().then(state => {
@@ -219,6 +261,16 @@ export default () => {
 
   const cartAction = sign => {
     setAnimatedObj(null);
+    let obj = { ...item };
+    if (hasCuttingWay) {
+      obj = { ...obj, cuttingWay: cuttingWays.find(o => o.id === checked1) };
+    }
+    if (hasHeadAndLegs) {
+      obj = { ...obj, headAndLeg: headAndLegs.find(o => o.id === checked2) };
+    }
+    if (hasPacking) {
+      obj = { ...obj, packing: packings.find(o => o.id === checked3) };
+    }
     if (timeOut) {
       clearTimeout(timeOut);
       timeOut = null;
@@ -230,7 +282,7 @@ export default () => {
         ? { bgColor: greenColor, quantityUnit: 1 }
         : { bgColor: redColor, quantityUnit: 1 }
     );
-    dispatch(addItemToCart(item, sign));
+    dispatch(addItemToCart(obj, sign));
     playSound(sign === "+" ? "addtocart" : "removefromcart");
     if (ref && ref.current) {
       ref.current.stopAnimation();
@@ -246,14 +298,23 @@ export default () => {
   };
 
   const handleCuttingWay = id => {
+    if (findItem && !update) {
+      setUpdate(true);
+    }
     setChecked1(id);
   };
 
   const handleHeadAndLegs = id => {
+    if (findItem && !update) {
+      setUpdate(true);
+    }
     setChecked2(id);
   };
 
   const handlePacking = id => {
+    if (findItem && !update) {
+      setUpdate(true);
+    }
     setChecked3(id);
   };
 
@@ -267,7 +328,7 @@ export default () => {
     });
 
   const handleAddToCart = () => {
-    if (item.hasCuttingWay && !checked1) {
+    if (hasCuttingWay && !checked1) {
       setAlert({
         alert: true,
         error: true,
@@ -280,7 +341,20 @@ export default () => {
       scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
       return;
     }
-    if (item.hasPacking && !checked3) {
+    if (hasHeadAndLegs && !checked2) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "الرجاء تحديد الرأس والساقين"
+          : "Please select head & legs"
+      });
+      scrollRef.current.scrollTo({ x: 0, y: HEIGHT / 2, animated: true });
+      return;
+    }
+    if (hasPacking && !checked3) {
       setAlert({
         alert: true,
         error: true,
@@ -294,6 +368,21 @@ export default () => {
       return;
     }
     cartAction("+");
+  };
+
+  const handleUpdateCart = () => {
+    let obj = { ...findItem };
+    if (hasCuttingWay) {
+      obj = { ...obj, cuttingWay: cuttingWays.find(o => o.id === checked1) };
+    }
+    if (hasHeadAndLegs) {
+      obj = { ...obj, headAndLeg: headAndLegs.find(o => o.id === checked2) };
+    }
+    if (hasPacking) {
+      obj = { ...obj, packing: packings.find(o => o.id === checked3) };
+    }
+    dispatch(addItemToCart(obj, "!"));
+    setUpdate(false);
   };
 
   const handleRetry = () => {
@@ -340,6 +429,7 @@ export default () => {
           <>
             <ScrollView
               ref={scrollRef}
+              showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.scrollContainer}
             >
               <ImageRender
@@ -369,13 +459,21 @@ export default () => {
                       value={checked1}
                       onValueChange={value => handleCuttingWay(value)}
                     >
-                      {CUTTINGWAY.map((v, i) => (
+                      {cuttingWays.map((v, i) => (
                         <RadioButton.Item
                           key={i}
                           value={v.id}
                           color={theme}
-                          label={v.name(isArabic)}
                           style={styles.radioItem(isArabic)}
+                          label={
+                            isArabic
+                              ? `${v.nameAr} ${
+                                  v.cost && v.cost > 0 ? `(ر.س ${v.cost})` : ""
+                                }`
+                              : `${v.nameEn} ${
+                                  v.cost && v.cost > 0 ? `(SAR ${v.cost})` : ""
+                                }`
+                          }
                           labelStyle={styles.radioItemText(isArabic)}
                         />
                       ))}
@@ -402,13 +500,21 @@ export default () => {
                       value={checked2}
                       onValueChange={value => handleHeadAndLegs(value)}
                     >
-                      {HEAD_AND_LEGS.map((v, i) => (
+                      {headAndLegs.map((v, i) => (
                         <RadioButton.Item
                           key={i}
                           value={v.id}
                           color={theme}
-                          label={v.name(isArabic)}
                           style={styles.radioItem(isArabic)}
+                          label={
+                            isArabic
+                              ? `${v.nameAr} ${
+                                  v.cost && v.cost > 0 ? `(ر.س ${v.cost})` : ""
+                                }`
+                              : `${v.nameEn} ${
+                                  v.cost && v.cost > 0 ? `(SAR ${v.cost})` : ""
+                                }`
+                          }
                           labelStyle={styles.radioItemText(isArabic)}
                         />
                       ))}
@@ -435,11 +541,11 @@ export default () => {
                       value={checked3}
                       onValueChange={value => handlePacking(value)}
                     >
-                      {PACKING.map((v, i) => (
+                      {packings.map((v, i) => (
                         <RadioButton.Item
                           key={i}
-                          style={styles.radioItem(isArabic)}
                           labelStyle={{
+                            flex: 1,
                             color: "#111111",
                             fontFamily: isArabic
                               ? "Cairo-SemiBold"
@@ -447,7 +553,16 @@ export default () => {
                           }}
                           value={v.id}
                           color={theme}
-                          label={v.name(isArabic)}
+                          label={
+                            isArabic
+                              ? `${v.nameAr} ${
+                                  v.cost && v.cost > 0 ? `(ر.س ${v.cost})` : ""
+                                }`
+                              : `${v.nameEn} ${
+                                  v.cost && v.cost > 0 ? `(SAR ${v.cost})` : ""
+                                }`
+                          }
+                          style={styles.radioItem(isArabic)}
                         />
                       ))}
                     </RadioButton.Group>
@@ -473,7 +588,17 @@ export default () => {
               )}
             </ScrollView>
             <View style={styles.bottomView}>
-              {findItem ? (
+              {update ? (
+                <TouchableOpacity
+                  style={styles.btn}
+                  activeOpacity={0.7}
+                  onPress={handleUpdateCart}
+                >
+                  <Text style={styles.btnText(isArabic)}>
+                    {isArabic ? "تحديث العربة" : "UPDATE CART"}
+                  </Text>
+                </TouchableOpacity>
+              ) : findItem ? (
                 <View style={styles.cartActionsWrapper(isArabic)}>
                   <View style={styles.cartActionsContainer}>
                     <TouchableOpacity
