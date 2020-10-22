@@ -33,13 +33,18 @@ import {
   markers,
   payments,
   ERROR_IMG,
-  THANKS_IMG
+  THANKS_IMG,
+  BASE_URL
 } from "../../common/constants";
+import Axios from "axios";
 import Alert from "../../components/Alert";
 import { clearCart } from "../../redux/actions/user";
+import NetInfo from "@react-native-community/netinfo";
 import * as Animatable from "react-native-animatable";
 import MapView, { MarkerAnimated } from "react-native-maps";
 import { RNSlidingButton, SlideDirection } from "rn-sliding-button";
+import { getRandom, validatePhone } from "../../common/functions";
+import NoInternet from "../../components/NoInternet";
 
 export const DropdownSection = forwardRef(
   (
@@ -238,6 +243,8 @@ export default () => {
   });
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [internet, setInternet] = useState(true);
+  const [orderLoading, setOrderLoading] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const navigation = useNavigation();
@@ -259,6 +266,88 @@ export default () => {
 
   const handleBack = () => {
     navigation.goBack();
+  };
+
+  const checkConnection = func => {
+    NetInfo.fetch().then(state => {
+      if (!state.isConnected) {
+        setInternet(false);
+      } else {
+        setInternet(true);
+        if (func) {
+          func();
+        }
+      }
+    });
+  };
+
+  const makeVerification = () => {
+    const trimText = text.trim();
+    if (!trimText) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "الرجاء إدخال رقم الهاتف الخاص بك"
+          : "Please enter your phone number"
+      });
+      setTimeout(() => {
+        focusInput();
+      }, 1000);
+      return;
+    }
+    if (!validatePhone(text)) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "الرجاء إدخال رقم الهاتف الخاص صحيح"
+          : "Please enter valid phone number"
+      });
+      setTimeout(() => {
+        focusInput();
+      }, 1000);
+      return;
+    }
+    checkConnection(sendVerification);
+  };
+
+  const sendVerification = async () => {
+    const trimText = text.trim();
+    try {
+      setLoading(true);
+      const verificationCode = getRandom(4);
+      const msg = isArabic
+        ? `رمز التحقق الخاص بـعم أحمد الخاص بك هو: ${verificationCode}`
+        : `Your AmAhmed's verification code is: ${verificationCode}`;
+      await Axios.post(`${BASE_URL}/sms/send`, {
+        text: msg,
+        number: `966${text}`
+      });
+      navigation.navigate("Verification", {
+        focusInput,
+        animateButton,
+        phone: trimText,
+        verificationCode
+      });
+    } catch (error) {
+      console.log(error, " error in send verification");
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "عذرا، هناك خطأ ما. حاول مرة اخرى!"
+          : "Sorry, something went wrong. Please try again!"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleAddressListItem = (isNew, address) => {
@@ -326,7 +415,7 @@ export default () => {
         });
         return;
       }
-      setLoading(true);
+      setOrderLoading(true);
       setTimeout(() => {
         setAlert({
           alert: true,
@@ -338,7 +427,7 @@ export default () => {
             ? "شكرًا على الطلب ، سيتم توصيل طلبك قريبًا جدًا"
             : "Thank you for ordering, your order will be delivered very soon"
         });
-        setLoading(false);
+        setOrderLoading(false);
       }, 1000);
     }
   };
@@ -373,6 +462,10 @@ export default () => {
         }, 500);
       }
     }, 100);
+  };
+
+  const handleRetry = () => {
+    checkConnection();
   };
 
   const mapMemo = useMemo(
@@ -435,206 +528,218 @@ export default () => {
             btnText={isArabic ? "حسنا" : "OK"}
             onBtnPress={alert.btnPress || alertClose}
           />
-          <ScrollView
-            ref={scrollRef}
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{
-              ...styles.scrollContainer,
-              justifyContent: userData?.isVerify ? "flex-start" : "center"
-            }}
-          >
-            {userData?.isVerify ? (
-              <>
-                <DropdownSection
-                  isAddress
-                  ref={addressRef}
-                  data={addresses}
-                  isArabic={isArabic}
-                  selected={selectedAddress}
-                  onPress={handleAddressListItem}
-                  btnText={isArabic ? "حدد العنوان" : "Select Address"}
-                  title={isArabic ? "الرأس والساقين" : "Delivery Address"}
-                />
-                <View style={styles.headingWrapper(isArabic)}>
-                  <Text style={styles.heading(isArabic)}>
-                    {isArabic ? "موقع المتاجر" : "Stores Location"}
-                  </Text>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    style={styles.secondaryWrapper(isArabic)}
-                    onPress={() => navigation.navigate("ShowStores")}
-                  >
-                    <Text style={styles.secondaryWrapperText(isArabic)}>
-                      {isArabic ? "عرض كامل" : "Full View"}
-                    </Text>
-                    <Entypo
-                      size={18}
-                      style={{ paddingRight: isArabic ? 5 : 0 }}
-                      name={`chevron-thin-${isArabic ? "left" : "right"}`}
+          {!internet ? (
+            <NoInternet isArabic={isArabic} onPress={handleRetry} />
+          ) : (
+            <>
+              <ScrollView
+                ref={scrollRef}
+                keyboardShouldPersistTaps="handled"
+                contentContainerStyle={{
+                  ...styles.scrollContainer,
+                  justifyContent: userData?.isVerify ? "flex-start" : "center"
+                }}
+              >
+                {userData?.isVerify ? (
+                  <>
+                    <DropdownSection
+                      isAddress
+                      ref={addressRef}
+                      data={addresses}
+                      isArabic={isArabic}
+                      selected={selectedAddress}
+                      onPress={handleAddressListItem}
+                      btnText={isArabic ? "حدد العنوان" : "Select Address"}
+                      title={isArabic ? "الرأس والساقين" : "Delivery Address"}
                     />
-                  </TouchableOpacity>
-                </View>
-                {mapMemo}
-                <DropdownSection
-                  data={payments}
-                  ref={paymentRef}
-                  isArabic={isArabic}
-                  selected={selectedPayment}
-                  onPress={handlePaymentListItem}
-                  title={isArabic ? "طريقة الدفع" : "Payment Method"}
-                  btnText={
-                    isArabic ? "اختار طريقة الدفع" : "Select Payment Method"
-                  }
-                />
-                <Text ref={contactRef} style={styles.heading(isArabic)}>
-                  {isArabic ? "تفاصيل الطلب" : "Order Details"}
-                </Text>
-                <View style={styles.orderCard(isArabic)}>
-                  <LIST
-                    bold
-                    isArabic={isArabic}
-                    primaryText={
-                      isArabic ? "طريقة الدفع او السداد" : "Payment Method"
-                    }
-                    secondaryText={
-                      selectedPayment && selectedPayment.name
-                        ? selectedPayment.name(isArabic)
-                        : "-----"
-                    }
-                  />
-                  {selectedPayment &&
-                    selectedPayment.name &&
-                    selectedPayment.name(false) === "Credit/Debit Card" && (
+                    <View style={styles.headingWrapper(isArabic)}>
+                      <Text style={styles.heading(isArabic)}>
+                        {isArabic ? "موقع المتاجر" : "Stores Location"}
+                      </Text>
+                      <TouchableOpacity
+                        activeOpacity={0.7}
+                        style={styles.secondaryWrapper(isArabic)}
+                        onPress={() => navigation.navigate("ShowStores")}
+                      >
+                        <Text style={styles.secondaryWrapperText(isArabic)}>
+                          {isArabic ? "عرض كامل" : "Full View"}
+                        </Text>
+                        <Entypo
+                          size={18}
+                          style={{ paddingRight: isArabic ? 5 : 0 }}
+                          name={`chevron-thin-${isArabic ? "left" : "right"}`}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    {mapMemo}
+                    <DropdownSection
+                      data={payments}
+                      ref={paymentRef}
+                      isArabic={isArabic}
+                      selected={selectedPayment}
+                      onPress={handlePaymentListItem}
+                      title={isArabic ? "طريقة الدفع" : "Payment Method"}
+                      btnText={
+                        isArabic ? "اختار طريقة الدفع" : "Select Payment Method"
+                      }
+                    />
+                    <Text ref={contactRef} style={styles.heading(isArabic)}>
+                      {isArabic ? "تفاصيل الطلب" : "Order Details"}
+                    </Text>
+                    <View style={styles.orderCard(isArabic)}>
+                      <LIST
+                        bold
+                        isArabic={isArabic}
+                        primaryText={
+                          isArabic ? "طريقة الدفع او السداد" : "Payment Method"
+                        }
+                        secondaryText={
+                          selectedPayment && selectedPayment.name
+                            ? selectedPayment.name(isArabic)
+                            : "-----"
+                        }
+                      />
+                      {selectedPayment &&
+                        selectedPayment.name &&
+                        selectedPayment.name(false) === "Credit/Debit Card" && (
+                          <LIST
+                            isArabic={isArabic}
+                            secondaryText={"8989xxxxxx"}
+                            primaryText={
+                              isArabic ? "رقم البطاقة" : "Card Number"
+                            }
+                          />
+                        )}
+                      <View style={styles.pd10}>
+                        <Divider />
+                      </View>
+                      <LIST
+                        bold
+                        isArabic={isArabic}
+                        primaryText={isArabic ? "عنوان" : "Address"}
+                        secondaryText={
+                          selectedAddress && selectedAddress.address
+                            ? selectedAddress.address
+                            : "-----"
+                        }
+                      />
+                      <View style={styles.pd10}>
+                        <Divider />
+                      </View>
                       <LIST
                         isArabic={isArabic}
-                        secondaryText={"8989xxxxxx"}
-                        primaryText={isArabic ? "رقم البطاقة" : "Card Number"}
+                        secondaryText={190}
+                        primaryText={isArabic ? "المجموع الفرعي" : "Sub Total"}
                       />
-                    )}
-                  <View style={styles.pd10}>
-                    <Divider />
-                  </View>
-                  <LIST
-                    bold
-                    isArabic={isArabic}
-                    primaryText={isArabic ? "عنوان" : "Address"}
-                    secondaryText={
-                      selectedAddress && selectedAddress.address
-                        ? selectedAddress.address
-                        : "-----"
-                    }
-                  />
-                  <View style={styles.pd10}>
-                    <Divider />
-                  </View>
-                  <LIST
-                    isArabic={isArabic}
-                    secondaryText={190}
-                    primaryText={isArabic ? "المجموع الفرعي" : "Sub Total"}
-                  />
-                  <LIST
-                    secondaryText={0}
-                    isArabic={isArabic}
-                    primaryText={isArabic ? "رسوم التوصيل" : "Delivery Fee"}
-                  />
-                  <LIST
-                    secondaryText={0}
-                    isArabic={isArabic}
-                    primaryText={isArabic ? "ضريبة المبيعات" : "Sales Tax"}
-                  />
-                  <LIST
-                    bold
-                    secondaryBold
-                    secondaryText={190}
-                    isArabic={isArabic}
-                    primaryText={
-                      isArabic
-                        ? "الإجمالي (بما في ذلك ضريبة السلع والخدمات)"
-                        : "Total (Including GST)"
-                    }
-                  />
-                </View>
-              </>
-            ) : (
-              <>
-                <Text ref={contactRef} style={styles.heading(isArabic, true)}>
-                  {isArabic ? "أدخل رقم الهاتف" : "Enter Phone Number"}
-                </Text>
-                <TextInput
-                  blurOnSubmit
-                  value={text}
-                  ref={inputRef}
-                  spellCheck={false}
-                  autoCorrect={false}
-                  keyboardType="phone-pad"
-                  placeholder={"0501234567"}
-                  style={styles.input(isArabic)}
-                  onChangeText={text => setText(text)}
-                  onSubmitEditing={() => handleSubmit(true)}
-                />
-              </>
-            )}
-          </ScrollView>
-          <View style={styles.footer(isArabic)}>
-            <Animatable.View
-              useNativeDriver
-              ref={animatedRef}
-              style={styles.animtedButton}
-            >
-              {userData?.isVerify && !loading ? (
-                <RNSlidingButton
-                  height={50}
-                  activeOpacity={0.7}
-                  style={{
-                    width: "100%",
-                    borderWidth: 1,
-                    borderRadius: 100,
-                    borderColor: theme,
-                    paddingHorizontal: 15,
-                    backgroundColor: theme
-                  }}
-                  onSlidingSuccess={handleSubmit}
-                  slideDirection={
-                    isArabic ? SlideDirection.LEFT : SlideDirection.RIGHT
-                  }
+                      <LIST
+                        secondaryText={0}
+                        isArabic={isArabic}
+                        primaryText={isArabic ? "رسوم التوصيل" : "Delivery Fee"}
+                      />
+                      <LIST
+                        secondaryText={0}
+                        isArabic={isArabic}
+                        primaryText={isArabic ? "ضريبة المبيعات" : "Sales Tax"}
+                      />
+                      <LIST
+                        bold
+                        secondaryBold
+                        secondaryText={190}
+                        isArabic={isArabic}
+                        primaryText={
+                          isArabic
+                            ? "الإجمالي (بما في ذلك ضريبة السلع والخدمات)"
+                            : "Total (Including GST)"
+                        }
+                      />
+                    </View>
+                  </>
+                ) : (
+                  <>
+                    <Text
+                      ref={contactRef}
+                      style={styles.heading(isArabic, true)}
+                    >
+                      {isArabic ? "أدخل رقم الهاتف" : "Enter Phone Number"}
+                    </Text>
+                    <TextInput
+                      blurOnSubmit
+                      value={text}
+                      maxLength={9}
+                      ref={inputRef}
+                      spellCheck={false}
+                      autoCorrect={false}
+                      keyboardType="phone-pad"
+                      placeholder={"501234567"}
+                      style={styles.input(isArabic)}
+                      onSubmitEditing={makeVerification}
+                      onChangeText={text => setText(text)}
+                    />
+                  </>
+                )}
+              </ScrollView>
+              <View style={styles.footer(isArabic)}>
+                <Animatable.View
+                  useNativeDriver
+                  ref={animatedRef}
+                  style={styles.animtedButton}
                 >
-                  <Text
-                    style={{
-                      ...styles.btnText(isArabic),
-                      fontSize: isArabic ? WIDTH * 0.05 : WIDTH * 0.045
-                    }}
-                  >
-                    {isArabic
-                      ? "مزلاق لوضع النظام >>>"
-                      : "SLIDE TO PLACE ORDER >>>"}
-                  </Text>
-                </RNSlidingButton>
-              ) : (
-                <TouchableOpacity
-                  disabled={loading}
-                  activeOpacity={0.7}
-                  style={styles.btn(isArabic)}
-                  onPress={() => handleSubmit(true)}
-                >
-                  {loading ? (
-                    <View
+                  {userData?.isVerify && !orderLoading ? (
+                    <RNSlidingButton
+                      height={50}
+                      activeOpacity={0.7}
                       style={{
                         width: "100%",
-                        alignItems: "center",
-                        justifyContent: "center"
+                        borderWidth: 1,
+                        borderRadius: 100,
+                        borderColor: theme,
+                        paddingHorizontal: 15,
+                        backgroundColor: theme
                       }}
+                      onSlidingSuccess={handleSubmit}
+                      slideDirection={
+                        isArabic ? SlideDirection.LEFT : SlideDirection.RIGHT
+                      }
                     >
-                      <ActivityIndicator size="small" color="#fff" />
-                    </View>
+                      <Text
+                        style={{
+                          ...styles.btnText(isArabic),
+                          fontSize: isArabic ? WIDTH * 0.05 : WIDTH * 0.045
+                        }}
+                      >
+                        {isArabic
+                          ? "مزلاق لوضع النظام >>>"
+                          : "SLIDE TO PLACE ORDER >>>"}
+                      </Text>
+                    </RNSlidingButton>
                   ) : (
-                    <Text style={styles.btnText(isArabic)}>
-                      {isArabic ? "إرسال التحقق" : "SEND VERIFICATION"}
-                    </Text>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={makeVerification}
+                      style={styles.btn(isArabic)}
+                      disabled={orderLoading || loading}
+                    >
+                      {orderLoading || loading ? (
+                        <View
+                          style={{
+                            width: "100%",
+                            alignItems: "center",
+                            justifyContent: "center"
+                          }}
+                        >
+                          <ActivityIndicator size="small" color="#fff" />
+                        </View>
+                      ) : (
+                        <Text style={styles.btnText(isArabic)}>
+                          {isArabic ? "إرسال التحقق" : "SEND VERIFICATION"}
+                        </Text>
+                      )}
+                    </TouchableOpacity>
                   )}
-                </TouchableOpacity>
-              )}
-            </Animatable.View>
-          </View>
+                </Animatable.View>
+              </View>
+            </>
+          )}
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>

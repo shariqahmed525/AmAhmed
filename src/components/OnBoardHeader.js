@@ -36,8 +36,8 @@ export default ({
       )}
       {showLanguageToggle ? (
         <TouchableOpacity
-          activeOpacity={0.7}
           onPress={onPress}
+          activeOpacity={0.7}
           style={styles.rightIcon(isArabic)}
         >
           <Image
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     marginTop: HEIGHT * 0.05
   },
   rightIcon: isArabic => ({
-    width: 100,
+    width: 105,
     height: 35,
     borderWidth: 1,
     borderRadius: 3,
@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
   language: isArabic => ({
     flex: 1,
     color: theme,
+    textAlign: "center",
     fontSize: isArabic ? 15 : 15,
     paddingLeft: isArabic ? 5 : 0,
     paddingRight: isArabic ? 0 : 7,

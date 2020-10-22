@@ -5,7 +5,8 @@ import {
   CATEGORY,
   LANGUAGE,
   SELECTED_CITY,
-  SELECTED_CAT
+  SELECTED_CAT,
+  TOKEN
 } from "../types/app";
 
 const initialState = {
@@ -18,6 +19,7 @@ const initialState = {
     callBack: false
   },
   cities: [],
+  token: "",
   category: "",
   language: ARABIC,
   selectedCity: null,
@@ -55,6 +57,11 @@ export default (state = initialState, { type, payload }) => {
       return {
         ...state,
         showAlert: payload
+      };
+    case TOKEN:
+      return {
+        ...state,
+        token: payload
       };
     default:
       return state;

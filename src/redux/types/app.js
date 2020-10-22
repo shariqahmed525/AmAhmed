@@ -1,6 +1,9 @@
+export const TOKEN = "TOKEN";
 export const CITIES = "CITIES";
 export const LANGUAGE = "LANGUAGE";
 export const CATEGORY = "CATEGORY";
+export const ADDRESSES = "ADDRESSES";
 export const SHOW_ALERT = "SHOW_ALERT";
 export const SELECTED_CAT = "SELECTED_CAT";
 export const SELECTED_CITY = "SELECTED_CITY";
+export const SELECTED_ADDRESS = "SELECTED_ADDRESS";

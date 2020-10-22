@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { backgroundColor, theme, black } from "../../common/colors";
-import { CONTAINER_PADDING, HEIGHT } from "../../common/constants";
+import { CONTAINER_PADDING, HEIGHT, WIDTH } from "../../common/constants";
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
@@ -93,16 +93,18 @@ const styles = StyleSheet.create({
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
   }),
   input: {
-    fontSize: 15,
+    fontSize: 17,
     color: "#000",
     borderRadius: 10,
     borderColor: theme,
+    width: WIDTH * 0.13,
+    height: WIDTH * 0.13,
     fontFamily: "Rubik-Medium"
   },
   otpWrapper: {
     height: 100,
     width: "100%",
-    paddingHorizontal: 10
+    paddingHorizontal: 15
   },
   btnWrapper: {
     width: "100%"
@@ -134,7 +136,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#4287f5",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
-  })
+  }),
+  loaderWrapper: {
+    width: "100%",
+    height: "100%",
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  loader: {
+    width: 120
+  }
 });
 
 export default styles;

@@ -75,7 +75,9 @@ const ListItem = ({ isArabic, data, navigation, onDeletePress }) => (
 export default () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
   const [internet, setInternet] = useState(true);
+  const [addresses, setAddresses] = useState([]);
   const [alert, setAlert] = useState({
     alert: false,
     error: false,
@@ -83,8 +85,6 @@ export default () => {
     alertText: "",
     alertTitle: ""
   });
-  const [addresses, setAddresses] = useState([]);
-  const [loading, setLoading] = useState(true);
   const {
     app: { language },
     user: { addresses: storeAddresses }

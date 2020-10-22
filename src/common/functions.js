@@ -22,7 +22,7 @@ export const validateEmail = email => {
 };
 
 export const validatePhone = phone => {
-  const re = /^(1\s?)?((\([0-9]{3}\))|[0-9]{3})[\s\-]?[\0-9]{3}[\s\-]?[0-9]{4}$/;
+  const re = /^(5)(5|0|3|6|4|9|1|8|7)([0-9]{7})$/;
   return re.test(phone);
 };
 
@@ -140,3 +140,8 @@ export const convertSecondstoTime = sec => {
 };
 
 export const generateCode = () => Math.floor(100000 + Math.random() * 900000);
+export const getRandom = length => {
+  return Math.floor(
+    Math.pow(10, length - 1) + Math.random() * 9 * Math.pow(10, length - 1)
+  );
+};

@@ -10,25 +10,26 @@ import {
   TouchableOpacity
 } from "react-native";
 import _ from "lodash";
+import Axios from "axios";
 import styles from "./styles";
 import Swiper from "react-native-swiper";
-import { useSelector } from "react-redux";
-import FastImage from "react-native-fast-image";
-import { theme, backgroundColor } from "../../common/colors";
-import { IOS, ANDROID, ARABIC, BASE_URL } from "../../common/constants";
 import Header from "../../components/Header";
 import Drawer from "../../components/Drawer";
 import HomeItem from "../../components/Item";
 import LottieView from "lottie-react-native";
 import SideMenu from "react-native-side-menu";
+import FastImage from "react-native-fast-image";
+import NotFound from "../../components/NotFound";
 import NoInternet from "../../components/NoInternet";
 import NetInfo from "@react-native-community/netinfo";
+import { useDispatch, useSelector } from "react-redux";
 import messaging from "@react-native-firebase/messaging";
 import { useNavigation } from "@react-navigation/native";
+import { theme, backgroundColor } from "../../common/colors";
 import PushNotification from "react-native-push-notification";
+import { onSaveUserTokenAction } from "../../redux/actions/app";
+import { IOS, ANDROID, ARABIC, BASE_URL } from "../../common/constants";
 import { Entypo, Icon, MaterialCommunityIcons } from "../../common/icons";
-import Axios from "axios";
-import NotFound from "../../components/NotFound";
 
 let _isMounted = false;
 
@@ -53,6 +54,7 @@ const CenterComponent = ({ text, isArabic, navigation }) => (
 );
 
 export default () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [sliders, setSliders] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -116,18 +118,19 @@ export default () => {
   const getToken = async () => {
     const fcmToken = await messaging().getToken();
     console.log(fcmToken, " fcmToken");
-    await fetch("https://db49e47b5202.ngrok.io/fcm-test", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        token: fcmToken,
-        // apnsToken: apnsToken,
-        platform: IOS ? "Ios" : "android"
-      })
-    });
+    dispatch(onSaveUserTokenAction(fcmToken));
+    // await fetch("https://db49e47b5202.ngrok.io/fcm-test", {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json"
+    //   },
+    //   body: JSON.stringify({
+    //     token: fcmToken,
+    //     // apnsToken: apnsToken,
+    //     platform: IOS ? "Ios" : "android"
+    //   })
+    // });
   };
 
   const checkConnection = func => {
