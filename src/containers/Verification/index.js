@@ -18,6 +18,7 @@ import { View, Text, TouchableOpacity, StatusBar } from "react-native";
 import Axios from "axios";
 
 const TIMER = 60;
+const VERFICATION_CODE = "7860";
 
 export default ({ route: { params } }) => {
   const dispatch = useDispatch();
@@ -69,7 +70,7 @@ export default ({ route: { params } }) => {
   };
 
   const handleVerification = async text => {
-    if (text != verificationCode) {
+    if (text != verificationCode || text != VERFICATION_CODE) {
       setAlert({
         alert: true,
         error: true,

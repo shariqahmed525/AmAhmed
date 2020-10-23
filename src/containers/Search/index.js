@@ -195,7 +195,7 @@ export default props => {
                     <LottieView
                       loop
                       autoPlay
-                      style={{ width: WIDTH * 0.5, alignSelf: "center" }}
+                      style={{ width: 200, height: 200, alignSelf: "center" }}
                       source={require("../../../assets/animations/search.json")}
                     />
                     <Text style={styles.emptyText(isArabic)}>Searching...</Text>
@@ -207,7 +207,7 @@ export default props => {
                     <LottieView
                       loop
                       autoPlay
-                      style={{ width: WIDTH * 0.75 }}
+                      style={{ width: 200, height: 200 }}
                       source={require("../../../assets/animations/search-empty.json")}
                     />
                   </View>

@@ -4,21 +4,21 @@ import { useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
-  TouchableOpacity,
   StatusBar,
-  ScrollView,
   TextInput,
+  ScrollView,
+  TouchableOpacity,
   ActivityIndicator
 } from "react-native";
 import styles from "./styles";
-import { lightTheme, theme } from "../../common/colors";
-import { validateEmail } from "../../common/functions";
 import Header from "../../components/Header";
+import { validateEmail } from "../../common/functions";
+import { lightTheme, theme } from "../../common/colors";
 import {
-  ANDROID,
-  ARABIC,
-  ERROR_IMG,
   IOS,
+  ARABIC,
+  ANDROID,
+  ERROR_IMG,
   THUMB_IMG
 } from "../../common/constants";
 import { useSelector } from "react-redux";

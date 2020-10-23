@@ -118,7 +118,7 @@ export default () => {
             <LottieView
               loop
               autoPlay
-              style={{ width: WIDTH * 0.75 }}
+              style={{ width: 200, height: 200 }}
               source={require("../../../assets/animations/emptycart.json")}
             />
             <Text style={styles.emptyText(isArabic)}>

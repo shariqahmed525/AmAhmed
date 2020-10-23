@@ -1,8 +1,8 @@
 import React from "react";
 import LottieView from "lottie-react-native";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { HEIGHT } from "../common/constants";
 import { darkGray, theme } from "../common/colors";
-import { WIDTH } from "../common/constants";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 export default ({ isArabic, onPress }) => {
   return (
@@ -10,7 +10,7 @@ export default ({ isArabic, onPress }) => {
       <LottieView
         loop
         autoPlay
-        style={{ width: WIDTH * 0.75 }}
+        style={styles.lottie}
         source={require("../../assets/animations/no-internet.json")}
       />
       <View style={styles.textWrapper}>
@@ -58,9 +58,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
-  lottie: {
-    width: WIDTH * 0.75
-  },
+  lottie: { width: 120, height: HEIGHT / 2 },
   textWrapper: {
     height: 160,
     width: "100%",

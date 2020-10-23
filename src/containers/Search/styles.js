@@ -105,9 +105,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
-  lottie: {
-    width: WIDTH * 0.75
-  },
   searchIconWrapper: isArabic => ({
     width: 55,
     height: "100%",

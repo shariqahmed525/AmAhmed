@@ -8,8 +8,8 @@ import ImageButton from "../../../components/ImageButton";
 import OnBoardHeader from "../../../components/OnBoardHeader";
 import {
   useRoute,
-  CommonActions,
-  useNavigation
+  useNavigation,
+  CommonActions
 } from "@react-navigation/native";
 import Header from "../../../components/Header";
 import NetInfo from "@react-native-community/netinfo";
@@ -59,8 +59,9 @@ export default () => {
         `${BASE_URL}/Categories/loc/${selectedCity.id}`
       );
       if (data && data.length > 0) {
-        setCategories([...data]);
-        checkCategory(data);
+        const filter = data.filter(o => o.parentCategoryID === null);
+        setCategories([...filter]);
+        checkCategory(filter);
       }
     } catch (error) {
       console.log(error, " error in getting cities");

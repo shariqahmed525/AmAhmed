@@ -100,7 +100,7 @@ export default () => {
   const {
     params: { item }
   } = useRoute();
-
+  console.log(item, " item");
   const hasPacking = item?.hasPacking;
   const hasCuttingWay = item?.hasCuttingWay;
   const hasHeadAndLegs = item?.hasHeadAndLegs;

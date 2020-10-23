@@ -72,7 +72,6 @@ export default () => {
     if (_isMounted) {
       StatusBar.setBarStyle("light-content");
       ANDROID && StatusBar.setBackgroundColor(theme);
-      checkConnection(getSliders);
       IOS ? requestPermission() : checkPermission();
     }
   }, []);
@@ -110,6 +109,7 @@ export default () => {
     _isMounted = true;
     if (_isMounted) {
       if (typeof getSubCategories === "function") {
+        checkConnection(getSliders);
         checkConnection(getSubCategories);
       }
     }
@@ -148,8 +148,9 @@ export default () => {
 
   const getSliders = async () => {
     try {
+      const categoryId = selectedCategory?.id;
       setSliderLoading(true);
-      const { data } = await Axios.get(`${BASE_URL}/sliders`);
+      const { data } = await Axios.get(`${BASE_URL}/sliders/cat/${categoryId}`);
       if (data && data.length > 0) {
         setSliders([...data]);
       }
