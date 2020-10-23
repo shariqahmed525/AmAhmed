@@ -17,7 +17,7 @@ import { ANDROID, ARABIC, BASE_URL, ERROR_IMG } from "../../common/constants";
 import { View, Text, TouchableOpacity, StatusBar } from "react-native";
 import Axios from "axios";
 
-const TIMER = 10;
+const TIMER = 60;
 
 export default ({ route: { params } }) => {
   const dispatch = useDispatch();
