@@ -4,10 +4,7 @@ import {
   CITIES,
   SHOW_ALERT,
   CATEGORY,
-  ADDRESSES,
-  LANGUAGE,
-  TOKEN,
-  SELECTED_ADDRESS
+  LANGUAGE
 } from "../types/app";
 
 export const onSelectedCityAction = city => {
@@ -24,31 +21,10 @@ export const onSelectedCategoryAction = cat => {
   };
 };
 
-export const onSelectedAddressAction = address => {
-  return {
-    type: SELECTED_ADDRESS,
-    payload: address
-  };
-};
-
 export const onCitiesAction = cities => {
   return {
     type: CITIES,
     payload: cities
-  };
-};
-
-export const onSaveUserTokenAction = token => {
-  return {
-    type: TOKEN,
-    payload: token
-  };
-};
-
-export const onAddressesAction = addresses => {
-  return {
-    type: ADDRESSES,
-    payload: addresses
   };
 };
 

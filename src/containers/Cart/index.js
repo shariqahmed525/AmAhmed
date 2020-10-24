@@ -16,7 +16,7 @@ import Header from "../../components/Header";
 import { MaterialIcons } from "../../common/icons";
 import CartListItem from "../../components/CartListItem";
 import { useNavigation } from "@react-navigation/native";
-import { ANDROID, ARABIC, WIDTH } from "../../common/constants";
+import { ANDROID, ARABIC } from "../../common/constants";
 
 export default () => {
   const {

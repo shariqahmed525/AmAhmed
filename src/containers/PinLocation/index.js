@@ -4,22 +4,22 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   View,
   Text,
-  TouchableOpacity,
   StatusBar,
-  StyleSheet
+  StyleSheet,
+  TouchableOpacity
 } from "react-native";
 import styles from "./styles";
-import { theme } from "../../common/colors";
-import { DropdownSection } from "../Checkout";
-import Header from "../../components/Header";
-import { FontAwesome } from "../../common/icons";
-import { useDispatch, useSelector } from "react-redux";
 import MapView from "react-native-maps";
-import Geolocation from "@react-native-community/geolocation";
-import { ANDROID, ARABIC, CITIES, HEIGHT, WIDTH } from "../../common/constants";
-import { ERROR_IMG } from "../../common/constants";
 import Alert from "../../components/Alert";
+import { theme } from "../../common/colors";
+import Header from "../../components/Header";
+import { DropdownSection } from "../Checkout";
+import { FontAwesome } from "../../common/icons";
+import { ERROR_IMG } from "../../common/constants";
+import { useDispatch, useSelector } from "react-redux";
+import Geolocation from "@react-native-community/geolocation";
 import RNAndroidLocationEnabler from "react-native-android-location-enabler";
+import { ANDROID, ARABIC, CITIES, HEIGHT, WIDTH } from "../../common/constants";
 
 const LATITUDE = 40.74333; // Korea Town, New York, NY 10001
 const LONGITUDE = -73.99033; // Korea Town, New York, NY 10001
@@ -41,32 +41,33 @@ export default () => {
     alertTitle: ""
   });
   const [selectedCity, setSelectedCity] = useState(null);
-  const { language } = useSelector(state => state.app);
+  const { language, cities } = useSelector(state => state.app);
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    if (params?.latitude && params?.longitude) {
-      setCoords({
-        latitude: params?.latitude,
-        longitude: params?.longitude,
-        latitudeDelta: params?.latitudeDelta,
-        longitudeDelta: params?.longitudeDelta
-      });
-    } else {
-      if (ANDROID) {
-        AskLocationPopup();
-      } else {
-        Geolocation.getCurrentPosition(info => {
-          if (info?.coords) {
-            setCoords({ ...info?.coords });
-          }
-        });
-      }
-    }
-    if (params?.cityCode) {
-      const code = params.cityCode;
-      setSelectedCity(CITIES.find(o => o.code === code));
-    }
+    // if (params?.latitude && params?.longitude) {
+    //   setCoords({
+    //     latitude: params?.latitude,
+    //     longitude: params?.longitude,
+    //     latitudeDelta: params?.latitudeDelta,
+    //     longitudeDelta: params?.longitudeDelta
+    //   });
+    // }
+    // else {
+    //   if (ANDROID) {
+    //     // AskLocationPopup();
+    //   } else {
+    //     Geolocation.getCurrentPosition(info => {
+    //       if (info?.coords) {
+    //         setCoords({ ...info?.coords });
+    //       }
+    //     });
+    //   }
+    // }
+    // if (params?.cityCode) {
+    //   const code = params.cityCode;
+    //   setSelectedCity(CITIES.find(o => o.code === code));
+    // }
     StatusBar.setBarStyle("light-content");
     ANDROID && StatusBar.setBackgroundColor(theme);
   }, []);
@@ -104,6 +105,14 @@ export default () => {
   const handleCity = city => {
     if (!city) return;
     setSelectedCity({ ...city });
+    if (city?.latitude && city?.longitude) {
+      setCoords({
+        latitude: city?.latitude,
+        longitude: city?.longitude
+      });
+    } else {
+      setCoords(null);
+    }
   };
 
   const handleNext = () => {
@@ -117,11 +126,22 @@ export default () => {
       });
       return;
     }
+    if (!coords) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "الرجاء تحديد موقع دبوس الخاص بك"
+          : "Please set your pin location"
+      });
+      return;
+    }
     navigation.navigate("NewAddress", {
       ...params,
       coords,
-      cityCode: selectedCity.code,
-      city: selectedCity.name(isArabic)
+      city: selectedCity
     });
   };
 
@@ -185,7 +205,7 @@ export default () => {
             <DropdownSection
               noIcon
               ref={ref}
-              data={CITIES}
+              data={cities}
               isArabic={isArabic}
               onPress={handleCity}
               selected={selectedCity}
@@ -194,7 +214,7 @@ export default () => {
             />
           </View>
           <View style={styles.mapBox}>
-            {coords && coords.latitude && coords.longitude ? (
+            {coords?.latitude && coords?.longitude ? (
               <View style={StyleSheet.absoluteFillObject}>
                 <MapView
                   zoomEnabled
@@ -204,10 +224,10 @@ export default () => {
                   showsUserLocation={true}
                   showsPointsOfInterest={true}
                   region={{
-                    latitude: coords.latitude,
-                    longitude: coords.longitude,
-                    latitudeDelta: coords.latitudeDelta || LATITUDE_DELTA,
-                    longitudeDelta: coords.longitudeDelta || LONGITUDE_DELTA
+                    latitude: coords?.latitude || 21.553596,
+                    longitude: coords?.longitude || 39.194024,
+                    latitudeDelta: coords?.latitudeDelta || LATITUDE_DELTA,
+                    longitudeDelta: coords?.longitudeDelta || LONGITUDE_DELTA
                   }}
                   loadingEnabled={true}
                   loadingIndicatorColor={theme}

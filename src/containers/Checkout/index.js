@@ -94,10 +94,10 @@ export const DropdownSection = forwardRef(
                 ellipsizeMode="tail"
                 style={styles.optionText(isArabic)}
               >
-                {selected && selected.name
-                  ? typeof selected.name === "function"
-                    ? selected.name(isArabic)
-                    : selected.name
+                {selected
+                  ? isArabic
+                    ? selected?.nameAr
+                    : selected?.nameEn
                   : btnText}
               </Text>
               <Entypo name="chevron-thin-down" size={18} color={theme} />
@@ -179,9 +179,7 @@ export const DropdownSection = forwardRef(
                       )}
                       <View style={styles.textWrapper(isArabic)}>
                         <Text style={styles.listItemText(isArabic)}>
-                          {typeof v.name === "function"
-                            ? v.name(isArabic)
-                            : v.name}
+                          {isArabic ? v.nameAr : v.nameEn}
                         </Text>
                       </View>
                     </View>
@@ -190,14 +188,15 @@ export const DropdownSection = forwardRef(
                   titleStyle={{ width: WIDTH - 52 }}
                   style={styles.menuItem(
                     isArabic,
-                    selected &&
-                      selected.name &&
-                      (typeof selected.name === "function"
-                        ? selected.name(isArabic)
-                        : selected.name) ===
-                        (typeof v.name === "function"
-                          ? v.name(isArabic)
-                          : v.name)
+                    selected?.id == v.id
+                    // &&
+                    //   selected.name &&
+                    //   (typeof selected.name === "function"
+                    //     ? selected.name(isArabic)
+                    //     : selected.name) ===
+                    //     (typeof v.name === "function"
+                    //       ? v.name(isArabic)
+                    //       : v.name)
                   )}
                 />
                 {v.isDivider && <Divider />}

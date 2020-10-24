@@ -16,6 +16,7 @@ export const CONTAINER_PADDING = WIDTH * 0.07;
 export const ARABIC = "ar-sa";
 export const ENGLISH = "en";
 
+export const INFO_IMG = require("../../assets/images/info.png");
 export const ERROR_IMG = require("../../assets/images/error.png");
 export const THUMB_IMG = require("../../assets/images/like.png");
 export const THANKS_IMG = require("../../assets/images/thanks.jpg");

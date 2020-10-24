@@ -87,7 +87,7 @@ export default () => {
   });
   const {
     app: { language },
-    user: { addresses: storeAddresses }
+    user: { userData }
   } = useSelector(state => state);
   const isArabic = language === ARABIC;
 
@@ -112,10 +112,13 @@ export default () => {
   const getAddresses = async () => {
     try {
       setLoading(true);
-      const { data } = await Axios.get(`${BASE_URL}/Locations`);
+      const phone = userData?.phone;
+      const { data } = await Axios.get(
+        `${BASE_URL}/UserAddresses/get/mob/${phone}`
+      );
       if (data && data.length > 0) {
-        setCities([...data]);
-        makeCities(data);
+        // setCities([...data]);
+        // makeCities(data);
       }
       console.log(data);
     } catch (error) {

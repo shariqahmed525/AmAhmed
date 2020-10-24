@@ -3,10 +3,34 @@ import {
   SAVE_ADDRESS,
   SAVE_USER_DATA,
   DELETE_ADDRESS,
+  ADDRESSES,
+  TOKEN,
+  SELECTED_ADDRESS,
   UPDATE_ADDRESS,
   CLEAR_USER_DATA,
   ADD_ITEM_TO_CART
 } from "../types/user";
+
+export const onAddressesAction = addresses => {
+  return {
+    type: ADDRESSES,
+    payload: addresses
+  };
+};
+
+export const onSelectedAddressAction = address => {
+  return {
+    type: SELECTED_ADDRESS,
+    payload: address
+  };
+};
+
+export const onSaveUserTokenAction = token => {
+  return {
+    type: TOKEN,
+    payload: token
+  };
+};
 
 export const saveUserData = payload => {
   return {

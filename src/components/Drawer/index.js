@@ -140,18 +140,20 @@ export default ({ navigation, drawerClose }) => {
                 onPress={() => handleListItem("MyOrders")}
                 icon={<MaterialIcons size={25} color={gray} name="restore" />}
               />
-              <List
-                isArabic={isArabic}
-                text={isArabic ? "عناويني" : "My Addresses"}
-                onPress={() => handleListItem("MyAddresses")}
-                icon={
-                  <MaterialCommunityIcons
-                    size={25}
-                    color={gray}
-                    name="map-marker-multiple-outline"
-                  />
-                }
-              />
+              {userData && (
+                <List
+                  isArabic={isArabic}
+                  text={isArabic ? "عناويني" : "My Addresses"}
+                  onPress={() => handleListItem("MyAddresses")}
+                  icon={
+                    <MaterialCommunityIcons
+                      size={25}
+                      color={gray}
+                      name="map-marker-multiple-outline"
+                    />
+                  }
+                />
+              )}
               <List
                 isArabic={isArabic}
                 onPress={() =>

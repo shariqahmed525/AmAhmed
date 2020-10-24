@@ -27,7 +27,7 @@ import messaging from "@react-native-firebase/messaging";
 import { useNavigation } from "@react-navigation/native";
 import { theme, backgroundColor } from "../../common/colors";
 import PushNotification from "react-native-push-notification";
-import { onSaveUserTokenAction } from "../../redux/actions/app";
+import { onSaveUserTokenAction } from "../../redux/actions/user";
 import { IOS, ANDROID, ARABIC, BASE_URL } from "../../common/constants";
 import { Entypo, Icon, MaterialCommunityIcons } from "../../common/icons";
 
@@ -66,7 +66,6 @@ export default () => {
     state => state.app
   );
   const isArabic = language === ARABIC;
-
   useEffect(() => {
     _isMounted = true;
     if (_isMounted) {

@@ -13,20 +13,24 @@ import {
 import Axios from "axios";
 import styles from "./styles";
 import Alert from "../../components/Alert";
-import { theme } from "../../common/colors";
+import { theme, lightTheme } from "../../common/colors";
 import Header from "../../components/Header";
-import { ERROR_IMG } from "../../common/constants";
-import { generateCode, removePreviousRoutes } from "../../common/functions";
 import { useDispatch, useSelector } from "react-redux";
 import { ANDROID, ARABIC, MAP_API_KEY } from "../../common/constants";
+import { BASE_URL, ERROR_IMG, INFO_IMG } from "../../common/constants";
+import { generateCode, removePreviousRoutes } from "../../common/functions";
 import {
+  onAddressesAction,
+  onSelectedAddressAction,
   saveAddressAction,
   updateAddressAction
 } from "../../redux/actions/user";
+import NoInternet from "../../components/NoInternet";
+import NetInfo from "@react-native-community/netinfo";
 
-export default () => {
+export default ({ route: { params } }) => {
   const dispatch = useDispatch();
-  const { params } = useRoute();
+  // console.log(params, " params");
   const navigation = useNavigation();
   const [name, setName] = useState("");
   const [alert, setAlert] = useState({
@@ -38,7 +42,11 @@ export default () => {
   });
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(true);
-  const { language } = useSelector(state => state.app);
+  const [internet, setInternet] = useState(true);
+  const {
+    app: { language },
+    user: { userData, selectedAddress }
+  } = useSelector(state => state);
   const isArabic = language === ARABIC;
 
   useEffect(() => {
@@ -81,7 +89,7 @@ export default () => {
     }
   };
 
-  const handleAddress = () => {
+  const handleAddressUpdate = () => {
     const trimName = name.trim();
     const trimAddress = address.trim();
     if (!trimName) {
@@ -128,6 +136,126 @@ export default () => {
     );
   };
 
+  const checkConnection = func => {
+    NetInfo.fetch().then(state => {
+      if (!state.isConnected) {
+        setLoading(false);
+        setInternet(false);
+      } else {
+        setInternet(true);
+        func();
+      }
+    });
+  };
+
+  const handleAddressAdd = async () => {
+    const trimName = name.trim();
+    const trimAddress = address.trim();
+    const cityId = params?.city?.id;
+    const phone = userData?.phone;
+    if (!trimName) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "الرجاء إدخال اسم العنوان"
+          : "Please enter address name"
+      });
+      return;
+    }
+    if (!cityId) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "يجب أن يكون اسم المدينة مطلوبًا"
+          : "City name must be required"
+      });
+      return;
+    }
+    if (!trimAddress) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "الرجاء إدخال عنوانك الكامل"
+          : "Please enter your complete address"
+      });
+      return;
+    }
+    if (!phone || !params?.coords?.latitude || !params?.coords?.longitude) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "عذرا، هناك خطأ ما. حاول مرة اخرى!"
+          : "Sorry, something went wrong. Please try again!"
+      });
+      return;
+    }
+    try {
+      setLoading(true);
+      await Axios.get(
+        `${BASE_URL}/UserAddresses/register/mob/${phone}/loc/${cityId}/lat/${params?.coords?.latitude}/long/${params?.coords?.longitude}/address/${trimAddress}/area/${trimName}`
+      );
+      const { data } = await Axios.get(
+        `${BASE_URL}/UserAddresses/get/mob/${phone}`
+      );
+      if (data && data.length > 0) {
+        console.log(data, " addresses");
+        // dispatch(onAddressesAction(data));
+        // dispatch(checkSelectedAddressExists(data));
+      }
+      setAlert({
+        alert: true,
+        error: false,
+        alertImg: INFO_IMG,
+        btnPress: () => navigate(),
+        alertText: isArabic
+          ? "تمت إضافة العنوان بنجاح!"
+          : "Address added successfully!"
+      });
+    } catch (error) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "عذرا، هناك خطأ ما. حاول مرة اخرى!"
+          : "Sorry, something went wrong. Please try again!"
+      });
+      console.log(error, " error in add address");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const navigate = () => {
+    removePreviousRoutes(
+      navigation,
+      params?.fromCheckout ? "Checkout" : "MyAddresses",
+      ["PinLocation", "NewAddress"]
+    );
+  };
+
+  const checkSelectedAddressExists = data => {
+    if (selectedAddress && selectedAddress.id) {
+      const find = data.find(o => o.id === selectedAddress.id);
+      if (!find) {
+        dispatch(onSelectedAddressAction(null));
+      }
+    }
+  };
+
   const alertClose = () =>
     setAlert({
       alert: false,
@@ -136,6 +264,10 @@ export default () => {
       alertText: "",
       alertTitle: ""
     });
+
+  const handleRetry = () => {
+    checkConnection();
+  };
 
   return (
     <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
@@ -147,74 +279,85 @@ export default () => {
           title={isArabic ? "عنوان جديد" : "New Address"}
         />
         <Alert
-          btnText={"OK"}
           error={alert.error}
           alert={alert.alert}
           img={alert.alertImg}
+          btnColor={lightTheme}
           text={alert.alertText}
-          onBtnPress={alertClose}
           title={alert.alertTitle}
+          btnText={isArabic ? "حسنا" : "OK"}
+          onBtnPress={alert.btnPress || alertClose}
         />
         {loading && (
           <View style={styles.activityLoader}>
             <ActivityIndicator size="large" color={theme} />
           </View>
         )}
-        <ScrollView contentContainerStyle={styles.mainContainer}>
-          <Text style={styles.heading(isArabic)}>
-            {isArabic ? "اسم" : "Name"}
-          </Text>
-          <TextInput
-            value={name}
-            spellCheck={false}
-            autoCorrect={false}
-            style={styles.input(isArabic)}
-            onChangeText={e => setName(e)}
-            placeholder={isArabic ? "أدخل اسم" : "Enter name"}
-          />
-          <Text style={styles.heading(isArabic)}>
-            {isArabic ? "رقم الاتصال" : "City"}
-          </Text>
-          <TextInput
-            editable={false}
-            spellCheck={false}
-            autoCorrect={false}
-            value={params?.city}
-            style={styles.input(isArabic)}
-          />
-          <Text style={styles.heading(isArabic)}>
-            {isArabic ? "عنوان" : "Address"}
-          </Text>
-          <TextInput
-            value={address}
-            spellCheck={false}
-            autoCorrect={false}
-            style={styles.input(isArabic)}
-            onChangeText={e => setAddress(e)}
-            placeholder={
-              isArabic
-                ? "أدخل عنوانك الكامل هنا ..."
-                : "Enter your complete address here..."
-            }
-          />
-        </ScrollView>
-        <View style={styles.footer(isArabic)}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={handleAddress}
-            style={styles.btn("100%")}
-          >
-            {params?.isEdit ? (
-              <Text style={styles.btnText(isArabic)}>
-                {isArabic ? "تحديث" : "UPDATE"}
+        {!internet ? (
+          <NoInternet isArabic={isArabic} onPress={handleRetry} />
+        ) : (
+          <>
+            <ScrollView contentContainerStyle={styles.mainContainer}>
+              <Text style={styles.heading(isArabic)}>
+                {isArabic ? "اسم" : "Name"}
               </Text>
-            ) : (
-              <Text style={styles.btnText(isArabic)}>
-                {isArabic ? "أضف" : "ADD"}
+              <TextInput
+                value={name}
+                spellCheck={false}
+                autoCorrect={false}
+                style={styles.input(isArabic)}
+                onChangeText={e => setName(e)}
+                placeholder={isArabic ? "أدخل اسم" : "Enter name"}
+              />
+              <Text style={styles.heading(isArabic)}>
+                {isArabic ? "رقم الاتصال" : "City"}
               </Text>
-            )}
-          </TouchableOpacity>
-        </View>
+              <TextInput
+                editable={false}
+                spellCheck={false}
+                autoCorrect={false}
+                style={styles.input(isArabic)}
+                value={isArabic ? params?.city?.nameAr : params?.city?.nameEn}
+              />
+              <Text style={styles.heading(isArabic)}>
+                {isArabic ? "عنوان" : "Address"}
+              </Text>
+              <TextInput
+                value={address}
+                spellCheck={false}
+                autoCorrect={false}
+                style={styles.input(isArabic)}
+                onChangeText={e => setAddress(e)}
+                placeholder={
+                  isArabic
+                    ? "أدخل عنوانك الكامل هنا ..."
+                    : "Enter your complete address here..."
+                }
+              />
+            </ScrollView>
+            <View style={styles.footer(isArabic)}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={styles.btn("100%")}
+                onPress={() =>
+                  checkConnection(
+                    params?.isEdit ? handleAddressUpdate : handleAddressAdd
+                  )
+                }
+              >
+                {params?.isEdit ? (
+                  <Text style={styles.btnText(isArabic)}>
+                    {isArabic ? "تحديث" : "UPDATE"}
+                  </Text>
+                ) : (
+                  <Text style={styles.btnText(isArabic)}>
+                    {isArabic ? "أضف" : "ADD"}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
       </View>
     </SafeAreaView>
   );

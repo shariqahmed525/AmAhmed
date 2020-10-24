@@ -1,25 +1,45 @@
 import {
+  TOKEN,
   CLEAR_CART,
   DELETE_ADDRESS,
   SAVE_ADDRESS,
   UPDATE_ADDRESS,
   SAVE_USER_DATA,
   CLEAR_USER_DATA,
-  ADD_ITEM_TO_CART
+  ADD_ITEM_TO_CART,
+  SELECTED_ADDRESS,
+  ADDRESSES
 } from "../types/user";
 
 const initialState = {
   cart: [],
+  token: "",
   addresses: [],
-  userData: null
+  userData: null,
+  selectedAddress: null
 };
 
 export default (state = initialState, { type, payload }) => {
   switch (type) {
+    case TOKEN:
+      return {
+        ...state,
+        token: payload
+      };
     case SAVE_USER_DATA:
       return {
         ...state,
         userData: payload
+      };
+    case ADDRESSES:
+      return {
+        ...state,
+        addresses: payload
+      };
+    case SELECTED_ADDRESS:
+      return {
+        ...state,
+        selectedAddress: payload
       };
     case SAVE_ADDRESS:
       return {

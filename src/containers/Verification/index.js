@@ -70,46 +70,47 @@ export default ({ route: { params } }) => {
   };
 
   const handleVerification = async text => {
-    if (text != verificationCode || text != VERFICATION_CODE) {
-      setAlert({
-        alert: true,
-        error: true,
-        alertImg: ERROR_IMG,
-        alertTitle: isArabic ? "خطأ" : "Error",
-        alertText: isArabic ? "الرمز غير صحيح!" : "Invalid code!"
-      });
+    if (text == verificationCode || text == VERFICATION_CODE) {
+      setLoading(true);
+      try {
+        await Axios.get(`${BASE_URL}/Users/register/${params?.phone}`);
+        await Axios.post(`${BASE_URL}/users/update`, {
+          id: params?.phone,
+          Token: token
+        });
+        const { data } = await Axios.get(
+          `${BASE_URL}/UserAddresses/get/mob/${params?.phone}`
+        );
+        if (data && data.length > 0) {
+          dispatch(onAddressesAction([...data]));
+        } else {
+          dispatch(onAddressesAction([]));
+        }
+        dispatch(
+          saveUserData({
+            token,
+            isVerify: true,
+            phone: params?.phone
+          })
+        );
+        handleBack();
+        if (params?.animateButton) {
+          params.animateButton();
+        }
+      } catch (error) {
+        console.log(error, " error in handleVerification");
+      } finally {
+        setLoading(false);
+      }
       return;
     }
-    setLoading(true);
-    try {
-      await Axios.get(`${BASE_URL}/Users/register/${params?.phone}`);
-      // await Axios.get(
-      //   `${BASE_URL}/Users/update/id/${params?.phone}/Token/${token}`
-      // );
-      const { data } = await Axios.get(
-        `${BASE_URL}/UserAddresses/get/mob/${params?.phone}`
-      );
-      if (data && data.length > 0) {
-        dispatch(onAddressesAction([...data]));
-      } else {
-        dispatch(onAddressesAction([]));
-      }
-      dispatch(
-        saveUserData({
-          token,
-          isVerify: true,
-          phone: params?.phone
-        })
-      );
-      handleBack();
-      if (params?.animateButton) {
-        params.animateButton();
-      }
-    } catch (error) {
-      console.log(error, " error in handleVerification");
-    } finally {
-      setLoading(false);
-    }
+    setAlert({
+      alert: true,
+      error: true,
+      alertImg: ERROR_IMG,
+      alertTitle: isArabic ? "خطأ" : "Error",
+      alertText: isArabic ? "الرمز غير صحيح!" : "Invalid code!"
+    });
   };
 
   useEffect(() => {

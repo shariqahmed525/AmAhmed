@@ -25,7 +25,7 @@ const PriceRender = ({ price, isArabic, discount, unitType }) => (
       {discount > 0 && <Text style={styles.offerWrapper}>{price} </Text>}
       {isArabic && discount > 1 && "ر.س "}
       <Text style={{ fontSize: 15 }}>/ </Text>
-      {unitType}
+      <Text style={styles.unitType}>{unitType} </Text>
     </Text>
   </View>
 );
@@ -128,13 +128,15 @@ export default ({ item, isArabic }) => {
               <Text style={styles.cartSubItemTitle(isArabic)}>
                 {isArabic ? item?.cuttingWay?.nameAr : item?.cuttingWay?.nameEn}
               </Text>
-              <Text style={styles.cartSubItemTotalText(isArabic)}>
-                {!isArabic && "SAR "}
-                <Text style={styles.cartSubItemTotalPriceText(isArabic)}>
-                  {item?.cuttingWay?.cost}
+              {item?.cuttingWay.cost > 0 && (
+                <Text style={styles.cartSubItemTotalText(isArabic)}>
+                  {!isArabic && "SAR "}
+                  <Text style={styles.cartSubItemTotalPriceText(isArabic)}>
+                    {item?.cuttingWay?.cost}
+                  </Text>
+                  {isArabic && " ر.س"}
                 </Text>
-                {isArabic && " ر.س"}
-              </Text>
+              )}
             </View>
           )}
           {item?.hasHeadAndLegs && item?.headAndLeg && (
@@ -142,13 +144,15 @@ export default ({ item, isArabic }) => {
               <Text style={styles.cartSubItemTitle(isArabic)}>
                 {isArabic ? item?.headAndLeg?.nameAr : item?.headAndLeg?.nameEn}
               </Text>
-              <Text style={styles.cartSubItemTotalText(isArabic)}>
-                {!isArabic && "SAR "}
-                <Text style={styles.cartSubItemTotalPriceText(isArabic)}>
-                  {item?.headAndLeg?.cost}
+              {item?.headAndLeg.cost > 0 && (
+                <Text style={styles.cartSubItemTotalText(isArabic)}>
+                  {!isArabic && "SAR "}
+                  <Text style={styles.cartSubItemTotalPriceText(isArabic)}>
+                    {item?.headAndLeg?.cost}
+                  </Text>
+                  {isArabic && " ر.س"}
                 </Text>
-                {isArabic && " ر.س"}
-              </Text>
+              )}
             </View>
           )}
           {item?.hasPacking && item?.packing && (
@@ -156,13 +160,15 @@ export default ({ item, isArabic }) => {
               <Text style={styles.cartSubItemTitle(isArabic)}>
                 {isArabic ? item?.packing?.nameAr : item?.packing?.nameEn}
               </Text>
-              <Text style={styles.cartSubItemTotalText(isArabic)}>
-                {!isArabic && "SAR "}
-                <Text style={styles.cartSubItemTotalPriceText(isArabic)}>
-                  {item?.packing?.cost}
+              {item?.packing?.cost > 0 && (
+                <Text style={styles.cartSubItemTotalText(isArabic)}>
+                  {!isArabic && "SAR "}
+                  <Text style={styles.cartSubItemTotalPriceText(isArabic)}>
+                    {item?.packing?.cost}
+                  </Text>
+                  {isArabic && " ر.س"}
                 </Text>
-                {isArabic && " ر.س"}
-              </Text>
+              )}
             </View>
           )}
           <View style={styles.cartActionWrapper(isArabic)}>
@@ -185,23 +191,19 @@ export default ({ item, isArabic }) => {
         </View>
       </View>
       <View style={styles.cartItemTotal(isArabic)}>
-        {item?.hasCuttingWay &&
-          item?.cuttingWay?.cost &&
-          item?.cuttingWay?.cost > 0 && (
-            <View style={styles.costWrapper}>
-              <Text style={styles.cost}>{item?.cuttingWay?.cost}</Text>
-              <Text style={styles.plus}>+</Text>
-            </View>
-          )}
-        {item?.hasHeadAndLegs &&
-          item?.headAndLeg?.cost &&
-          item?.headAndLeg?.cost > 0 && (
-            <View style={styles.costWrapper}>
-              <Text style={styles.cost}>{item?.headAndLeg?.cost}</Text>
-              <Text style={styles.plus}>+</Text>
-            </View>
-          )}
-        {item?.hasPacking && item?.packing?.cost && item?.packing?.cost > 0 && (
+        {item?.hasCuttingWay && item?.cuttingWay?.cost > 0 && (
+          <View style={styles.costWrapper}>
+            <Text style={styles.cost}>{item?.cuttingWay?.cost}</Text>
+            <Text style={styles.plus}>+</Text>
+          </View>
+        )}
+        {item?.hasHeadAndLegs && item?.headAndLeg?.cost > 0 && (
+          <View style={styles.costWrapper}>
+            <Text style={styles.cost}>{item?.headAndLeg?.cost}</Text>
+            <Text style={styles.plus}>+</Text>
+          </View>
+        )}
+        {item?.hasPacking && item?.packing?.cost > 0 && (
           <View style={styles.costWrapper}>
             <Text style={styles.cost}>{item?.packing?.cost}</Text>
             <Text style={styles.plus}>+</Text>
@@ -265,17 +267,17 @@ const styles = StyleSheet.create({
     textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
   }),
-  cartDetails: isArabic => ({
+  cartDetails: () => ({
     width: "100%",
     paddingBottom: 10
   }),
-  cartActionWrapper: isArabic => ({
+  cartActionWrapper: () => ({
     marginTop: 10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between"
   }),
-  cartAction: isArabic => ({
+  cartAction: () => ({
     width: 45,
     height: 25,
     borderRadius: 25,
@@ -291,12 +293,12 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   }),
   cartItemTotalText: isArabic => ({
-    fontSize: 13,
+    fontSize: 11,
     textAlign: "center",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
   cartItemTotalPriceText: () => ({
-    fontSize: 21,
+    fontSize: 20,
     fontFamily: "Rubik-Medium"
   }),
   priceContainer: isArabic => ({
@@ -304,14 +306,14 @@ const styles = StyleSheet.create({
   }),
   priceWrapper: isArabic => ({
     color: "#707070",
-    fontSize: isArabic ? 13 : 11.5,
+    fontSize: isArabic ? 13 : 10,
     textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
   price: isArabic => ({
-    fontSize: isArabic ? 18 : 16,
     color: darkGray,
-    fontFamily: "Rubik-Medium"
+    fontSize: isArabic ? 18 : 17,
+    fontFamily: "Rubik-SemiBold"
   }),
   quantity: {
     fontSize: 16,
@@ -324,6 +326,11 @@ const styles = StyleSheet.create({
     fontFamily: "Rubik-Regular",
     textDecorationLine: "line-through",
     textDecorationColor: theme
+  },
+  unitType: {
+    fontSize: 11.5,
+    color: "#707070",
+    fontFamily: "Rubik-Regular"
   },
   cartDifferenceAction: {
     color: theme,
@@ -368,14 +375,14 @@ const styles = StyleSheet.create({
   }),
   cartSubItemTotalText: isArabic => ({
     fontSize: 9,
-    color: "#707070",
+    color: theme,
     marginTop: isArabic ? 2 : 5,
     textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
   cartSubItemTotalPriceText: isArabic => ({
-    fontSize: 14,
-    color: darkGray,
+    fontSize: 15,
+    color: theme,
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Medium"
   }),
   plus: {
