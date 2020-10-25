@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { backgroundColor, theme } from "../../common/colors";
-import { CONTAINER_PADDING, HEIGHT, WIDTH } from "../../common/constants";
+import { CONTAINER_PADDING } from "../../common/constants";
 const styles = StyleSheet.create({
   safe: {
     flex: 1,

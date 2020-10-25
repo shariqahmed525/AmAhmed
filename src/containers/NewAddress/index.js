@@ -1,36 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-navigation";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
   TextInput,
   StatusBar,
   ScrollView,
-  TouchableOpacity,
-  ActivityIndicator
+  TouchableOpacity
 } from "react-native";
 import Axios from "axios";
 import styles from "./styles";
 import Alert from "../../components/Alert";
-import { theme, lightTheme } from "../../common/colors";
 import Header from "../../components/Header";
+import { theme, lightTheme } from "../../common/colors";
 import { useDispatch, useSelector } from "react-redux";
 import { ANDROID, ARABIC, MAP_API_KEY } from "../../common/constants";
 import { BASE_URL, ERROR_IMG, INFO_IMG } from "../../common/constants";
-import { generateCode, removePreviousRoutes } from "../../common/functions";
+import { removePreviousRoutes } from "../../common/functions";
 import {
-  onAddressesAction,
-  onSelectedAddressAction,
-  saveAddressAction,
-  updateAddressAction
+  onReCallMyAddresses,
+  onUpdateAddressAction
 } from "../../redux/actions/user";
+import { ActivityIndicator } from "react-native-paper";
 import NoInternet from "../../components/NoInternet";
 import NetInfo from "@react-native-community/netinfo";
 
 export default ({ route: { params } }) => {
   const dispatch = useDispatch();
-  // console.log(params, " params");
   const navigation = useNavigation();
   const [name, setName] = useState("");
   const [alert, setAlert] = useState({
@@ -45,7 +42,7 @@ export default ({ route: { params } }) => {
   const [internet, setInternet] = useState(true);
   const {
     app: { language },
-    user: { userData, selectedAddress }
+    user: { userData }
   } = useSelector(state => state);
   const isArabic = language === ARABIC;
 
@@ -55,7 +52,7 @@ export default ({ route: { params } }) => {
     } else {
       setLoading(false);
     }
-    if (params?.name) setName(params?.name);
+    if (params?.area) setName(params?.area);
     if (params?.address) setAddress(params?.address);
     StatusBar.setBarStyle("light-content");
     ANDROID && StatusBar.setBackgroundColor(theme);
@@ -89,9 +86,12 @@ export default ({ route: { params } }) => {
     }
   };
 
-  const handleAddressUpdate = () => {
+  const handleAddressUpdate = async () => {
     const trimName = name.trim();
     const trimAddress = address.trim();
+    const cityId = params?.city?.id;
+    const phone = userData?.phone;
+    const id = params?.id;
     if (!trimName) {
       setAlert({
         alert: true,
@@ -101,6 +101,18 @@ export default ({ route: { params } }) => {
         alertText: isArabic
           ? "الرجاء إدخال اسم العنوان"
           : "Please enter address name"
+      });
+      return;
+    }
+    if (!cityId) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "يجب أن يكون اسم المدينة مطلوبًا"
+          : "City name must be required"
       });
       return;
     }
@@ -116,24 +128,57 @@ export default ({ route: { params } }) => {
       });
       return;
     }
-    const obj = {
-      id: params?.isEdit && params?.id ? params?.id : generateCode(),
-      name: trimName,
-      city: params?.city,
-      cityCode: params?.cityCode,
-      address: trimAddress,
-      ...params?.coords
-    };
-    if (params?.isEdit && params?.id) {
-      dispatch(updateAddressAction(obj, params?.id));
-    } else {
-      dispatch(saveAddressAction(obj));
+    if (
+      !phone ||
+      !id ||
+      !params?.coords?.latitude ||
+      !params?.coords?.longitude
+    ) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "عذرا، هناك خطأ ما. حاول مرة اخرى!"
+          : "Sorry, something went wrong. Please try again!"
+      });
+      return;
     }
-    removePreviousRoutes(
-      navigation,
-      params?.fromCheckout ? "Checkout" : "MyAddresses",
-      ["PinLocation", "NewAddress"]
-    );
+    try {
+      setLoading(true);
+      await Axios.get(
+        `${BASE_URL}/UserAddresses/update/id/${id}/mob/${phone}/loc/${cityId}/lat/${params?.coords?.latitude}/long/${params?.coords?.longitude}/address/${trimAddress}/area/${trimName}`
+      );
+      const obj = { ...params };
+      delete params.city;
+      delete params.coords;
+      delete params.isEdit;
+      dispatch(onUpdateAddressAction(obj, params?.id));
+      dispatch(onReCallMyAddresses());
+      setAlert({
+        alert: true,
+        error: false,
+        alertImg: INFO_IMG,
+        btnPress: () => navigate(),
+        alertText: isArabic
+          ? "تمت تحديث العنوان بنجاح!"
+          : "Address updated successfully!"
+      });
+    } catch (error) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "عذرا، هناك خطأ ما. حاول مرة اخرى!"
+          : "Sorry, something went wrong. Please try again!"
+      });
+      console.log(error, " error in add address");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const checkConnection = func => {
@@ -206,14 +251,6 @@ export default ({ route: { params } }) => {
       await Axios.get(
         `${BASE_URL}/UserAddresses/register/mob/${phone}/loc/${cityId}/lat/${params?.coords?.latitude}/long/${params?.coords?.longitude}/address/${trimAddress}/area/${trimName}`
       );
-      const { data } = await Axios.get(
-        `${BASE_URL}/UserAddresses/get/mob/${phone}`
-      );
-      if (data && data.length > 0) {
-        console.log(data, " addresses");
-        // dispatch(onAddressesAction(data));
-        // dispatch(checkSelectedAddressExists(data));
-      }
       setAlert({
         alert: true,
         error: false,
@@ -223,6 +260,9 @@ export default ({ route: { params } }) => {
           ? "تمت إضافة العنوان بنجاح!"
           : "Address added successfully!"
       });
+      setTimeout(() => {
+        dispatch(onReCallMyAddresses());
+      }, 500);
     } catch (error) {
       setAlert({
         alert: true,
@@ -245,15 +285,6 @@ export default ({ route: { params } }) => {
       params?.fromCheckout ? "Checkout" : "MyAddresses",
       ["PinLocation", "NewAddress"]
     );
-  };
-
-  const checkSelectedAddressExists = data => {
-    if (selectedAddress && selectedAddress.id) {
-      const find = data.find(o => o.id === selectedAddress.id);
-      if (!find) {
-        dispatch(onSelectedAddressAction(null));
-      }
-    }
   };
 
   const alertClose = () =>

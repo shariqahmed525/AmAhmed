@@ -60,6 +60,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
+  activityLoader: {
+    zIndex: 1,
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    position: "absolute",
+    justifyContent: "center"
+  },
   loader: {
     width: 120
   },

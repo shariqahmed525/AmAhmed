@@ -56,7 +56,7 @@ const StackOptions = {
 
 const HomeStack = () => {
   return (
-    <Navigator initialRouteName="PinLocation">
+    <Navigator initialRouteName="HomeScreen">
       <Screen component={Home} name="HomeScreen" options={StackOptions} />
       <Screen component={ItemDetail} name="ItemDetail" options={StackOptions} />
       <Screen
@@ -211,7 +211,7 @@ const Tab = () => {
 
 const OnBoardStack = () => {
   return (
-    <Navigator initialRouteName={"MainStack"}>
+    <Navigator initialRouteName={"OnBoardingCity"}>
       <Screen
         name="OnBoardingCity"
         options={StackOptions}

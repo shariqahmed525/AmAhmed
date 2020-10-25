@@ -8,11 +8,13 @@ import {
   CLEAR_USER_DATA,
   ADD_ITEM_TO_CART,
   SELECTED_ADDRESS,
-  ADDRESSES
+  ADDRESSES,
+  RECALL_MY_ADDRESSES
 } from "../types/user";
 
 const initialState = {
   cart: [],
+  random: 1,
   token: "",
   addresses: [],
   userData: null,
@@ -41,10 +43,11 @@ export default (state = initialState, { type, payload }) => {
         ...state,
         selectedAddress: payload
       };
-    case SAVE_ADDRESS:
+    case DELETE_ADDRESS:
+      const addresses = state.addresses.filter(o => o.id !== payload);
       return {
         ...state,
-        addresses: [...state.addresses, payload]
+        addresses
       };
     case UPDATE_ADDRESS:
       const findAddressIndex = state.addresses.findIndex(
@@ -54,11 +57,15 @@ export default (state = initialState, { type, payload }) => {
       return {
         ...state
       };
-    case DELETE_ADDRESS:
-      const addresses = state.addresses.filter(o => o.id !== payload);
+    case RECALL_MY_ADDRESSES:
+      return {
+        random: Math.random() * 87,
+        ...state
+      };
+    case SAVE_ADDRESS:
       return {
         ...state,
-        addresses
+        addresses: [...state.addresses, payload]
       };
     case CLEAR_USER_DATA:
       return {

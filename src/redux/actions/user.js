@@ -5,6 +5,7 @@ import {
   DELETE_ADDRESS,
   ADDRESSES,
   TOKEN,
+  RECALL_MY_ADDRESSES,
   SELECTED_ADDRESS,
   UPDATE_ADDRESS,
   CLEAR_USER_DATA,
@@ -25,10 +26,23 @@ export const onSelectedAddressAction = address => {
   };
 };
 
+export const onReCallMyAddresses = () => {
+  return {
+    type: RECALL_MY_ADDRESSES
+  };
+};
+
 export const onSaveUserTokenAction = token => {
   return {
     type: TOKEN,
     payload: token
+  };
+};
+
+export const onDeleteAddressAction = id => {
+  return {
+    type: DELETE_ADDRESS,
+    payload: id
   };
 };
 
@@ -46,14 +60,7 @@ export const saveAddressAction = payload => {
   };
 };
 
-export const deleteAddressAction = payload => {
-  return {
-    type: DELETE_ADDRESS,
-    payload
-  };
-};
-
-export const updateAddressAction = (data, id) => {
+export const onUpdateAddressAction = (data, id) => {
   return {
     type: UPDATE_ADDRESS,
     payload: {

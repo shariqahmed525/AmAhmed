@@ -2,12 +2,13 @@ import React, { useMemo } from "react";
 import { theme } from "../common/colors";
 import { Entypo } from "../common/icons";
 import { useSelector } from "react-redux";
-import { ARABIC, HEIGHT } from "../common/constants";
+import { ARABIC } from "../common/constants";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 
 export default ({
   back,
   title,
+  memoObj = [],
   titleHeight,
   titleAlign,
   titleColor,
@@ -110,7 +111,7 @@ export default ({
         )}
       </View>
     ),
-    [language, selectedCategory, cart.length]
+    [language, selectedCategory, cart.length, ...memoObj]
   );
   return memo;
 };

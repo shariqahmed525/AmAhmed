@@ -14,25 +14,22 @@ import Alert from "../../components/Alert";
 import { theme } from "../../common/colors";
 import Header from "../../components/Header";
 import { DropdownSection } from "../Checkout";
-import { FontAwesome } from "../../common/icons";
-import { ERROR_IMG } from "../../common/constants";
+import { FontAwesome, MaterialIcons } from "../../common/icons";
+import { ERROR_IMG, IOS } from "../../common/constants";
 import { useDispatch, useSelector } from "react-redux";
 import Geolocation from "@react-native-community/geolocation";
 import RNAndroidLocationEnabler from "react-native-android-location-enabler";
-import { ANDROID, ARABIC, CITIES, HEIGHT, WIDTH } from "../../common/constants";
+import { ANDROID, ARABIC, HEIGHT, WIDTH } from "../../common/constants";
 
 const LATITUDE = 40.74333; // Korea Town, New York, NY 10001
 const LONGITUDE = -73.99033; // Korea Town, New York, NY 10001
 const LATITUDE_DELTA = 0.28;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (WIDTH / HEIGHT);
 
-export default () => {
-  const dispatch = useDispatch();
+export default ({ route: { params } }) => {
   const ref = useRef(null);
-  const { params } = useRoute();
   const navigation = useNavigation();
   const [coords, setCoords] = useState(null);
-  const [denied, setDenied] = useState(null);
   const [alert, setAlert] = useState({
     alert: false,
     error: false,
@@ -45,40 +42,51 @@ export default () => {
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    // if (params?.latitude && params?.longitude) {
-    //   setCoords({
-    //     latitude: params?.latitude,
-    //     longitude: params?.longitude,
-    //     latitudeDelta: params?.latitudeDelta,
-    //     longitudeDelta: params?.longitudeDelta
+    if (params?.latitude && params?.longitude) {
+      setCoords({
+        latitude: params?.latitude,
+        longitude: params?.longitude,
+        latitudeDelta: params?.latitudeDelta,
+        longitudeDelta: params?.longitudeDelta
+      });
+    }
+    // else {
+    // if (ANDROID) {
+    //   AskLocationPopup();
+    // } else {
+    //   Geolocation.getCurrentPosition(info => {
+    //     if (info?.coords) {
+    //       setCoords({ ...info?.coords });
+    //     }
     //   });
     // }
-    // else {
-    //   if (ANDROID) {
-    //     // AskLocationPopup();
-    //   } else {
-    //     Geolocation.getCurrentPosition(info => {
-    //       if (info?.coords) {
-    //         setCoords({ ...info?.coords });
-    //       }
-    //     });
-    //   }
     // }
-    // if (params?.cityCode) {
-    //   const code = params.cityCode;
-    //   setSelectedCity(CITIES.find(o => o.code === code));
-    // }
+    if (
+      params?.locationID &&
+      cities &&
+      cities.find(o => o.id === params?.locationID)
+    ) {
+      const city = cities.find(o => o.id === params?.locationID);
+      setSelectedCity({ ...city });
+    }
     StatusBar.setBarStyle("light-content");
     ANDROID && StatusBar.setBackgroundColor(theme);
   }, []);
 
   const AskLocationPopup = () => {
+    if (IOS) {
+      Geolocation.getCurrentPosition(info => {
+        if (info?.coords) {
+          setCoords({ ...info?.coords });
+        }
+      });
+      return;
+    }
     RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
       interval: 10000,
       fastInterval: 5000
     })
       .then(() => {
-        setDenied(null);
         Geolocation.getCurrentPosition(info => {
           if (info?.coords) {
             setCoords({ ...info?.coords });
@@ -87,7 +95,6 @@ export default () => {
       })
       .catch(err => {
         if (err && err.code === "ERR00") {
-          setDenied(true);
           return;
         }
         Geolocation.getCurrentPosition(info => {
@@ -188,8 +195,25 @@ export default () => {
         <Header
           back
           onBackPress={handleBack}
+          rightIcon={() =>
+            selectedCity && (
+              <MaterialIcons name="my-location" size={28} color={"#fff"} />
+            )
+          }
+          rightIconProps={{
+            onPress: AskLocationPopup
+          }}
+          memoObj={[selectedCity]}
           titleAlign={isArabic ? "right" : "left"}
-          title={isArabic ? "عنوان جديد" : "New Address"}
+          title={
+            isArabic
+              ? params?.isEdit
+                ? "تحديث العنوان"
+                : "عنوان جديد"
+              : params?.isEdit
+              ? "Update Address"
+              : "New Address"
+          }
         />
         <Alert
           btnText={"OK"}
