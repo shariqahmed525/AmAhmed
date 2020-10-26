@@ -90,11 +90,15 @@ export const addresses = [
 
 export const payments = [
   {
-    name: isArabic => (isArabic ? "الدفع عند الاستلام" : "Cash On Delivery"),
+    id: "p-1",
+    nameAr: "الدفع عند الاستلام",
+    nameEn: "Cash On Delivery",
     icon: <MaterialCommunityIcons size={27} name="cash" color={theme} />
   },
   {
-    name: isArabic => (isArabic ? "بطاقة الائتمان/الخصم" : "Credit/Debit Card"),
+    id: "p-2",
+    nameAr: "بطاقة الائتمان/الخصم",
+    nameEn: "Credit/Debit Card",
     icon: (
       <MaterialCommunityIcons
         size={27}
@@ -102,6 +106,12 @@ export const payments = [
         name="credit-card-multiple-outline"
       />
     )
+  },
+  {
+    id: "p-3",
+    nameAr: "تحویل آن لائن",
+    nameEn: "Online Transfer",
+    icon: <MaterialCommunityIcons size={27} name="bank" color={theme} />
   }
 ];
 

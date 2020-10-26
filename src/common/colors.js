@@ -10,6 +10,7 @@ export const dangerColor = "#DC3545";
 // export const tabIconColor = "#d0b8b8";
 export const lightTheme = "rgba(227, 10, 44, 0.2)";
 export const tabIconColor = "rgba(227, 10, 44, 0.4)";
+// export const tabIconColor = "#f4a0ac";
 export const redColor = "#ff0100";
 export const greenColor = "#8fc94d";
 export const backgroundColor = "#f9f4f5";

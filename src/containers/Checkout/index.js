@@ -1,213 +1,43 @@
-import React, { useState, useEffect, useRef, useMemo, forwardRef } from "react";
-import { SafeAreaView } from "react-navigation";
-import { useNavigation } from "@react-navigation/native";
-import {
-  Entypo,
-  Fontisto,
-  MaterialCommunityIcons,
-  MaterialIcons
-} from "../../common/icons";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { Entypo } from "../../common/icons";
 import {
   View,
   Text,
-  Image,
   TextInput,
   StatusBar,
   ScrollView,
-  StyleSheet,
   TouchableOpacity,
-  ActivityIndicator,
   KeyboardAvoidingView
 } from "react-native";
-import styles from "./styles";
-import Header from "../../components/Header";
-import { Menu, Divider } from "react-native-paper";
-import { lightTheme, theme } from "../../common/colors";
-import { useDispatch, useSelector } from "react-redux";
 import {
   IOS,
   WIDTH,
   HEIGHT,
   ARABIC,
   ANDROID,
-  markers,
   payments,
+  BASE_URL,
   ERROR_IMG,
-  THANKS_IMG,
-  BASE_URL
+  THANKS_IMG
 } from "../../common/constants";
 import Axios from "axios";
+import styles from "./styles";
+import RenderMap from "./RenderMap";
 import Alert from "../../components/Alert";
-import { clearCart } from "../../redux/actions/user";
+import Header from "../../components/Header";
+import { SafeAreaView } from "react-navigation";
+import { Divider } from "react-native-paper";
+import NoInternet from "../../components/NoInternet";
 import NetInfo from "@react-native-community/netinfo";
 import * as Animatable from "react-native-animatable";
-import MapView, { MarkerAnimated } from "react-native-maps";
-import { RNSlidingButton, SlideDirection } from "rn-sliding-button";
+import { useDispatch, useSelector } from "react-redux";
+import { ActivityIndicator } from "react-native-paper";
+import { lightTheme, theme } from "../../common/colors";
+import { useNavigation } from "@react-navigation/native";
+import DropdownSection from "../../components/DropdownSection";
 import { getRandom, validatePhone } from "../../common/functions";
-import NoInternet from "../../components/NoInternet";
-
-export const DropdownSection = forwardRef(
-  (
-    {
-      title,
-      isAddress,
-      btnText,
-      isArabic,
-      onPress,
-      selected,
-      data = [],
-      noIcon
-    },
-    ref
-  ) => {
-    const [visible, setVisible] = useState(false);
-    const openMenu = () => setVisible(true);
-    const closeMenu = () => setVisible(false);
-    const handleListItem = (isNew, item) => {
-      if (isAddress) {
-        onPress(isNew, item);
-      } else {
-        onPress(item);
-      }
-      closeMenu();
-    };
-    return (
-      <>
-        <Text ref={ref} style={styles.heading(isArabic)}>
-          {title}
-        </Text>
-        <Menu
-          visible={visible}
-          contentStyle={{
-            width: WIDTH - 22,
-            backgroundColor: "#fff"
-          }}
-          onDismiss={closeMenu}
-          anchor={
-            <TouchableOpacity
-              onPress={openMenu}
-              activeOpacity={0.7}
-              style={styles.option(isArabic)}
-            >
-              <Text
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                style={styles.optionText(isArabic)}
-              >
-                {selected
-                  ? isArabic
-                    ? selected?.nameAr
-                    : selected?.nameEn
-                  : btnText}
-              </Text>
-              <Entypo name="chevron-thin-down" size={18} color={theme} />
-            </TouchableOpacity>
-          }
-        >
-          {isAddress && (
-            <>
-              <Menu.Item
-                title={
-                  <View style={styles.listItem(isArabic)}>
-                    <View style={styles.listIcon(isArabic)}>
-                      <MaterialIcons
-                        size={25}
-                        color={theme}
-                        name="my-location"
-                      />
-                    </View>
-                    <View style={styles.textWrapper(isArabic)}>
-                      <Text style={styles.listItemText(isArabic)}>
-                        {isArabic ? "الموقع الحالي" : "Current Location"}
-                      </Text>
-                    </View>
-                  </View>
-                }
-                titleStyle={{ width: WIDTH - 52 }}
-                onPress={() => handleListItem(true)}
-                style={styles.menuItem(isArabic)}
-              />
-              <Divider />
-              <Menu.Item
-                title={
-                  <View style={styles.listItem(isArabic)}>
-                    <View style={styles.listIcon(isArabic)}>
-                      <MaterialCommunityIcons
-                        size={25}
-                        color={theme}
-                        name="map-marker-plus-outline"
-                      />
-                    </View>
-                    <View style={styles.textWrapper(isArabic)}>
-                      <Text style={styles.listItemText(isArabic)}>
-                        {isArabic ? "عنوان جديد" : "New Address"}
-                      </Text>
-                    </View>
-                    <View style={styles.listIconRight(isArabic)}>
-                      <Entypo
-                        size={20}
-                        color={theme}
-                        name="chevron-thin-right"
-                      />
-                    </View>
-                  </View>
-                }
-                titleStyle={{ width: WIDTH - 52 }}
-                onPress={() => handleListItem(true)}
-                style={styles.menuItem(isArabic)}
-              />
-              {data && data.length > 0 && <Divider />}
-            </>
-          )}
-          <ScrollView bounces={false} style={{ maxHeight: 200 }}>
-            {data.map((v, i) => (
-              <View key={i}>
-                <Menu.Item
-                  title={
-                    <View style={styles.listItem(isArabic)}>
-                      {isAddress ? (
-                        <View style={styles.listIcon(isArabic)}>
-                          <Fontisto size={20} name="navigate" color={theme} />
-                        </View>
-                      ) : (
-                        !noIcon &&
-                        v.icon && (
-                          <View style={styles.listIcon(isArabic)}>
-                            {v.icon}
-                          </View>
-                        )
-                      )}
-                      <View style={styles.textWrapper(isArabic)}>
-                        <Text style={styles.listItemText(isArabic)}>
-                          {isArabic ? v.nameAr : v.nameEn}
-                        </Text>
-                      </View>
-                    </View>
-                  }
-                  onPress={() => handleListItem(false, v)}
-                  titleStyle={{ width: WIDTH - 52 }}
-                  style={styles.menuItem(
-                    isArabic,
-                    selected?.id == v.id
-                    // &&
-                    //   selected.name &&
-                    //   (typeof selected.name === "function"
-                    //     ? selected.name(isArabic)
-                    //     : selected.name) ===
-                    //     (typeof v.name === "function"
-                    //       ? v.name(isArabic)
-                    //       : v.name)
-                  )}
-                />
-                {v.isDivider && <Divider />}
-              </View>
-            ))}
-          </ScrollView>
-        </Menu>
-      </>
-    );
-  }
-);
+import { RNSlidingButton, SlideDirection } from "rn-sliding-button";
+import { clearCart, onAddressesAction } from "../../redux/actions/user";
 
 const LIST = ({
   isArabic,
@@ -225,8 +55,8 @@ const LIST = ({
 );
 
 export default () => {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
-  const mapRef = useRef(null);
   const inputRef = useRef(null);
   const scrollRef = useRef(null);
   const addressRef = useRef(null);
@@ -244,24 +74,49 @@ export default () => {
   const [loading, setLoading] = useState(false);
   const [internet, setInternet] = useState(true);
   const [orderLoading, setOrderLoading] = useState(false);
+  const [fetchingLoading, setFetchingLoading] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState(null);
-  const navigation = useNavigation();
   const {
-    app: { language },
-    user: { userData, addresses }
+    app: { language, selectedCity },
+    user: { userData, addresses, randomCheckout, token }
   } = useSelector(state => state);
   const isArabic = language === ARABIC;
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
     ANDROID && StatusBar.setBackgroundColor(theme);
-    setTimeout(() => {
-      if (mapRef && mapRef.current && mapRef.current.fitToSuppliedMarkers) {
-        mapRef.current.fitToElements(true);
-      }
-    }, 0);
   }, []);
+
+  // fetching purpose
+  useEffect(() => {
+    if (userData && (!addresses || addresses.length < 1)) {
+      fetchingDetails();
+    }
+  }, [randomCheckout]);
+
+  const fetchingDetails = async () => {
+    const phone = text.trim();
+    try {
+      setFetchingLoading(true);
+      await Axios.post(`${BASE_URL}/users/update`, {
+        id: phone,
+        Token: token
+      });
+      const { data } = await Axios.get(
+        `${BASE_URL}/UserAddresses/get/mob/${phone}`
+      );
+      if (data && data.length > 0) {
+        dispatch(onAddressesAction([...data]));
+      } else {
+        dispatch(onAddressesAction([]));
+      }
+    } catch (error) {
+      console.log(error, " error in fetchingDetails");
+    } finally {
+      setFetchingLoading(false);
+    }
+  };
 
   const handleBack = () => {
     navigation.goBack();
@@ -363,6 +218,16 @@ export default () => {
   const handlePaymentListItem = paymentOption => {
     if (!paymentOption) return;
     setSelectedPayment({ ...paymentOption });
+    if (paymentOption?.id === "p-2") {
+      navigation.navigate("Payment", {
+        handleCardCallBack
+      });
+      return;
+    }
+  };
+
+  const handleCardCallBack = data => {
+    console.log(data, " handleCardCallBack");
   };
 
   const handleSubmit = verification => {
@@ -468,43 +333,8 @@ export default () => {
   };
 
   const mapMemo = useMemo(
-    () => (
-      <View style={styles.mapBox(isArabic)}>
-        <MapView
-          zoomEnabled={false}
-          ref={mapRef}
-          region={{
-            latitude: 21.4858,
-            longitude: 39.1925,
-            latitudeDelta: 0.009,
-            longitudeDelta: 0.005
-          }}
-          loadingEnabled={true}
-          loadingIndicatorColor={theme}
-          loadingBackgroundColor={"#fafafa"}
-          style={StyleSheet.absoluteFillObject}
-        >
-          {markers.map((v, i) => {
-            return (
-              <MarkerAnimated
-                key={i}
-                title={v.name}
-                coordinate={{
-                  latitude: v.lat,
-                  longitude: v.lng
-                }}
-              >
-                <Image
-                  style={{ width: 45, height: 45 }}
-                  source={require("../../../assets/images/logo.png")}
-                />
-              </MarkerAnimated>
-            );
-          })}
-        </MapView>
-      </View>
-    ),
-    [isArabic]
+    () => <RenderMap isArabic={isArabic} city={selectedCity} />,
+    [isArabic, selectedCity, randomCheckout]
   );
 
   return (
@@ -546,6 +376,7 @@ export default () => {
                       ref={addressRef}
                       data={addresses}
                       isArabic={isArabic}
+                      loading={fetchingLoading}
                       selected={selectedAddress}
                       onPress={handleAddressListItem}
                       btnText={isArabic ? "حدد العنوان" : "Select Address"}
@@ -593,22 +424,18 @@ export default () => {
                           isArabic ? "طريقة الدفع او السداد" : "Payment Method"
                         }
                         secondaryText={
-                          selectedPayment && selectedPayment.name
-                            ? selectedPayment.name(isArabic)
-                            : "-----"
+                          isArabic
+                            ? selectedPayment?.nameAr
+                            : selectedPayment?.nameEn
                         }
                       />
-                      {selectedPayment &&
-                        selectedPayment.name &&
-                        selectedPayment.name(false) === "Credit/Debit Card" && (
-                          <LIST
-                            isArabic={isArabic}
-                            secondaryText={"8989xxxxxx"}
-                            primaryText={
-                              isArabic ? "رقم البطاقة" : "Card Number"
-                            }
-                          />
-                        )}
+                      {selectedPayment && selectedPayment?.id === "p-2" && (
+                        <LIST
+                          isArabic={isArabic}
+                          secondaryText={"8989xxxxxx"}
+                          primaryText={isArabic ? "رقم البطاقة" : "Card Number"}
+                        />
+                      )}
                       <View style={styles.pd10}>
                         <Divider />
                       </View>
@@ -628,17 +455,27 @@ export default () => {
                       <LIST
                         isArabic={isArabic}
                         secondaryText={190}
-                        primaryText={isArabic ? "المجموع الفرعي" : "Sub Total"}
+                        primaryText={
+                          isArabic
+                            ? "المبلغ قبل الضريبة :"
+                            : "Total (Exculding VAT) :"
+                        }
                       />
                       <LIST
                         secondaryText={0}
                         isArabic={isArabic}
-                        primaryText={isArabic ? "رسوم التوصيل" : "Delivery Fee"}
+                        primaryText={
+                          isArabic
+                            ? "الضريبة قيمة المضافة 15% :"
+                            : "VAT (15%) :"
+                        }
                       />
                       <LIST
                         secondaryText={0}
                         isArabic={isArabic}
-                        primaryText={isArabic ? "ضريبة المبيعات" : "Sales Tax"}
+                        primaryText={
+                          isArabic ? "تكلفة الشحن :" : "Shipping Cost :"
+                        }
                       />
                       <LIST
                         bold
@@ -647,8 +484,8 @@ export default () => {
                         isArabic={isArabic}
                         primaryText={
                           isArabic
-                            ? "الإجمالي (بما في ذلك ضريبة السلع والخدمات)"
-                            : "Total (Including GST)"
+                            ? "المبلغ بعدالضريبة المضافة :"
+                            : "Total (Including VAT) :"
                         }
                       />
                     </View>

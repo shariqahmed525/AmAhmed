@@ -9,7 +9,8 @@ import {
   ADD_ITEM_TO_CART,
   SELECTED_ADDRESS,
   ADDRESSES,
-  RECALL_MY_ADDRESSES
+  RECALL_MY_ADDRESSES,
+  RECALL_CHECKOUT
 } from "../types/user";
 
 const initialState = {
@@ -60,6 +61,11 @@ export default (state = initialState, { type, payload }) => {
     case RECALL_MY_ADDRESSES:
       return {
         random: Math.random() * 87,
+        ...state
+      };
+    case RECALL_CHECKOUT:
+      return {
+        randomCheckout: Math.random() * 87,
         ...state
       };
     case SAVE_ADDRESS:

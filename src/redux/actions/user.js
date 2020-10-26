@@ -5,6 +5,7 @@ import {
   DELETE_ADDRESS,
   ADDRESSES,
   TOKEN,
+  RECALL_CHECKOUT,
   RECALL_MY_ADDRESSES,
   SELECTED_ADDRESS,
   UPDATE_ADDRESS,
@@ -29,6 +30,12 @@ export const onSelectedAddressAction = address => {
 export const onReCallMyAddresses = () => {
   return {
     type: RECALL_MY_ADDRESSES
+  };
+};
+
+export const onReCallCheckout = () => {
+  return {
+    type: RECALL_CHECKOUT
   };
 };
 

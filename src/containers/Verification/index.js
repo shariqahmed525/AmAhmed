@@ -9,7 +9,7 @@ import NoInternet from "../../components/NoInternet";
 import NetInfo from "@react-native-community/netinfo";
 import { useDispatch, useSelector } from "react-redux";
 import { onAddressesAction } from "../../redux/actions/app";
-import { saveUserData } from "../../redux/actions/user";
+import { onReCallCheckout, saveUserData } from "../../redux/actions/user";
 import { useNavigation } from "@react-navigation/native";
 import { convertSecondstoTime, getRandom } from "../../common/functions";
 import OTPInputView from "@twotalltotems/react-native-otp-input";
@@ -36,8 +36,12 @@ export default ({ route: { params } }) => {
   const [verificationCode, setVerificationCode] = useState(
     params?.verificationCode
   );
+  console.log(verificationCode, " verificationCode");
   const navigation = useNavigation();
-  const { language, token } = useSelector(state => state.app);
+  const {
+    app: { language },
+    user: { token }
+  } = useSelector(state => state);
   const isArabic = language === ARABIC;
 
   useEffect(() => {
@@ -74,18 +78,7 @@ export default ({ route: { params } }) => {
       setLoading(true);
       try {
         await Axios.get(`${BASE_URL}/Users/register/${params?.phone}`);
-        await Axios.post(`${BASE_URL}/users/update`, {
-          id: params?.phone,
-          Token: token
-        });
-        const { data } = await Axios.get(
-          `${BASE_URL}/UserAddresses/get/mob/${params?.phone}`
-        );
-        if (data && data.length > 0) {
-          dispatch(onAddressesAction([...data]));
-        } else {
-          dispatch(onAddressesAction([]));
-        }
+        dispatch(onReCallCheckout());
         dispatch(
           saveUserData({
             token,

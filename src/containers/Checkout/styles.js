@@ -76,8 +76,6 @@ const styles = StyleSheet.create({
     ]
   }),
   listIconRight: isArabic => ({
-    // width: 40,
-    // backgroundColor: "purple",
     transform: [
       {
         rotateY: isArabic ? "180deg" : "0deg"
@@ -163,6 +161,14 @@ const styles = StyleSheet.create({
     textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
+  activityLoader: {
+    zIndex: 1,
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    position: "absolute",
+    justifyContent: "center"
+  },
   footer: () => ({
     width: "100%",
     alignItems: "center",
@@ -256,7 +262,6 @@ const styles = StyleSheet.create({
   }),
   primaryText: (isArabic, bold) => ({
     color: black,
-    maxWidth: "60%",
     textAlign: isArabic ? "right" : "left",
     fontSize: isArabic ? WIDTH * 0.042 : WIDTH * 0.04,
     fontFamily: isArabic
@@ -268,9 +273,11 @@ const styles = StyleSheet.create({
       : "Rubik-Regular"
   }),
   secondaryText: (isArabic, bold) => ({
+    flex: 1,
     color: darkGray,
-    maxWidth: "39%",
-    textAlign: isArabic ? "right" : "left",
+    textAlign: isArabic ? "left" : "right",
+    paddingLeft: isArabic ? 0 : 10,
+    paddingRight: isArabic ? 10 : 0,
     fontSize: isArabic ? WIDTH * 0.042 : WIDTH * 0.04,
     fontFamily: isArabic
       ? bold
@@ -287,3 +294,43 @@ const styles = StyleSheet.create({
 });
 
 export default styles;
+
+// const placeorderObject = {
+//   phone: "",
+//   locationId: "",
+//   items: [
+//     {
+//       quantity: "",
+//       productId: "",
+//       packingId: "",
+//       cuttingWayId: "",
+//       headAndLegId: ""
+//     }
+//   ],
+//   vat: "",
+//   total: "",
+//   subTotal: "",
+//   shippingCost: "",
+//   status: "pending",
+//   paymentType: "card",
+//   payment: {
+//     cvv: "",
+//     expiry: "",
+//     cardNumber: "",
+//     postalCode: "",
+//     cardHolderName: ""
+//   },
+//   shippingDetails: {
+//     lat: "",
+//     long: "",
+//     address: ""
+//   }
+// };
+
+// const ContactUsObject = {
+//   name: "",
+//   email: "",
+//   phone: "",
+//   subject: "",
+//   message: ""
+// };

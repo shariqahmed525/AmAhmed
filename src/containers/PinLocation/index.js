@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-navigation";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -13,13 +13,13 @@ import MapView from "react-native-maps";
 import Alert from "../../components/Alert";
 import { theme } from "../../common/colors";
 import Header from "../../components/Header";
-import { DropdownSection } from "../Checkout";
 import { FontAwesome, MaterialIcons } from "../../common/icons";
 import { ERROR_IMG, IOS } from "../../common/constants";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Geolocation from "@react-native-community/geolocation";
 import RNAndroidLocationEnabler from "react-native-android-location-enabler";
 import { ANDROID, ARABIC, HEIGHT, WIDTH } from "../../common/constants";
+import DropdownSection from "../../components/DropdownSection";
 
 const LATITUDE = 40.74333; // Korea Town, New York, NY 10001
 const LONGITUDE = -73.99033; // Korea Town, New York, NY 10001

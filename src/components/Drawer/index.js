@@ -15,7 +15,7 @@ import { SafeAreaView } from "react-navigation";
 import { gray, lightTheme } from "../../common/colors";
 import { useDispatch, useSelector } from "react-redux";
 import { ARABIC } from "../../common/constants";
-import { clearUserData } from "../../redux/actions/user";
+import { clearUserData, onAddressesAction } from "../../redux/actions/user";
 
 const List = ({ onPress, text, icon, isArabic }) => (
   <TouchableOpacity
@@ -67,6 +67,7 @@ export default ({ navigation, drawerClose }) => {
 
   const logout = () => {
     dispatch(clearUserData());
+    dispatch(onAddressesAction([]));
     alertClose();
   };
 
