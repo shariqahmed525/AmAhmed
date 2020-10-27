@@ -55,10 +55,22 @@ export default ({ isArabic, city }) => {
           ref={mapRef}
           zoomEnabled={false}
           region={{
-            latitude: city?.latitude || 21.553596,
-            longitude: city?.longitude || 39.194024,
-            latitudeDelta: city?.latitudeDelta || LATITUDE_DELTA,
-            longitudeDelta: city?.longitudeDelta || LONGITUDE_DELTA
+            latitude:
+              typeof city?.latitude === "string"
+                ? parseFloat(city?.latitude)
+                : city?.latitude || 21.553596,
+            longitude:
+              typeof city?.longitude === "string"
+                ? parseFloat(city?.longitude)
+                : city?.longitude || 39.194024,
+            latitudeDelta:
+              typeof city?.latitudeDelta === "string"
+                ? parseFloat(city?.latitudeDelta)
+                : city?.latitudeDelta || LATITUDE_DELTA,
+            longitudeDelta:
+              typeof city?.longitudeDelta === "string"
+                ? parseFloat(city?.longitudeDelta)
+                : city?.longitudeDelta || LONGITUDE_DELTA
           }}
           loadingBackgroundColor={"#fafafa"}
           style={StyleSheet.absoluteFillObject}

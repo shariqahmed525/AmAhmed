@@ -37,9 +37,9 @@
 		40C80CFF33634D04834372C2 /* rubicon-icon-font.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2CFDB2742BE0466AB2597136 /* rubicon-icon-font.ttf */; };
 		6A1397BDD15582109B8F427E /* libPods-AmAhmed-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B1886CE6C4B931D5BB585162 /* libPods-AmAhmed-tvOS.a */; };
 		A0CAD411A1B9801FC5E6C424 /* libPods-AmAhmed-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A5307002BCDE0FDDC99BCE75 /* libPods-AmAhmed-tvOSTests.a */; };
-		AAB0F7AE52F23E56D9DDDB7C /* libPods-AmAhmed-AmAhmedTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 062F18E345E90D9CE310F8F8 /* libPods-AmAhmed-AmAhmedTests.a */; };
-		BD69102DD7DB3EFF03896C07 /* libPods-AmAhmed.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBE79D178F0EECDF6DA4622E /* libPods-AmAhmed.a */; };
+		D4847D3B54B45593CCC4A25C /* libPods-AmAhmed.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3832FB055684EA00E8D72C40 /* libPods-AmAhmed.a */; };
 		EBF431F36EF14A8E9B41CA1F /* Roboto_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9BACDCC5D92B40BDA1D3F393 /* Roboto_medium.ttf */; };
+		F7E7FEE72DF8E1681931ECF6 /* libPods-AmAhmed-AmAhmedTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43E88975EA8112615038212E /* libPods-AmAhmed-AmAhmedTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,7 +84,6 @@
 		04FDB001252FE98B001576F1 /* addtocart.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = addtocart.mp3; sourceTree = "<group>"; };
 		04FDB002252FE98B001576F1 /* Rubik-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Rubik-Light.ttf"; sourceTree = "<group>"; };
 		04FDB026252FE9F5001576F1 /* LaunchScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
-		062F18E345E90D9CE310F8F8 /* libPods-AmAhmed-AmAhmedTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AmAhmed-AmAhmedTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A7B64B305714E48A83526AB /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/native-base/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		0AABB8EAED384961904AD223 /* Roboto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Roboto.ttf; path = "../node_modules/native-base/Fonts/Roboto.ttf"; sourceTree = "<group>"; };
 		10FB918A613B4B078F843FE6 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/native-base/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
@@ -100,8 +99,10 @@
 		2D02E4901E0B4A5D006451C7 /* AmAhmed-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AmAhmed-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		37103E4D22BA403ABE32A752 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/native-base/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		380DF75F4A3547EDAFF86243 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/native-base/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
+		3832FB055684EA00E8D72C40 /* libPods-AmAhmed.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AmAhmed.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AEF967B0AD84FA4BCDF7141 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/native-base/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		43043A4857D5430296EB5BAB /* Pods-AmAhmed-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmAhmed-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-AmAhmed-tvOSTests/Pods-AmAhmed-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		43E88975EA8112615038212E /* libPods-AmAhmed-AmAhmedTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AmAhmed-AmAhmedTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BF2D5DE8FC74A0DB2C43E71 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/native-base/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		6590A9C6869648DA933675BB /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/native-base/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		6A9978047ECCD90A61E0153D /* Pods-AmAhmed-AmAhmedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmAhmed-AmAhmedTests.debug.xcconfig"; path = "Target Support Files/Pods-AmAhmed-AmAhmedTests/Pods-AmAhmed-AmAhmedTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -118,7 +119,6 @@
 		C903A65788C14801B5913583 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/native-base/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		D2A5A28EF2554F6ABF5DDD5B /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/native-base/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		D3851B327C00489CB497B286 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/native-base/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
-		EBE79D178F0EECDF6DA4622E /* libPods-AmAhmed.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AmAhmed.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		EF0FA82219A501E302AE7F10 /* Pods-AmAhmed-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmAhmed-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-AmAhmed-tvOS/Pods-AmAhmed-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
@@ -132,7 +132,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AAB0F7AE52F23E56D9DDDB7C /* libPods-AmAhmed-AmAhmedTests.a in Frameworks */,
+				F7E7FEE72DF8E1681931ECF6 /* libPods-AmAhmed-AmAhmedTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,7 +140,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BD69102DD7DB3EFF03896C07 /* libPods-AmAhmed.a in Frameworks */,
+				D4847D3B54B45593CCC4A25C /* libPods-AmAhmed.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,10 +226,10 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				EBE79D178F0EECDF6DA4622E /* libPods-AmAhmed.a */,
-				062F18E345E90D9CE310F8F8 /* libPods-AmAhmed-AmAhmedTests.a */,
 				B1886CE6C4B931D5BB585162 /* libPods-AmAhmed-tvOS.a */,
 				A5307002BCDE0FDDC99BCE75 /* libPods-AmAhmed-tvOSTests.a */,
+				3832FB055684EA00E8D72C40 /* libPods-AmAhmed.a */,
+				43E88975EA8112615038212E /* libPods-AmAhmed-AmAhmedTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

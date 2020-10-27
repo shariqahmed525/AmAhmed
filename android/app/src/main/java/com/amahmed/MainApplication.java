@@ -3,6 +3,7 @@ package amahmed.com.amahmed;
 import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
+// import com.getbouncer.RNCardscanModule;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
@@ -45,6 +46,18 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+
+    // set your generated API key
+    // RNCardscanModule.apiKey = "HYq7p2fSJzkSDX29Buqx3X03ZaRRfwKe";
+
+    // // set to true for experimental name extraction
+    // RNCardscanModule.enableNameExtraction = false;
+
+    // // set to true for experimental expiry extraction
+    // RNCardscanModule.enableExpiryExtraction = false;
+
+    // // set to true to display an "Enter Card Manually" button
+    // RNCardscanModule.enableEnterCardManually = false;
   }
 
   /**

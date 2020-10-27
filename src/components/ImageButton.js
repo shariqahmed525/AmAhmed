@@ -1,15 +1,11 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  ImageBackground
-} from "react-native";
-import { lightTheme, theme } from "../common/colors";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import DeviceInfo from "react-native-device-info";
 import FastImage from "react-native-fast-image";
+import { WIDTH } from "../common/constants";
+const ITEM_WIDTH = WIDTH / 2 - 17.5;
+const IMAGE_WIDTH = ITEM_WIDTH - 20;
+import ProgressImage from "react-native-image-progress";
 
 export default ({
   text,
@@ -34,10 +30,17 @@ export default ({
           />
         </View>
       )}
-      <FastImage
+      <ProgressImage
         source={source}
+        resizeMode={"cover"}
         style={styles.listBackground}
-        resizeMode={FastImage.resizeMode.cover}
+        renderIndicator={() => (
+          <FastImage
+            style={styles.imageStyle}
+            resizeMode={FastImage.resizeMode.contain}
+            source={require("../../assets/images/logo.png")}
+          />
+        )}
       >
         <View style={styles.textWrapper(isCity)}>
           {primaryText && (
@@ -47,7 +50,7 @@ export default ({
           )}
           <Text style={styles.listText(isArabic)}>{text}</Text>
         </View>
-      </FastImage>
+      </ProgressImage>
     </TouchableOpacity>
   );
 };
@@ -77,7 +80,7 @@ const styles = StyleSheet.create({
   }),
   listBackground: {
     flex: 1,
-    backgroundColor: lightTheme
+    backgroundColor: "#fff"
   },
   primaryText: (isArabic, isCity) => ({
     color: "#fff",
@@ -110,5 +113,11 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "100%"
+  },
+  imageStyle: {
+    width: IMAGE_WIDTH,
+    alignSelf: "center",
+    position: "relative",
+    height: (110 / 150) * IMAGE_WIDTH
   }
 });

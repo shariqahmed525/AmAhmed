@@ -50,17 +50,6 @@ export default ({ route: { params } }) => {
         longitudeDelta: params?.longitudeDelta
       });
     }
-    // else {
-    // if (ANDROID) {
-    //   AskLocationPopup();
-    // } else {
-    //   Geolocation.getCurrentPosition(info => {
-    //     if (info?.coords) {
-    //       setCoords({ ...info?.coords });
-    //     }
-    //   });
-    // }
-    // }
     if (
       params?.locationID &&
       cities &&

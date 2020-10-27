@@ -6,7 +6,7 @@ import {
   lightGray,
   theme
 } from "../../common/colors";
-import { CONTAINER_PADDING, HEIGHT } from "../../common/constants";
+import { WIDTH } from "../../common/constants";
 import { isIphoneXorAbove } from "../../common/functions";
 const styles = StyleSheet.create({
   safe: {
@@ -21,12 +21,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingTop: 20,
     paddingHorizontal: 10,
+    justifyContent: "center",
     paddingBottom: isIphoneXorAbove() ? 30 : 20,
     backgroundColor: backgroundColor
   },
   scannerWrapper: {
     height: 180,
-    width: "95%",
+    width: WIDTH - 60,
     borderWidth: 1,
     borderRadius: 5,
     alignSelf: "center",
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
   line: {
     height: 1,
     width: "100%",
-    marginVertical: 30,
+    marginVertical: 20,
     backgroundColor: "#e0e0e0"
   },
   input: isArabic => ({
@@ -78,7 +79,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.18,
     shadowRadius: 1.0,
     elevation: 1,
-    textTransform: "uppercase",
     height: 53,
     borderRadius: 4,
     paddingHorizontal: 15,
@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
   }),
   btn: width => ({
     height: 50,
+    alignSelf: "center",
     marginTop: 40,
     width: width || "100%",
     borderWidth: 1,
@@ -103,6 +104,14 @@ const styles = StyleSheet.create({
     marginTop: isArabic ? -5 : 0,
     fontSize: isArabic ? 22 : 19,
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
+  }),
+  label: isArabic => ({
+    color: black,
+    textAlign: "left",
+    marginBottom: 10,
+    marginLeft: 20,
+    fontSize: isArabic ? 22 : 14,
+    fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Bold"
   })
 });
 

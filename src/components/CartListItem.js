@@ -1,18 +1,19 @@
 import React, { useState, useRef } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import { useDispatch } from "react-redux";
-import SoundPlayer from "react-native-sound-player";
-import * as Animatable from "react-native-animatable";
-import FastImage from "react-native-fast-image";
 import {
   theme,
   black,
   darkGray,
-  lightTheme,
+  lightGray,
   mediumGray,
-  lightGray
+  lightTheme
 } from "../common/colors";
+import { useDispatch } from "react-redux";
+import FastImage from "react-native-fast-image";
+import SoundPlayer from "react-native-sound-player";
+import * as Animatable from "react-native-animatable";
 import { addItemToCart } from "../redux/actions/user";
+import ProgressImage from "react-native-image-progress";
 
 const PriceRender = ({ price, isArabic, discount, unitType }) => (
   <View style={styles.priceContainer(isArabic)}>
@@ -89,10 +90,20 @@ export default ({ item, isArabic }) => {
     <View style={styles.cartItemWrapper(isArabic)}>
       <View style={styles.cartItem(isArabic)}>
         <View style={styles.cartImageWrapper(isArabic)}>
-          <FastImage
+          <ProgressImage
+            resizeMode={"contain"}
             style={styles.cartImage}
-            resizeMode={FastImage.resizeMode.contain}
             source={{ uri: item?.thumbnailPictureUrl }}
+            renderIndicator={() => (
+              <FastImage
+                style={{
+                  width: 100,
+                  height: 100
+                }}
+                resizeMode={FastImage.resizeMode.contain}
+                source={require("../../assets/images/logo.png")}
+              />
+            )}
           />
           {animatedObj && (
             <Animatable.View

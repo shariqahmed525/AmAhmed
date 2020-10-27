@@ -37,6 +37,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>We need to access your camera to scan your card</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>AmAhmed wants to access your location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

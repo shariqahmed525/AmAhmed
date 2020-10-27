@@ -73,6 +73,7 @@ export default () => {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [internet, setInternet] = useState(true);
+  const [cardDetails, setCardDetails] = useState(null);
   const [orderLoading, setOrderLoading] = useState(false);
   const [fetchingLoading, setFetchingLoading] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -226,8 +227,10 @@ export default () => {
     }
   };
 
-  const handleCardCallBack = data => {
-    console.log(data, " handleCardCallBack");
+  const handleCardCallBack = (cardDetails, type) => {
+    if (!cardDetails) return;
+    setCardDetails({ ...cardDetails });
+    console.log({ cardDetails, type }, " handleCardCallBack");
   };
 
   const handleSubmit = verification => {
@@ -429,13 +432,18 @@ export default () => {
                             : selectedPayment?.nameEn
                         }
                       />
-                      {selectedPayment && selectedPayment?.id === "p-2" && (
-                        <LIST
-                          isArabic={isArabic}
-                          secondaryText={"8989xxxxxx"}
-                          primaryText={isArabic ? "رقم البطاقة" : "Card Number"}
-                        />
-                      )}
+                      {selectedPayment &&
+                        selectedPayment?.id === "p-2" &&
+                        cardDetails &&
+                        cardDetails?.cardNumber && (
+                          <LIST
+                            isArabic={isArabic}
+                            secondaryText={cardDetails?.cardNumber}
+                            primaryText={
+                              isArabic ? "رقم البطاقة" : "Card Number"
+                            }
+                          />
+                        )}
                       <View style={styles.pd10}>
                         <Divider />
                       </View>

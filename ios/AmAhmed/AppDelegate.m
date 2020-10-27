@@ -7,6 +7,8 @@
 //#import "RNSplashScreen.h"
 #import <Firebase.h>
 
+//@import CardScan;
+
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
 #import <FlipperKitLayoutPlugin/FlipperKitLayoutPlugin.h>
@@ -14,6 +16,7 @@
 #import <FlipperKitNetworkPlugin/FlipperKitNetworkPlugin.h>
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
+
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -48,6 +51,7 @@ static void InitializeFlipper(UIApplication *application) {
   [self.window makeKeyAndVisible];
   
   [GMSServices provideAPIKey:@"AIzaSyA3X_iki3k_oSwkrDp3zbLeTTKTAnlAX80"];
+//  [ScanViewController configureWithApiKey:@"HYq7p2fSJzkSDX29Buqx3X03ZaRRfwKe"];
 
   if ([FIRApp defaultApp] == nil) {
     [FIRApp configure];

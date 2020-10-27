@@ -8,29 +8,30 @@ import {
   ScrollView,
   TouchableOpacity
 } from "react-native";
+import {
+  ARABIC,
+  HEIGHT,
+  ANDROID,
+  BASE_URL,
+  ERROR_IMG
+} from "../../common/constants";
+import Axios from "axios";
 import styles from "./styles";
 import Alert from "../../components/Alert";
 import Header from "../../components/Header";
-import CartIcon from "../../components/CartIcon";
-import { RadioButton } from "react-native-paper";
-import SoundPlayer from "react-native-sound-player";
-import * as Animatable from "react-native-animatable";
-import { useDispatch, useSelector } from "react-redux";
-import { addItemToCart } from "../../redux/actions/user";
-import NetInfo from "@react-native-community/netinfo";
 import LottieView from "lottie-react-native";
 import FastImage from "react-native-fast-image";
-import { backgroundColor, gray, theme } from "../../common/colors";
-import {
-  ANDROID,
-  ARABIC,
-  ERROR_IMG,
-  BASE_URL,
-  HEIGHT
-} from "../../common/constants";
-import Axios from "axios";
+import CartIcon from "../../components/CartIcon";
+import { RadioButton } from "react-native-paper";
 import NoInternet from "../../components/NoInternet";
+import SoundPlayer from "react-native-sound-player";
+import NetInfo from "@react-native-community/netinfo";
+import * as Animatable from "react-native-animatable";
+import { useDispatch, useSelector } from "react-redux";
+import ProgressImage from "react-native-image-progress";
+import { addItemToCart } from "../../redux/actions/user";
 import { calculatePercentage } from "../../common/functions";
+import { backgroundColor, gray, theme } from "../../common/colors";
 
 let timeOut = null;
 
@@ -55,10 +56,20 @@ const ImageRender = forwardRef(({ animatedObj, item, isArabic }, ref) => (
       </View>
     )}
     <View style={styles.imageWrapper}>
-      <FastImage
+      <ProgressImage
         style={styles.image}
-        resizeMode={FastImage.resizeMode.contain}
+        resizeMode={"contain"}
         source={{ uri: item?.thumbnailPictureUrl }}
+        renderIndicator={() => (
+          <FastImage
+            style={{
+              width: 150,
+              height: 150
+            }}
+            resizeMode={FastImage.resizeMode.contain}
+            source={require("../../../assets/images/logo.png")}
+          />
+        )}
       />
     </View>
   </>
@@ -100,7 +111,7 @@ export default () => {
   const {
     params: { item }
   } = useRoute();
-  console.log(item, " item");
+
   const hasPacking = item?.hasPacking;
   const hasCuttingWay = item?.hasCuttingWay;
   const hasHeadAndLegs = item?.hasHeadAndLegs;

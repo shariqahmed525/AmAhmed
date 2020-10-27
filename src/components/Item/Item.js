@@ -14,6 +14,7 @@ import {
 import { WIDTH } from "../../common/constants";
 import FastImage from "react-native-fast-image";
 import { useNavigation } from "@react-navigation/native";
+import Image from "react-native-image-progress";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 const ITEM_WIDTH = WIDTH / 2 - 17.5;
 const ITEM_HEIGHT = (270 / 160) * ITEM_WIDTH;
@@ -33,6 +34,7 @@ export default ({ item = {}, isArabic, dummy }) => {
   const ref = useRef(null);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const [loadingImg, setLoadingImg] = useState(true);
   const [animatedObj, setAnimatedObj] = useState(null);
   const {
     user: { cart }
@@ -122,7 +124,7 @@ export default ({ item = {}, isArabic, dummy }) => {
         </View>
       )}
       <TouchableOpacity
-        activeOpacity={0.7}
+        activeOpacity={1}
         onPress={handleItemPress}
         style={styles.itemWrapper(stockQuantity >= minOrderQty)}
       >
@@ -148,10 +150,17 @@ export default ({ item = {}, isArabic, dummy }) => {
         )}
         <View style={styles.firstSection}>
           <View style={styles.imageWrapper}>
-            <FastImage
+            <Image
               style={styles.imageStyle}
-              resizeMode={FastImage.resizeMode.contain}
               source={{ uri: thumbnailPictureUrl }}
+              resizeMode={"contain"}
+              renderIndicator={() => (
+                <FastImage
+                  style={styles.imageStyle}
+                  resizeMode={FastImage.resizeMode.contain}
+                  source={require("../../../assets/images/logo.png")}
+                />
+              )}
             />
           </View>
           <Text

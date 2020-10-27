@@ -23,6 +23,7 @@ import NotFound from "../../components/NotFound";
 import NoInternet from "../../components/NoInternet";
 import NetInfo from "@react-native-community/netinfo";
 import { useDispatch, useSelector } from "react-redux";
+import ProgressImage from "react-native-image-progress";
 import messaging from "@react-native-firebase/messaging";
 import { useNavigation } from "@react-navigation/native";
 import { theme, backgroundColor } from "../../common/colors";
@@ -228,9 +229,9 @@ export default () => {
             source={require("../../../assets/animations/loader.json")}
           />
         ) : (
-          <Image
-            resizeMode="contain"
+          <FastImage
             style={styles.loader}
+            resizeMode={FastImage.resizeMode.contain}
             source={require("../../../assets/images/logo.png")}
           />
         )}
@@ -254,10 +255,20 @@ export default () => {
           >
             {sliders.map((v, i) => (
               <View key={i} style={styles.sliderImageWrapper}>
-                <FastImage
-                  source={{ uri: v.value }}
+                <ProgressImage
                   style={styles.sliderImage}
-                  resizeMode={FastImage.resizeMode.stretch}
+                  source={{ uri: v.value }}
+                  resizeMode={"stretch"}
+                  renderIndicator={() => (
+                    <FastImage
+                      style={{
+                        width: 120,
+                        height: 120
+                      }}
+                      resizeMode={FastImage.resizeMode.contain}
+                      source={require("../../../assets/images/logo.png")}
+                    />
+                  )}
                 />
               </View>
             ))}
