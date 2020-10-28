@@ -19,6 +19,7 @@ const initialState = {
   token: "",
   addresses: [],
   userData: null,
+  randomCheckout: 2,
   selectedAddress: null
 };
 
@@ -60,13 +61,13 @@ export default (state = initialState, { type, payload }) => {
       };
     case RECALL_MY_ADDRESSES:
       return {
-        random: Math.random() * 87,
-        ...state
+        ...state,
+        random: Math.random() * 765494986
       };
     case RECALL_CHECKOUT:
       return {
-        randomCheckout: Math.random() * 87,
-        ...state
+        ...state,
+        randomCheckout: Math.random() * 878809878009
       };
     case SAVE_ADDRESS:
       return {

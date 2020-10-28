@@ -31,9 +31,9 @@ export default forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
-  const handleListItem = (isNew, item) => {
+  const handleListItem = (isNew, item, currentLocation) => {
     if (isAddress) {
-      onPress(isNew, item);
+      onPress(isNew, item, currentLocation);
     } else {
       onPress(item);
     }
@@ -97,7 +97,7 @@ export default forwardRef((props, ref) => {
                 </View>
               }
               titleStyle={{ width: WIDTH - 52 }}
-              onPress={() => handleListItem(true)}
+              onPress={() => handleListItem(false, undefined, true)}
               style={styles.menuItem(isArabic)}
             />
             <Divider />

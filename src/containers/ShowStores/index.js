@@ -8,19 +8,20 @@ import {
   TouchableOpacity
 } from "react-native";
 import styles from "./styles";
-import { theme, lightTheme, lightGray } from "../../common/colors";
-import { ANDROID, ARABIC, markers } from "../../common/constants";
-import Header from "../../components/Header";
+import { theme } from "../../common/colors";
 import { useSelector } from "react-redux";
 import { Entypo } from "../../common/icons";
-import MapView, { MarkerAnimated } from "react-native-maps";
 import { SafeAreaView } from "react-navigation";
+import MapView, { MarkerAnimated } from "react-native-maps";
+import { ANDROID, ARABIC, markers } from "../../common/constants";
 
-export default () => {
+export default ({ route: { params } }) => {
   const mapRef = useRef(null);
   const navigation = useNavigation();
   const { language } = useSelector(state => state.app);
   const isArabic = language === ARABIC;
+  const stores = params?.stores;
+  const location = params?.location;
 
   useEffect(() => {
     StatusBar.setBarStyle("light-content");
@@ -43,25 +44,31 @@ export default () => {
           zoomEnabled={false}
           ref={mapRef}
           region={{
-            latitude: 21.4858,
-            longitude: 39.1925,
-            latitudeDelta: 0.009,
-            longitudeDelta: 0.005
+            latitude: location.latitude,
+            longitude: location.longitude,
+            latitudeDelta: location.latitudeDelta,
+            longitudeDelta: location.longitudeDelta
           }}
           loadingEnabled={true}
           loadingIndicatorColor={theme}
           loadingBackgroundColor={"#fafafa"}
           style={StyleSheet.absoluteFillObject}
         >
-          {markers.map((v, i) => {
+          {stores.map((v, i) => {
             return (
               <MarkerAnimated
                 key={i}
-                title={v.name}
                 coordinate={{
-                  latitude: v.lat,
-                  longitude: v.lng
+                  latitude:
+                    typeof v.latitude === "string"
+                      ? parseFloat(v.latitude)
+                      : v.latitude,
+                  longitude:
+                    typeof v.longitude === "string"
+                      ? parseFloat(v.longitude)
+                      : v.latitude
                 }}
+                title={isArabic ? v.nameAr : v.nameEn}
               >
                 <Image
                   style={{ width: 60, height: 60 }}

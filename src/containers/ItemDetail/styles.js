@@ -251,7 +251,8 @@ const styles = StyleSheet.create({
     color: black,
     marginLeft: isArabic ? 0 : 3,
     marginRight: isArabic ? 3 : 0,
-    textAlign: isArabic ? "right" : "left"
+    textAlign: isArabic ? "right" : "left",
+    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
   miniLoaderWrapper: {
     alignItems: "center",

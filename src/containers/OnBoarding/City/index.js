@@ -41,7 +41,6 @@ export default () => {
     app: { language, selectedCity }
   } = useSelector(state => state);
   const isArabic = language === ARABIC;
-
   useEffect(() => {
     checkConnection();
   }, []);

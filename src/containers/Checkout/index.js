@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Entypo } from "../../common/icons";
 import {
   View,
   Text,
@@ -18,15 +17,16 @@ import {
   payments,
   BASE_URL,
   ERROR_IMG,
-  THANKS_IMG
+  THANKS_IMG,
+  MAP_API_KEY
 } from "../../common/constants";
 import Axios from "axios";
 import styles from "./styles";
 import RenderMap from "./RenderMap";
 import Alert from "../../components/Alert";
 import Header from "../../components/Header";
-import { SafeAreaView } from "react-navigation";
 import { Divider } from "react-native-paper";
+import { SafeAreaView } from "react-navigation";
 import NoInternet from "../../components/NoInternet";
 import NetInfo from "@react-native-community/netinfo";
 import * as Animatable from "react-native-animatable";
@@ -34,10 +34,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { ActivityIndicator } from "react-native-paper";
 import { lightTheme, theme } from "../../common/colors";
 import { useNavigation } from "@react-navigation/native";
+import Geolocation from "@react-native-community/geolocation";
 import DropdownSection from "../../components/DropdownSection";
 import { getRandom, validatePhone } from "../../common/functions";
 import { RNSlidingButton, SlideDirection } from "rn-sliding-button";
 import { clearCart, onAddressesAction } from "../../redux/actions/user";
+import RNAndroidLocationEnabler from "react-native-android-location-enabler";
 
 const LIST = ({
   isArabic,
@@ -78,9 +80,10 @@ export default () => {
   const [fetchingLoading, setFetchingLoading] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState(null);
+  const [currentLocatioLoading, setCurrentLocatioLoading] = useState(false);
   const {
     app: { language, selectedCity },
-    user: { userData, addresses, randomCheckout, token }
+    user: { userData, addresses, randomCheckout, token, cart }
   } = useSelector(state => state);
   const isArabic = language === ARABIC;
 
@@ -91,13 +94,12 @@ export default () => {
 
   // fetching purpose
   useEffect(() => {
-    if (userData && (!addresses || addresses.length < 1)) {
-      fetchingDetails();
+    if (userData) {
+      fetchingDetails(userData.phone);
     }
   }, [randomCheckout]);
 
-  const fetchingDetails = async () => {
-    const phone = text.trim();
+  const fetchingDetails = async phone => {
     try {
       setFetchingLoading(true);
       await Axios.post(`${BASE_URL}/users/update`, {
@@ -205,15 +207,34 @@ export default () => {
     }
   };
 
-  const handleAddressListItem = (isNew, address) => {
+  const handleAddressListItem = (isNew, address, currentLocation) => {
     if (isNew) {
       navigation.navigate("PinLocation", {
         fromCheckout: true
       });
       return;
     }
-    if (!address) setSelectedAddress(null);
+    if (currentLocation) {
+      handleCurrentLocation();
+      return;
+    }
+    if (!address) {
+      setSelectedAddress(null);
+      return;
+    }
     setSelectedAddress({ ...address });
+    scrollRef.current.scrollToEnd({ animated: true });
+    if (
+      (selectedPayment &&
+        selectedPayment?.id === "p-2" &&
+        cardDetails &&
+        cardDetails?.cardNumber) ||
+      selectedPayment
+    ) {
+      setTimeout(() => {
+        animatedRef.current.bounceIn(1000);
+      }, 500);
+    }
   };
 
   const handlePaymentListItem = paymentOption => {
@@ -225,12 +246,44 @@ export default () => {
       });
       return;
     }
+    if (paymentOption?.id === "p-3") {
+      navigation.navigate("OnlineTransfer", {
+        handleOnlineTransferCallBack
+      });
+      return;
+    }
+    if (!selectedAddress || !selectedAddress?.address) {
+      scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
+    } else {
+      scrollRef.current.scrollToEnd({ animated: true });
+      setTimeout(() => {
+        animatedRef.current.bounceIn(1000);
+      }, 500);
+    }
   };
 
   const handleCardCallBack = (cardDetails, type) => {
     if (!cardDetails) return;
     setCardDetails({ ...cardDetails });
-    console.log({ cardDetails, type }, " handleCardCallBack");
+    if (!selectedAddress || !selectedAddress?.address) {
+      scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
+    } else {
+      scrollRef.current.scrollToEnd({ animated: true });
+      setTimeout(() => {
+        animatedRef.current.bounceIn(1000);
+      }, 500);
+    }
+  };
+
+  const handleOnlineTransferCallBack = () => {
+    if (!selectedAddress || !selectedAddress?.address) {
+      scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
+    } else {
+      scrollRef.current.scrollToEnd({ animated: true });
+      setTimeout(() => {
+        animatedRef.current.bounceIn(1000);
+      }, 500);
+    }
   };
 
   const handleSubmit = verification => {
@@ -336,9 +389,125 @@ export default () => {
   };
 
   const mapMemo = useMemo(
-    () => <RenderMap isArabic={isArabic} city={selectedCity} />,
+    () => (
+      <RenderMap
+        navigation={navigation}
+        isArabic={isArabic}
+        city={selectedCity}
+      />
+    ),
     [isArabic, selectedCity, randomCheckout]
   );
+
+  const total = () => {
+    const sum = cart.reduce((partialSum, val) => {
+      const pp = val?.discount > 0 ? val?.discount : val?.price;
+      const cuttingWayPrice =
+        val?.hasCuttingWay && val?.cuttingWay && val?.cuttingWay?.cost
+          ? val?.cuttingWay?.cost
+          : 0;
+      const headAndLegsPrice =
+        val?.hasHeadAndLegs && val?.headAndLeg && val?.headAndLeg?.cost
+          ? val?.headAndLeg?.cost
+          : 0;
+      const packingPrice =
+        val?.hasPacking && val?.packing && val?.packing?.cost
+          ? val?.packing?.cost
+          : 0;
+      const totalItemCost =
+        pp + cuttingWayPrice + headAndLegsPrice + packingPrice;
+      return partialSum + totalItemCost;
+    }, 0);
+    return sum;
+  };
+
+  const calculateVat = () => {
+    return total() * 0.15;
+  };
+
+  const calculateShipping = () => {
+    return total() < 200 ? 40 : 0;
+  };
+
+  const getAddressDetails = async (lat, lng) => {
+    try {
+      setCurrentLocatioLoading(true);
+      const { data } = await Axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${MAP_API_KEY}`
+      );
+      if (
+        data &&
+        data.results &&
+        data.results.length > 0 &&
+        data.results[0] &&
+        data.results[0].formatted_address
+      ) {
+        const formattedAddress = data.results[0].formatted_address;
+        const obj = {
+          latitude: lat,
+          longitude: lng,
+          address: formattedAddress,
+          area: isArabic ? "الموقع الحالي" : "Current Location"
+        };
+        setSelectedAddress({ ...obj });
+        scrollRef.current.scrollToEnd({ animated: true });
+        if (
+          (selectedPayment &&
+            selectedPayment?.id === "p-2" &&
+            cardDetails &&
+            cardDetails?.cardNumber) ||
+          selectedPayment
+        ) {
+          setTimeout(() => {
+            animatedRef.current.bounceIn(1000);
+          }, 500);
+        }
+      }
+    } catch (error) {
+      console.log(error, " error in getting address");
+    } finally {
+      setCurrentLocatioLoading(false);
+    }
+  };
+
+  const getLocation = () => {
+    Geolocation.getCurrentPosition(info => {
+      if (info?.coords) {
+        const coords = info?.coords;
+        getAddressDetails(coords.latitude, coords.longitude);
+      } else {
+        setAlert({
+          alert: true,
+          error: true,
+          alertImg: ERROR_IMG,
+          alertTitle: isArabic ? "خطأ" : "Error",
+          alertText: isArabic
+            ? "عذرا ، هناك مشكلة في الحصول على الموقع. يرجى محاولة إضافة العنوان يدويًا"
+            : "Sorry, there is a problem in getting location. Please try to add address manually"
+        });
+      }
+    });
+  };
+
+  const handleCurrentLocation = () => {
+    if (IOS) {
+      getLocation();
+      return;
+    }
+    RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
+      interval: 10000,
+      fastInterval: 5000
+    })
+      .then(() => {
+        getLocation();
+      })
+      .catch(err => {
+        if (err && err.code === "ERR00") {
+          return;
+        }
+        getLocation();
+      });
+  };
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={IOS && "padding"}>
@@ -360,6 +529,11 @@ export default () => {
             btnText={isArabic ? "حسنا" : "OK"}
             onBtnPress={alert.btnPress || alertClose}
           />
+          {currentLocatioLoading && (
+            <View style={styles.activityLoader}>
+              <ActivityIndicator size="large" color={theme} />
+            </View>
+          )}
           {!internet ? (
             <NoInternet isArabic={isArabic} onPress={handleRetry} />
           ) : (
@@ -385,25 +559,7 @@ export default () => {
                       btnText={isArabic ? "حدد العنوان" : "Select Address"}
                       title={isArabic ? "الرأس والساقين" : "Delivery Address"}
                     />
-                    <View style={styles.headingWrapper(isArabic)}>
-                      <Text style={styles.heading(isArabic)}>
-                        {isArabic ? "موقع المتاجر" : "Stores Location"}
-                      </Text>
-                      <TouchableOpacity
-                        activeOpacity={0.7}
-                        style={styles.secondaryWrapper(isArabic)}
-                        onPress={() => navigation.navigate("ShowStores")}
-                      >
-                        <Text style={styles.secondaryWrapperText(isArabic)}>
-                          {isArabic ? "عرض كامل" : "Full View"}
-                        </Text>
-                        <Entypo
-                          size={18}
-                          style={{ paddingRight: isArabic ? 5 : 0 }}
-                          name={`chevron-thin-${isArabic ? "left" : "right"}`}
-                        />
-                      </TouchableOpacity>
-                    </View>
+
                     {mapMemo}
                     <DropdownSection
                       data={payments}
@@ -462,7 +618,7 @@ export default () => {
                       </View>
                       <LIST
                         isArabic={isArabic}
-                        secondaryText={190}
+                        secondaryText={total().toFixed(2)}
                         primaryText={
                           isArabic
                             ? "المبلغ قبل الضريبة :"
@@ -470,7 +626,7 @@ export default () => {
                         }
                       />
                       <LIST
-                        secondaryText={0}
+                        secondaryText={calculateVat().toFixed(2)}
                         isArabic={isArabic}
                         primaryText={
                           isArabic
@@ -479,7 +635,7 @@ export default () => {
                         }
                       />
                       <LIST
-                        secondaryText={0}
+                        secondaryText={calculateShipping().toFixed(2)}
                         isArabic={isArabic}
                         primaryText={
                           isArabic ? "تكلفة الشحن :" : "Shipping Cost :"
@@ -488,7 +644,11 @@ export default () => {
                       <LIST
                         bold
                         secondaryBold
-                        secondaryText={190}
+                        secondaryText={(
+                          total() +
+                          calculateVat() +
+                          calculateShipping()
+                        ).toFixed(2)}
                         isArabic={isArabic}
                         primaryText={
                           isArabic

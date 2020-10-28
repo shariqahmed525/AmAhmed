@@ -19,6 +19,7 @@ import { ANDROID, ARABIC, MAP_API_KEY } from "../../common/constants";
 import { BASE_URL, ERROR_IMG, INFO_IMG } from "../../common/constants";
 import { removePreviousRoutes } from "../../common/functions";
 import {
+  onReCallCheckout,
   onReCallMyAddresses,
   onUpdateAddressAction
 } from "../../redux/actions/user";
@@ -147,9 +148,15 @@ export default ({ route: { params } }) => {
     }
     try {
       setLoading(true);
-      await Axios.get(
-        `${BASE_URL}/UserAddresses/update/id/${id}/mob/${phone}/loc/${cityId}/lat/${params?.coords?.latitude}/long/${params?.coords?.longitude}/address/${trimAddress}/area/${trimName}`
-      );
+      await Axios.post(`${BASE_URL}/UserAddresses/update`, {
+        id,
+        area: trimName,
+        mobileNo: phone,
+        locationID: cityId,
+        address: trimAddress,
+        latitude: params?.coords?.latitude,
+        longitude: params?.coords?.longitude
+      });
       const obj = { ...params };
       delete params.city;
       delete params.coords;
@@ -248,9 +255,19 @@ export default ({ route: { params } }) => {
     }
     try {
       setLoading(true);
-      await Axios.get(
-        `${BASE_URL}/UserAddresses/register/mob/${phone}/loc/${cityId}/lat/${params?.coords?.latitude}/long/${params?.coords?.longitude}/address/${trimAddress}/area/${trimName}`
-      );
+      await Axios.post(`${BASE_URL}/UserAddresses/register`, {
+        area: trimName,
+        mobileNo: phone,
+        locationID: cityId,
+        address: trimAddress,
+        latitude: params?.coords?.latitude,
+        longitude: params?.coords?.longitude
+      });
+      if (params?.fromCheckout) {
+        dispatch(onReCallCheckout());
+      } else {
+        dispatch(onReCallMyAddresses());
+      }
       setAlert({
         alert: true,
         error: false,
@@ -260,9 +277,8 @@ export default ({ route: { params } }) => {
           ? "تمت إضافة العنوان بنجاح!"
           : "Address added successfully!"
       });
-      setTimeout(() => {
-        dispatch(onReCallMyAddresses());
-      }, 500);
+      // setTimeout(() => {
+      // }, 500);
     } catch (error) {
       setAlert({
         alert: true,

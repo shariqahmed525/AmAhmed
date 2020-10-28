@@ -13,8 +13,8 @@ import {
 } from "../../common/colors";
 import { WIDTH } from "../../common/constants";
 import FastImage from "react-native-fast-image";
-import { useNavigation } from "@react-navigation/native";
 import Image from "react-native-image-progress";
+import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 const ITEM_WIDTH = WIDTH / 2 - 17.5;
 const ITEM_HEIGHT = (270 / 160) * ITEM_WIDTH;
@@ -34,7 +34,6 @@ export default ({ item = {}, isArabic, dummy }) => {
   const ref = useRef(null);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [loadingImg, setLoadingImg] = useState(true);
   const [animatedObj, setAnimatedObj] = useState(null);
   const {
     user: { cart }
@@ -47,6 +46,8 @@ export default ({ item = {}, isArabic, dummy }) => {
       console.log(`cannot play the sound file`, e);
     }
   };
+
+  // console.log(item, " details");
 
   const cartAction = sign => {
     setAnimatedObj(null);
@@ -77,13 +78,14 @@ export default ({ item = {}, isArabic, dummy }) => {
       item.hasCuttingWay ||
       item.hasHeadAndLegs ||
       item.hasPacking ||
-      item.description
+      (isArabic ? item.summaryAr : item.summaryEn)
     ) {
       navigation.navigate("ItemDetail", {
         item
       });
       return;
     }
+    console.log(item);
     cartAction("+");
   };
 

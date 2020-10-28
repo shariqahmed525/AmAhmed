@@ -18,6 +18,7 @@ import {
   MyAddresses,
   Verification,
   OnBoardingCity,
+  OnlineTransfer,
   OnBoardingCategory
 } from "../containers";
 import CartIcon from "../components/CartIcon";
@@ -111,6 +112,11 @@ const CartStack = () => {
       <Screen component={Cart} name="CartScreen" options={StackOptions} />
       <Screen component={Checkout} name="Checkout" options={StackOptions} />
       <Screen component={Payment} name="Payment" options={StackOptions} />
+      <Screen
+        component={OnlineTransfer}
+        name="OnlineTransfer"
+        options={StackOptions}
+      />
       <Screen component={ShowStores} name="ShowStores" options={StackOptions} />
       <Screen
         name="Verification"
@@ -146,6 +152,7 @@ const CartScreensArr = [
   "Verification",
   "NewAddress",
   "Payment",
+  "OnlineTransfer",
   "PinLocation"
 ];
 const CategoriesScreensArr = ["ItemDetail"];

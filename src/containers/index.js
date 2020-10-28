@@ -14,6 +14,7 @@ import _Categories from "./Categories";
 import _PinLocation from "./PinLocation";
 import _MyAddresses from "./MyAddresses";
 import _Verification from "./Verification";
+import _OnlineTransfer from "./OnlineTransfer";
 import _OnBoardingCity from "./OnBoarding/City";
 import _OnBoardingCategory from "./OnBoarding/Category";
 
@@ -33,5 +34,6 @@ export const Categories = _Categories;
 export const MyAddresses = _MyAddresses;
 export const PinLocation = _PinLocation;
 export const Verification = _Verification;
+export const OnlineTransfer = _OnlineTransfer;
 export const OnBoardingCity = _OnBoardingCity;
 export const OnBoardingCategory = _OnBoardingCategory;

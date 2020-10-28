@@ -123,7 +123,7 @@ export default () => {
   } = useSelector(state => state);
   const isArabic = language === ARABIC;
   let findItem = cart.find(v => v.id === item.id);
-
+  console.log(findItem, " findItem");
   const ref = useRef(null);
   const scrollRef = useRef(null);
   const cuttingRef = useRef(null);
@@ -169,26 +169,26 @@ export default () => {
 
   useEffect(() => {
     if (!findItem) {
-      if (
-        hasCuttingWay &&
-        (!item?.cuttingWays || item?.cuttingWays.length < 1)
-      ) {
-        checkConnection(getCuttingWays);
-      } else {
-        setCuttingWays([...item?.cuttingWays]);
+      if (hasCuttingWay) {
+        if (!item?.cuttingWays || item?.cuttingWays.length < 1) {
+          checkConnection(getCuttingWays);
+        } else {
+          setCuttingWays([...item?.cuttingWays]);
+        }
       }
-      if (
-        hasHeadAndLegs &&
-        (!item?.headAndLegs || item?.headAndLegs.length < 1)
-      ) {
-        checkConnection(getHeadAndLegs);
-      } else {
-        setHeadAndLegs([...item?.headAndLegs]);
+      if (hasHeadAndLegs) {
+        if (!item?.headAndLegs || item?.headAndLegs.length < 1) {
+          checkConnection(getHeadAndLegs);
+        } else {
+          setHeadAndLegs([...item?.headAndLegs]);
+        }
       }
-      if (hasPacking && (!item?.packings || item?.packings.length < 1)) {
-        checkConnection(getHeadAndLegs);
-      } else {
-        setPackings([...item?.packings]);
+      if (hasPacking) {
+        if (!item?.packings || item?.packings.length < 1) {
+          checkConnection(getHeadAndLegs);
+        } else {
+          setPackings([...item?.packings]);
+        }
       }
     } else {
       if (hasCuttingWay) {
