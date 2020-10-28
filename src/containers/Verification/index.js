@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Axios from "axios";
 import styles from "./styles";
 import Alert from "../../components/Alert";
 import { theme } from "../../common/colors";
@@ -8,14 +9,12 @@ import { SafeAreaView } from "react-navigation";
 import NoInternet from "../../components/NoInternet";
 import NetInfo from "@react-native-community/netinfo";
 import { useDispatch, useSelector } from "react-redux";
-import { onAddressesAction } from "../../redux/actions/app";
-import { onReCallCheckout, saveUserData } from "../../redux/actions/user";
 import { useNavigation } from "@react-navigation/native";
-import { convertSecondstoTime, getRandom } from "../../common/functions";
 import OTPInputView from "@twotalltotems/react-native-otp-input";
-import { ANDROID, ARABIC, BASE_URL, ERROR_IMG } from "../../common/constants";
 import { View, Text, TouchableOpacity, StatusBar } from "react-native";
-import Axios from "axios";
+import { convertSecondstoTime, getRandom } from "../../common/functions";
+import { onReCallCheckout, saveUserData } from "../../redux/actions/user";
+import { ANDROID, ARABIC, BASE_URL, ERROR_IMG } from "../../common/constants";
 
 const TIMER = 60;
 const VERFICATION_CODE = "7860";

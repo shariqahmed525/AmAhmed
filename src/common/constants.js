@@ -2,7 +2,7 @@ import React from "react";
 import { Dimensions, Platform } from "react-native";
 
 import { theme } from "./colors";
-import { Fontisto, MaterialCommunityIcons } from "./icons";
+import { MaterialCommunityIcons } from "./icons";
 
 // export const BASE_URL = "http://api.amahmed.com";
 export const BASE_URL = "https://amahmed.com/api";
@@ -31,60 +31,6 @@ export const LANGUAGES = [
     code: ENGLISH,
     name: code => (code === ARABIC ? "الإنجليزية" : "English"),
     icon: require("../../assets/images/UK-flag.jpg")
-  }
-];
-
-export const CITIES = [
-  {
-    code: "madina",
-    name: isArabic => (isArabic ? "مدينة المنورة" : "MADINAH MUNAWWARAH"),
-    icon: require("../../assets/images/madina.jpeg")
-  },
-  {
-    code: "makkah",
-    name: isArabic => (isArabic ? "مكة المكرمة" : "MAKKAH MUKARRAMAH"),
-    icon: require("../../assets/images/makkah.jpg")
-  },
-  {
-    code: "jeddah",
-    name: isArabic => (isArabic ? "جدة‎" : "JEDDAH"),
-    icon: require("../../assets/images/jeddah.jpeg")
-  }
-];
-
-export const CATEGORIES = [
-  {
-    code: "g/s",
-    name: isArabic => (isArabic ? "الماعز والأغنام" : "GOAT / SHEEPS"),
-    icon: require("../../assets/images/sheep.jpg")
-  },
-  {
-    code: "v/f",
-    name: isArabic => (isArabic ? "الخضروات والفواكه‎" : "VEGETABLES & FRUITS"),
-    icon: require("../../assets/images/vegetables.jpeg")
-  }
-];
-
-export const addresses = [
-  {
-    name: isArabic => (isArabic ? "مكه" : "Makkah"),
-    icon: <Fontisto size={20} name="navigate" color={theme} />
-  },
-  {
-    name: isArabic => (isArabic ? "مدينة" : "Madina"),
-    icon: <Fontisto size={20} name="navigate" color={theme} />
-  },
-  {
-    name: isArabic => (isArabic ? "جدة" : "Jeddah"),
-    icon: <Fontisto size={20} name="navigate" color={theme} />
-  },
-  {
-    name: isArabic => (isArabic ? "رئيسية" : "Home"),
-    icon: <Fontisto size={20} name="navigate" color={theme} />
-  },
-  {
-    name: isArabic => (isArabic ? "عمل" : "Work"),
-    icon: <Fontisto size={20} name="navigate" color={theme} />
   }
 ];
 

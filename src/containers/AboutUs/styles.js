@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
-import { backgroundColor, black, theme } from "../../common/colors";
+import { theme, backgroundColor } from "../../common/colors";
+const darkestGray = "#47515A";
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
@@ -13,21 +14,41 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingTop: 10,
     backgroundColor,
-    paddingHorizontal: 12,
+    paddingHorizontal: 15,
     paddingBottom: isArabic ? 20 : 10
   }),
-  heading: isArabic => ({
-    color: theme,
-    fontSize: isArabic ? 23 : 22,
-    marginBottom: isArabic ? 10 : 7,
-    textAlign: isArabic ? "right" : "left",
-    fontFamily: isArabic ? "Cairo-Bold" : "Rubik-SemiBold"
+  heading: (
+    isArabic,
+    marginTop = 0,
+    marginBottom = 0,
+    textAlign,
+    fontSize = isArabic ? 23 : 22
+  ) => ({
+    color: darkestGray,
+    fontSize: fontSize,
+    textAlign: textAlign,
+    marginTop: marginTop,
+    marginBottom: marginBottom,
+    fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
   }),
-  text: isArabic => ({
-    fontSize: isArabic ? 16 : 14,
-    color: black,
+  imageWrapper: {
+    width: "100%",
+    marginTop: 15,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  image: {
+    width: 120,
+    height: 120
+  },
+  text: (isArabic, marginTop = 0, textAlign, marginBottom = 0) => ({
+    color: darkestGray,
     paddingVertical: 2,
-    textAlign: isArabic ? "right" : "left"
+    textAlign: textAlign,
+    marginTop: marginTop,
+    marginBottom: marginBottom,
+    fontSize: isArabic ? 16 : 17,
+    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   })
 });
 

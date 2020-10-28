@@ -12,21 +12,24 @@ import {
 } from "react-native";
 import styles from "./styles";
 import Header from "../../components/Header";
-import { validateEmail } from "../../common/functions";
 import { lightTheme, theme } from "../../common/colors";
+import { validateEmail, validatePhone } from "../../common/functions";
 import {
   IOS,
   ARABIC,
   ANDROID,
+  BASE_URL,
   ERROR_IMG,
   THUMB_IMG
 } from "../../common/constants";
+import Axios from "axios";
 import { useSelector } from "react-redux";
 import Alert from "../../components/Alert";
 
 export default () => {
   const nameRef = useRef(null);
   const emailRef = useRef(null);
+  const phoneRef = useRef(null);
   const subjectRef = useRef(null);
   const messageRef = useRef(null);
   const navigation = useNavigation();
@@ -39,6 +42,7 @@ export default () => {
   });
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -57,6 +61,7 @@ export default () => {
   const handleSubmit = () => {
     const trimName = name.trim();
     const trimEmail = email.trim();
+    const trimPhone = phone.trim();
     const trimSubject = subject.trim();
     const trimMessage = message.trim();
     if (!trimName) {
@@ -94,7 +99,33 @@ export default () => {
         alertTitle: isArabic ? "خطأ" : "Error",
         alertText: isArabic
           ? "الرجاء أدخل عنوان بريد إلكتروني صالح"
-          : "Please enter valid email address"
+          : "Please enter a valid email address"
+      });
+      return;
+    }
+    if (!trimPhone) {
+      phoneRef.current.focus();
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "الرجاء إدخال رقم الهاتف الخاص بك"
+          : "Please enter your phone number"
+      });
+      return;
+    }
+    if (trimPhone && !validatePhone(trimPhone)) {
+      emailRef.current.focus();
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "الرجاء إدخال رقم هاتف صالح"
+          : "Please enter a valid phone number"
       });
       return;
     }
@@ -122,9 +153,25 @@ export default () => {
       });
       return;
     }
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    makeRequest();
+  };
+
+  const makeRequest = async () => {
+    const trimName = name.trim();
+    const trimEmail = email.trim();
+    const trimPhone = phone.trim();
+    const trimSubject = subject.trim();
+    const trimMessage = message.trim();
+    try {
+      setLoading(true);
+      const obj = {
+        Name: trimName,
+        Email: trimEmail,
+        Phone: trimPhone,
+        Subject: trimSubject,
+        Message: trimMessage
+      };
+      await Axios.post(`${BASE_URL}/ContactUs/submit`, obj);
       setAlert({
         alert: true,
         error: false,
@@ -135,7 +182,11 @@ export default () => {
           ? "تم متابعة طلبك وسنقوم بالرد عليك في أقرب وقت ممكن"
           : "Your request has been proceed we'll response you as soon as possible"
       });
-    }, 2000);
+    } catch (error) {
+      console.log(error, " error in contact us");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const btnPress = () => {
@@ -207,6 +258,23 @@ export default () => {
               placeholder={
                 isArabic ? "أدخل عنوان بريدك الالكتروني" : "Enter email address"
               }
+            />
+          </View>
+          <View style={styles.inputWrapper(isArabic)}>
+            <Text style={styles.heading(isArabic)}>
+              {isArabic ? "رقم الهاتف" : "Phone Number"}
+            </Text>
+            <TextInput
+              value={phone}
+              maxLength={9}
+              ref={phoneRef}
+              editable={!loading}
+              spellCheck={false}
+              autoCorrect={false}
+              keyboardType="number-pad"
+              placeholder={"501234567"}
+              style={styles.input(isArabic)}
+              onChangeText={text => setPhone(text)}
             />
           </View>
           <View style={styles.inputWrapper(isArabic)}>

@@ -135,25 +135,29 @@ export default ({ navigation, drawerClose }) => {
             <View style={styles.line} />
 
             <View style={styles.listWrapper}>
-              <List
-                isArabic={isArabic}
-                text={isArabic ? "طلباتي" : "My Orders"}
-                onPress={() => handleListItem("MyOrders")}
-                icon={<MaterialIcons size={25} color={gray} name="restore" />}
-              />
               {userData && (
-                <List
-                  isArabic={isArabic}
-                  text={isArabic ? "عناويني" : "My Addresses"}
-                  onPress={() => handleListItem("MyAddresses")}
-                  icon={
-                    <MaterialCommunityIcons
-                      size={25}
-                      color={gray}
-                      name="map-marker-multiple-outline"
-                    />
-                  }
-                />
+                <>
+                  <List
+                    isArabic={isArabic}
+                    text={isArabic ? "طلباتي" : "My Orders"}
+                    onPress={() => handleListItem("MyOrders")}
+                    icon={
+                      <MaterialIcons size={25} color={gray} name="restore" />
+                    }
+                  />
+                  <List
+                    isArabic={isArabic}
+                    text={isArabic ? "عناويني" : "My Addresses"}
+                    onPress={() => handleListItem("MyAddresses")}
+                    icon={
+                      <MaterialCommunityIcons
+                        size={25}
+                        color={gray}
+                        name="map-marker-multiple-outline"
+                      />
+                    }
+                  />
+                </>
               )}
               <List
                 isArabic={isArabic}
@@ -196,7 +200,7 @@ export default ({ navigation, drawerClose }) => {
               />
               <List
                 isArabic={isArabic}
-                text={isArabic ? "معلومات عنا" : "About Us"}
+                text={isArabic ? "معلومات عم احمد" : "About AmAhmed"}
                 onPress={() => handleListItem("AboutUs")}
                 icon={<Entypo name="info" size={20} color={gray} />}
               />
