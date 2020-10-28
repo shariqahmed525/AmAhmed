@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
   total: {
-    width: 100
+    width: 150
   },
   totalText: isArabic => ({
     fontSize: 17,

@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import { Entypo } from "../../common/icons";
 import { SafeAreaView } from "react-navigation";
 import MapView, { MarkerAnimated } from "react-native-maps";
-import { ANDROID, ARABIC, markers } from "../../common/constants";
+import { ANDROID, ARABIC } from "../../common/constants";
 
 export default ({ route: { params } }) => {
   const mapRef = useRef(null);

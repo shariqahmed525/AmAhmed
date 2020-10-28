@@ -114,31 +114,3 @@ export const payments = [
     icon: <MaterialCommunityIcons size={27} name="bank" color={theme} />
   }
 ];
-
-export const markers = [
-  {
-    name: "Azizyah Store",
-    lat: 21.555126,
-    lng: 39.194558
-  },
-  {
-    name: "Mishrifah Store",
-    lat: 21.540754,
-    lng: 39.200643
-  },
-  {
-    name: "Al-Rehab Store",
-    lat: 21.549775,
-    lng: 39.226393
-  },
-  {
-    name: "Al-Sharafeyah Store",
-    lat: 21.524067,
-    lng: 39.184507
-  },
-  {
-    name: "Al-Hamara'a Store",
-    lat: 21.526862,
-    lng: 39.164337
-  }
-];

@@ -107,10 +107,11 @@ const styles = StyleSheet.create({
   }),
   label: isArabic => ({
     color: black,
-    textAlign: "left",
-    marginBottom: 10,
-    marginLeft: 20,
-    fontSize: isArabic ? 22 : 14,
+    fontSize: isArabic ? 16 : 14,
+    marginLeft: isArabic ? 0 : 20,
+    marginRight: isArabic ? 20 : 0,
+    marginBottom: isArabic ? 5 : 10,
+    textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Bold"
   })
 });

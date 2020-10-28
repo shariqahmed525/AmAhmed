@@ -4,7 +4,6 @@ import { useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
-  Image,
   TextInput,
   StatusBar,
   ScrollView,
@@ -12,20 +11,19 @@ import {
   KeyboardAvoidingView
 } from "react-native";
 import styles from "./styles";
+import { useSelector } from "react-redux";
 import Alert from "../../components/Alert";
-import { black, theme } from "../../common/colors";
 import Header from "../../components/Header";
 // import Cardscan from "react-native-cardscan";
-import { useDispatch, useSelector } from "react-redux";
+import { black, theme } from "../../common/colors";
 import { CreditCardInput } from "react-native-credit-card-input";
 import { ANDROID, ARABIC, IOS, ERROR_IMG, WIDTH } from "../../common/constants";
 
 export default ({ route: { params } }) => {
-  const dispatch = useDispatch();
   const postalCodeRef = useRef();
   const cardHolderNameRef = useRef();
   const navigation = useNavigation();
-  const [postalCode, setPostalCode] = useState("");
+  // const [postalCode, setPostalCode] = useState("");
   const [formDetails, setFormDetails] = useState(null);
   const [cardHolderName, setCardHolderName] = useState("");
   const [alert, setAlert] = useState({
@@ -48,7 +46,6 @@ export default ({ route: { params } }) => {
   };
 
   const handleCardForm = form => {
-    console.log(form, " form");
     setFormDetails({ ...form });
   };
 
@@ -137,7 +134,7 @@ export default ({ route: { params } }) => {
       return;
     }
     const trimeCardHolderName = cardHolderName.trim();
-    const trimPostalCode = postalCode.trim();
+    // const trimPostalCode = postalCode.trim();
     if (!trimeCardHolderName) {
       setAlert({
         alert: true,
@@ -150,24 +147,24 @@ export default ({ route: { params } }) => {
       });
       return;
     }
-    if (!trimPostalCode) {
-      setAlert({
-        alert: true,
-        error: true,
-        alertImg: ERROR_IMG,
-        alertTitle: isArabic ? "خطأ" : "Error",
-        alertText: isArabic
-          ? "الرجاء إدخال الرمز البريدي"
-          : "Please enter the postal code"
-      });
-      return;
-    }
+    // if (!trimPostalCode) {
+    //   setAlert({
+    //     alert: true,
+    //     error: true,
+    //     alertImg: ERROR_IMG,
+    //     alertTitle: isArabic ? "خطأ" : "Error",
+    //     alertText: isArabic
+    //       ? "الرجاء إدخال الرمز البريدي"
+    //       : "Please enter the postal code"
+    //   });
+    //   return;
+    // }
     const { number, cvc, expiry } = formDetails?.values;
     const obj = {
       expiry,
       cvv: cvc,
       cardNumber: number,
-      postalCode: trimPostalCode,
+      // postalCode: trimPostalCode,
       cardHolderName: trimeCardHolderName
     };
     navigation.goBack();
@@ -289,14 +286,13 @@ export default ({ route: { params } }) => {
                 borderBottomWidth: 0
               }}
               labelStyle={{
-                color: black,
-                marginBottom: 10,
-                fontSize: isArabic ? 22 : 14,
-                fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Bold"
+                ...styles.label(isArabic),
+                marginLeft: 0,
+                marginRight: 0
               }}
               labels={{
-                number: "CARD NUMBER",
-                expiry: "EXPIRY",
+                number: isArabic ? "رقم البطاقة" : "CARD NUMBER",
+                expiry: isArabic ? "انقضاء" : "EXPIRY",
                 cvc: "CVV"
               }}
               placeholders={{
@@ -310,7 +306,9 @@ export default ({ route: { params } }) => {
               inputStyle={styles.input(isArabic)}
             />
           </View>
-          <Text style={styles.label(isArabic)}>CARD HOLDER'S NAME</Text>
+          <Text style={styles.label(isArabic)}>
+            {isArabic ? "اسم حامل البطاقة" : "CARD HOLDER'S NAME"}
+          </Text>
           <TextInput
             spellCheck={false}
             autoCorrect={false}
@@ -328,7 +326,9 @@ export default ({ route: { params } }) => {
               isArabic ? "الاسم الكامل لحامل البطاقة" : "Card Holder Full Name"
             }
           />
-          <Text style={styles.label(isArabic)}>POSTAL CODE</Text>
+          {/* <Text style={styles.label(isArabic)}>
+            {isArabic ? "الرمز البريدي" : "POSTAL CODE"}
+          </Text>
           <TextInput
             spellCheck={false}
             autoCorrect={false}
@@ -342,7 +342,7 @@ export default ({ route: { params } }) => {
             }}
             onChangeText={text => setPostalCode(text)}
             placeholder={isArabic ? "الرمز البريدي" : "Postal Code"}
-          />
+          /> */}
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => handlePayment()}

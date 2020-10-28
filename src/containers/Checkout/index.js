@@ -11,7 +11,6 @@ import {
 import {
   IOS,
   WIDTH,
-  HEIGHT,
   ARABIC,
   ANDROID,
   payments,
@@ -40,6 +39,17 @@ import { getRandom, validatePhone } from "../../common/functions";
 import { RNSlidingButton, SlideDirection } from "rn-sliding-button";
 import { clearCart, onAddressesAction } from "../../redux/actions/user";
 import RNAndroidLocationEnabler from "react-native-android-location-enabler";
+
+const paymentMethod = id => {
+  switch (id) {
+    case "p-2":
+      return "card";
+    case "p-3":
+      return "online";
+    default:
+      return "cod";
+  }
+};
 
 const LIST = ({
   isArabic,
@@ -240,6 +250,9 @@ export default () => {
   const handlePaymentListItem = paymentOption => {
     if (!paymentOption) return;
     setSelectedPayment({ ...paymentOption });
+    if (paymentOption?.id === "p-1") {
+      setCardDetails(null);
+    }
     if (paymentOption?.id === "p-2") {
       navigation.navigate("Payment", {
         handleCardCallBack
@@ -247,6 +260,7 @@ export default () => {
       return;
     }
     if (paymentOption?.id === "p-3") {
+      setCardDetails(null);
       navigation.navigate("OnlineTransfer", {
         handleOnlineTransferCallBack
       });
@@ -286,76 +300,121 @@ export default () => {
     }
   };
 
-  const handleSubmit = verification => {
-    const trimText = text.trim();
-    if (verification) {
-      if (!trimText) {
-        scrollRef.current.scrollToEnd({ animated: true });
-        setAlert({
-          alert: true,
-          error: true,
-          alertImg: ERROR_IMG,
-          alertTitle: isArabic ? "خطأ" : "Error",
-          alertText: isArabic
-            ? "الرجاء إدخال رقم الاتصال الخاص بك"
-            : "Please enter your contact number"
-        });
-        setTimeout(() => {
-          focusInput();
-        }, 1000);
-        return;
-      }
-      navigation.navigate("Verification", {
-        phone: trimText,
-        focusInput,
-        animateButton
+  const handleSubmit = () => {
+    if (!selectedAddress || !selectedAddress?.address) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic ? "الرجاء تحديد العنوان" : "Please select address"
       });
-    } else {
-      if (!selectedAddress) {
-        setAlert({
-          alert: true,
-          error: true,
-          alertImg: ERROR_IMG,
-          alertTitle: isArabic ? "خطأ" : "Error",
-          alertText: isArabic ? "الرجاء تحديد العنوان" : "Please select address"
-        });
-        scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
-        return;
-      }
-      if (!selectedPayment) {
-        scrollRef.current.scrollTo({ x: 0, y: HEIGHT * 0.35, animated: true });
-        setAlert({
-          alert: true,
-          error: true,
-          alertImg: ERROR_IMG,
-          alertTitle: isArabic ? "خطأ" : "Error",
-          alertText: isArabic
-            ? "الرجاء تحديد طريقة الدفع"
-            : "Please select the payment method"
-        });
-        return;
-      }
+      scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
+      return;
+    }
+    if (!selectedPayment) {
+      scrollRef.current.scrollToEnd({ animated: true });
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "الرجاء تحديد طريقة الدفع"
+          : "Please select the payment method"
+      });
+      return;
+    }
+    if (
+      selectedPayment &&
+      selectedPayment?.id === "p-2" &&
+      (!cardDetails ||
+        !cardDetails?.cardNumber ||
+        !cardDetails?.expiry ||
+        !cardDetails?.cvv ||
+        !cardDetails?.cardHolderName)
+    ) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "الرجاء استكمال تفاصيل البطاقة"
+          : "Please complete card details"
+      });
+      return;
+    }
+    placeOrder();
+  };
+
+  const placeOrder = async () => {
+    try {
       setOrderLoading(true);
-      setTimeout(() => {
-        setAlert({
-          alert: true,
-          error: false,
-          btnPress: btnPress,
-          alertImg: THANKS_IMG,
-          alertTitle: isArabic ? "شكرا جزيلا!" : "Thank you!",
-          alertText: isArabic
-            ? "شكرًا على الطلب ، سيتم توصيل طلبك قريبًا جدًا"
-            : "Thank you for ordering, your order will be delivered very soon"
-        });
-        setOrderLoading(false);
-      }, 1000);
+      const cartItems = cart.map(v => {
+        return {
+          productId: v.id,
+          quantity: v.quantity,
+          packingId: v.hasPacking ? v?.packing?.id : null,
+          cuttingWayId: v.hasCuttingWay ? v?.cuttingWay?.id : null,
+          headAndLegId: v.hasHeadAndLegs ? v?.headAndLeg?.id : null
+        };
+      });
+      const obj = {
+        phone: userData?.phone,
+        locationId: selectedCity?.id,
+        items: cartItems,
+        status: "pending",
+        subTotal: total().toFixed(2),
+        vat: calculateVat().toFixed(2),
+        shippingCost: calculateShipping().toFixed(2),
+        total: (total() + calculateVat() + calculateShipping()).toFixed(2),
+        paymentType: paymentMethod(selectedPayment?.id),
+        payment: {
+          postalCode: "",
+          cvv: cardDetails?.cvv,
+          expiry: cardDetails?.expiry,
+          cardNumber: cardDetails?.cardNumber,
+          cardHolderName: cardDetails?.cardHolderName
+        },
+        shippingDetails: {
+          address: selectedAddress?.address,
+          latitude: selectedAddress?.latitude,
+          longitude: selectedAddress?.longitude
+        }
+      };
+      console.log(obj, " place order object");
+      await Axios.post(`${BASE_URL}/PlaceOrder/submit`, obj);
+      dispatch(clearCart());
+      setAlert({
+        alert: true,
+        error: false,
+        btnPress: btnPress,
+        alertImg: THANKS_IMG,
+        alertTitle: isArabic ? "شكرا جزيلا!" : "Thank you!",
+        alertText: isArabic
+          ? "شكرًا على الطلب ، سيتم توصيل طلبك قريبًا جدًا"
+          : "Thank you for ordering, your order will be delivered very soon"
+      });
+    } catch (error) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "عذرا، هناك خطأ ما. حاول مرة اخرى!"
+          : "Sorry, something went wrong. Please try again!"
+      });
+      console.log(error, " error in place order");
+    } finally {
+      setOrderLoading(false);
     }
   };
 
   const btnPress = () => {
     navigation.goBack();
     navigation.navigate("Home");
-    dispatch(clearCart());
   };
 
   const focusInput = () => {
@@ -400,7 +459,8 @@ export default () => {
   );
 
   const total = () => {
-    const sum = cart.reduce((partialSum, val) => {
+    if (!cart || cart.length < 1) return 0;
+    const makeSumArr = cart.map(val => {
       const pp = val?.discount > 0 ? val?.discount : val?.price;
       const cuttingWayPrice =
         val?.hasCuttingWay && val?.cuttingWay && val?.cuttingWay?.cost
@@ -416,7 +476,10 @@ export default () => {
           : 0;
       const totalItemCost =
         pp + cuttingWayPrice + headAndLegsPrice + packingPrice;
-      return partialSum + totalItemCost;
+      return totalItemCost * val.quantity;
+    });
+    const sum = makeSumArr.reduce((partialSum, o) => {
+      return partialSum + o;
     }, 0);
     return sum;
   };

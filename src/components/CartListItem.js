@@ -83,159 +83,187 @@ export default ({ item, isArabic }) => {
       item?.hasPacking && item?.packing && item?.packing?.cost
         ? item?.packing?.cost
         : 0;
-    return pp + cuttingWayPrice + headAndLegsPrice + packingPrice;
+    const makeSum = pp + cuttingWayPrice + headAndLegsPrice + packingPrice;
+    return makeSum * item?.quantity;
   };
 
   return (
-    <View style={styles.cartItemWrapper(isArabic)}>
-      <View style={styles.cartItem(isArabic)}>
-        <View style={styles.cartImageWrapper(isArabic)}>
-          <ProgressImage
-            resizeMode={"contain"}
-            style={styles.cartImage}
-            source={{ uri: item?.thumbnailPictureUrl }}
-            renderIndicator={() => (
-              <FastImage
-                style={{
-                  width: 100,
-                  height: 100
-                }}
-                resizeMode={FastImage.resizeMode.contain}
-                source={require("../../assets/images/logo.png")}
-              />
-            )}
-          />
-          {animatedObj && (
-            <Animatable.View
-              ref={ref}
-              useNativeDriver
-              animation="fadeOut"
-              style={styles.animatedView(animatedObj?.bgColor, isArabic)}
-            >
-              <Text style={styles.animatedViewText}>
-                {animatedObj?.quantityUnit}
-              </Text>
-            </Animatable.View>
-          )}
-        </View>
-        <View style={styles.cartDetailsWrapper(isArabic)}>
-          <View style={styles.cartDetails(isArabic)}>
-            <Text
-              ellipsizeMode="tail"
-              numberOfLines={isArabic ? 1 : 2}
-              style={styles.cartItemTitle(isArabic)}
-            >
-              {isArabic ? item?.nameAr : item?.nameEn}
-            </Text>
-            <PriceRender
-              price={item.price}
-              isArabic={isArabic}
-              discount={item.discount}
-              unitType={isArabic ? item?.unitTypeAr : item?.unitTypeEn}
+    <View style={styles.cartItemContainer}>
+      <View style={styles.cartItemWrapper(isArabic)}>
+        <View style={styles.cartItem(isArabic)}>
+          <View style={styles.cartImageWrapper(isArabic)}>
+            <ProgressImage
+              resizeMode={"contain"}
+              style={styles.cartImage}
+              source={{ uri: item?.thumbnailPictureUrl }}
+              renderIndicator={() => (
+                <FastImage
+                  style={{
+                    width: 100,
+                    height: 100
+                  }}
+                  resizeMode={FastImage.resizeMode.contain}
+                  source={require("../../assets/images/logo.png")}
+                />
+              )}
             />
+            {animatedObj && (
+              <Animatable.View
+                ref={ref}
+                useNativeDriver
+                animation="fadeOut"
+                style={styles.animatedView(animatedObj?.bgColor, isArabic)}
+              >
+                <Text style={styles.animatedViewText}>
+                  {animatedObj?.quantityUnit}
+                </Text>
+              </Animatable.View>
+            )}
           </View>
-          {item?.hasCuttingWay && item?.cuttingWay && (
-            <View style={styles.cartSubItemWrapper(1, 1)}>
-              <Text style={styles.cartSubItemTitle(isArabic)}>
-                {isArabic ? item?.cuttingWay?.nameAr : item?.cuttingWay?.nameEn}
+          <View style={styles.cartDetailsWrapper(isArabic)}>
+            <View style={styles.cartDetails(isArabic)}>
+              <Text
+                ellipsizeMode="tail"
+                numberOfLines={isArabic ? 1 : 2}
+                style={styles.cartItemTitle(isArabic)}
+              >
+                {isArabic ? item?.nameAr : item?.nameEn}
               </Text>
-              {item?.cuttingWay.cost > 0 && (
-                <Text style={styles.cartSubItemTotalText(isArabic)}>
-                  {!isArabic && "SAR "}
-                  <Text style={styles.cartSubItemTotalPriceText(isArabic)}>
-                    {item?.cuttingWay?.cost}
-                  </Text>
-                  {isArabic && " ر.س"}
-                </Text>
-              )}
+              <PriceRender
+                price={item.price}
+                isArabic={isArabic}
+                discount={item.discount}
+                unitType={isArabic ? item?.unitTypeAr : item?.unitTypeEn}
+              />
             </View>
-          )}
-          {item?.hasHeadAndLegs && item?.headAndLeg && (
-            <View style={styles.cartSubItemWrapper(1)}>
-              <Text style={styles.cartSubItemTitle(isArabic)}>
-                {isArabic ? item?.headAndLeg?.nameAr : item?.headAndLeg?.nameEn}
-              </Text>
-              {item?.headAndLeg.cost > 0 && (
-                <Text style={styles.cartSubItemTotalText(isArabic)}>
-                  {!isArabic && "SAR "}
-                  <Text style={styles.cartSubItemTotalPriceText(isArabic)}>
-                    {item?.headAndLeg?.cost}
-                  </Text>
-                  {isArabic && " ر.س"}
+            {item?.hasCuttingWay && item?.cuttingWay && (
+              <View style={styles.cartSubItemWrapper(1, 1)}>
+                <Text style={styles.cartSubItemTitle(isArabic)}>
+                  {isArabic
+                    ? item?.cuttingWay?.nameAr
+                    : item?.cuttingWay?.nameEn}
                 </Text>
-              )}
-            </View>
-          )}
-          {item?.hasPacking && item?.packing && (
-            <View style={{ ...styles.cartSubItemWrapper(0) }}>
-              <Text style={styles.cartSubItemTitle(isArabic)}>
-                {isArabic ? item?.packing?.nameAr : item?.packing?.nameEn}
-              </Text>
-              {item?.packing?.cost > 0 && (
-                <Text style={styles.cartSubItemTotalText(isArabic)}>
-                  {!isArabic && "SAR "}
-                  <Text style={styles.cartSubItemTotalPriceText(isArabic)}>
-                    {item?.packing?.cost}
+                {item?.cuttingWay.cost > 0 && (
+                  <Text style={styles.cartSubItemTotalText(isArabic)}>
+                    {!isArabic && "SAR "}
+                    <Text style={styles.cartSubItemTotalPriceText(isArabic)}>
+                      {item?.cuttingWay?.cost}
+                    </Text>
+                    {isArabic && " ر.س"}
                   </Text>
-                  {isArabic && " ر.س"}
+                )}
+              </View>
+            )}
+            {item?.hasHeadAndLegs && item?.headAndLeg && (
+              <View style={styles.cartSubItemWrapper(1)}>
+                <Text style={styles.cartSubItemTitle(isArabic)}>
+                  {isArabic
+                    ? item?.headAndLeg?.nameAr
+                    : item?.headAndLeg?.nameEn}
                 </Text>
-              )}
+                {item?.headAndLeg.cost > 0 && (
+                  <Text style={styles.cartSubItemTotalText(isArabic)}>
+                    {!isArabic && "SAR "}
+                    <Text style={styles.cartSubItemTotalPriceText(isArabic)}>
+                      {item?.headAndLeg?.cost}
+                    </Text>
+                    {isArabic && " ر.س"}
+                  </Text>
+                )}
+              </View>
+            )}
+            {item?.hasPacking && item?.packing && (
+              <View style={{ ...styles.cartSubItemWrapper(0) }}>
+                <Text style={styles.cartSubItemTitle(isArabic)}>
+                  {isArabic ? item?.packing?.nameAr : item?.packing?.nameEn}
+                </Text>
+                {item?.packing?.cost > 0 && (
+                  <Text style={styles.cartSubItemTotalText(isArabic)}>
+                    {!isArabic && "SAR "}
+                    <Text style={styles.cartSubItemTotalPriceText(isArabic)}>
+                      {item?.packing?.cost}
+                    </Text>
+                    {isArabic && " ر.س"}
+                  </Text>
+                )}
+              </View>
+            )}
+            <View style={styles.cartActionWrapper(isArabic)}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => cartAction(item, "-")}
+                style={styles.cartAction(isArabic)}
+              >
+                <Text style={styles.cartDifferenceAction}>-</Text>
+              </TouchableOpacity>
+              <Text style={styles.quantity}>{item.quantity}</Text>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={styles.cartAction(isArabic)}
+                onPress={() => cartAction(item, "+")}
+              >
+                <Text style={styles.cartSumAction}>+</Text>
+              </TouchableOpacity>
             </View>
-          )}
-          <View style={styles.cartActionWrapper(isArabic)}>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => cartAction(item, "-")}
-              style={styles.cartAction(isArabic)}
-            >
-              <Text style={styles.cartDifferenceAction}>-</Text>
-            </TouchableOpacity>
-            <Text style={styles.quantity}>{item.quantity}</Text>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={styles.cartAction(isArabic)}
-              onPress={() => cartAction(item, "+")}
-            >
-              <Text style={styles.cartSumAction}>+</Text>
-            </TouchableOpacity>
           </View>
         </View>
-      </View>
-      <View style={styles.cartItemTotal(isArabic)}>
-        {item?.hasCuttingWay && item?.cuttingWay?.cost > 0 && (
-          <View style={styles.costWrapper}>
-            <Text style={styles.cost}>{item?.cuttingWay?.cost}</Text>
-            <Text style={styles.plus}>+</Text>
-          </View>
-        )}
-        {item?.hasHeadAndLegs && item?.headAndLeg?.cost > 0 && (
-          <View style={styles.costWrapper}>
-            <Text style={styles.cost}>{item?.headAndLeg?.cost}</Text>
-            <Text style={styles.plus}>+</Text>
-          </View>
-        )}
-        {item?.hasPacking && item?.packing?.cost > 0 && (
-          <View style={styles.costWrapper}>
-            <Text style={styles.cost}>{item?.packing?.cost}</Text>
-            <Text style={styles.plus}>+</Text>
-          </View>
-        )}
-        <Text style={styles.cartItemTotalText(isArabic)}>
-          {!isArabic && "SAR "}
-          <Text style={styles.cartItemTotalPriceText(isArabic)}>
-            {productTotal()}
+        <View style={styles.cartItemTotal(isArabic)}>
+          {item?.hasCuttingWay && item?.cuttingWay?.cost > 0 && (
+            <View style={styles.costWrapper}>
+              <Text style={styles.cost}>
+                {item?.cuttingWay?.cost * item?.quantity}
+              </Text>
+              <Text style={styles.plus}>+</Text>
+            </View>
+          )}
+          {item?.hasHeadAndLegs && item?.headAndLeg?.cost > 0 && (
+            <View style={styles.costWrapper}>
+              <Text style={styles.cost}>
+                {item?.headAndLeg?.cost * item?.quantity}
+              </Text>
+              <Text style={styles.plus}>+</Text>
+            </View>
+          )}
+          {item?.hasPacking && item?.packing?.cost > 0 && (
+            <View style={styles.costWrapper}>
+              <Text style={styles.cost}>
+                {item?.packing?.cost * item?.quantity}
+              </Text>
+              <Text style={styles.plus}>+</Text>
+            </View>
+          )}
+          <Text style={styles.cartItemTotalText(isArabic)}>
+            {!isArabic && "SAR "}
+            <Text style={styles.cartItemTotalPriceText(isArabic)}>
+              {productTotal()}
+            </Text>
+            {isArabic && " ر.س"}
           </Text>
-          {isArabic && " ر.س"}
-        </Text>
+        </View>
       </View>
+      {item.quantity < item.minOrderQty && (
+        <Text style={styles.minimumOrderQuantity(isArabic)}>
+          {isArabic
+            ? `أقل كمية للطلب هي ${item.minOrderQty} ${
+                item.unitTypeAr ? item.unitTypeAr : ""
+              }`
+            : `
+The minimum order quantity is ${item.minOrderQty} ${
+                item.unitTypeEn ? item.unitTypeEn : ""
+              }`}
+        </Text>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  cartItemContainer: {
+    width: "100%",
+    marginBottom: 15
+  },
   cartItemWrapper: isArabic => ({
     width: "100%",
-    marginBottom: 15,
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
   cartItem: isArabic => ({
@@ -407,5 +435,13 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: theme,
     fontFamily: "Rubik-Medium"
-  }
+  },
+  minimumOrderQuantity: isArabic => ({
+    fontSize: 14,
+    color: "#c90c0c",
+    paddingHorizontal: 10,
+    marginTop: isArabic ? 10 : 0,
+    textAlign: isArabic ? "right" : "left",
+    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Medium"
+  })
 });

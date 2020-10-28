@@ -35,7 +35,22 @@ export default ({ route: { params } }) => {
   const handleCopy = (copyText, text) => {
     Clipboard.setString(copyText);
     Toast.show({
-      text
+      text,
+      style: {
+        transform: [
+          {
+            scaleX: isArabic ? -1 : 1
+          }
+        ]
+      },
+      textStyle: {
+        transform: [
+          {
+            rotateY: isArabic ? "180deg" : "0deg"
+          }
+        ],
+        textAlign: isArabic ? "right" : "left"
+      }
     });
   };
 
@@ -71,7 +86,7 @@ export default ({ route: { params } }) => {
             >
               {isArabic ? "رقم الحساب:" : "Account Number:"}
             </Text>
-            <View style={styles.textWithIconWrapper}>
+            <View style={styles.textWithIconWrapper(isArabic)}>
               <Text style={{ ...styles.description(isArabic), flex: 1 }}>
                 2621085259940
               </Text>
@@ -97,7 +112,7 @@ export default ({ route: { params } }) => {
             >
               {isArabic ? "رقم البيان:" : "IBAN Number:"}
             </Text>
-            <View style={styles.textWithIconWrapper}>
+            <View style={styles.textWithIconWrapper(isArabic)}>
               <Text style={{ ...styles.description(isArabic), flex: 1 }}>
                 SA4520000002621085259940
               </Text>

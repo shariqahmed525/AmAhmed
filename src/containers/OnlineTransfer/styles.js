@@ -43,12 +43,12 @@ const styles = StyleSheet.create({
     textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
-  textWithIconWrapper: {
+  textWithIconWrapper: isArabic => ({
     width: "100%",
     marginBottom: 10,
     alignItems: "center",
-    flexDirection: "row"
-  },
+    flexDirection: isArabic ? "row-reverse" : "row"
+  }),
   btn: width => ({
     height: 50,
     marginTop: 30,
