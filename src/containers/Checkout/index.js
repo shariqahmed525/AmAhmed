@@ -534,22 +534,28 @@ export default () => {
   };
 
   const getLocation = () => {
-    Geolocation.getCurrentPosition(info => {
-      if (info?.coords) {
-        const coords = info?.coords;
-        getAddressDetails(coords.latitude, coords.longitude);
-      } else {
-        setAlert({
-          alert: true,
-          error: true,
-          alertImg: ERROR_IMG,
-          alertTitle: isArabic ? "خطأ" : "Error",
-          alertText: isArabic
-            ? "عذرا ، هناك مشكلة في الحصول على الموقع. يرجى محاولة إضافة العنوان يدويًا"
-            : "Sorry, there is a problem in getting location. Please try to add address manually"
-        });
-      }
-    });
+    Geolocation.getCurrentPosition(
+      info => {
+        if (info?.coords) {
+          const coords = info?.coords;
+          getAddressDetails(coords.latitude, coords.longitude);
+        } else {
+          setAlert({
+            alert: true,
+            error: true,
+            alertImg: ERROR_IMG,
+            alertTitle: isArabic ? "خطأ" : "Error",
+            alertText: isArabic
+              ? "عذرا ، هناك مشكلة في الحصول على الموقع. يرجى محاولة إضافة العنوان يدويًا"
+              : "Sorry, there is a problem in getting location. Please try to add address manually"
+          });
+        }
+      },
+      error => {
+        console.log(error, " error in getting location");
+      },
+      { enableHighAccuracy: false, timeout: 5000, maximumAge: 10000 }
+    );
   };
 
   const handleCurrentLocation = () => {

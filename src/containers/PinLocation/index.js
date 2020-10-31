@@ -64,11 +64,17 @@ export default ({ route: { params } }) => {
 
   const AskLocationPopup = () => {
     if (IOS) {
-      Geolocation.getCurrentPosition(info => {
-        if (info?.coords) {
-          setCoords({ ...info?.coords });
-        }
-      });
+      Geolocation.getCurrentPosition(
+        info => {
+          if (info?.coords) {
+            setCoords({ ...info?.coords });
+          }
+        },
+        error => {
+          console.log(error, " error in getting location");
+        },
+        { enableHighAccuracy: false, timeout: 5000, maximumAge: 10000 }
+      );
       return;
     }
     RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
@@ -76,21 +82,33 @@ export default ({ route: { params } }) => {
       fastInterval: 5000
     })
       .then(() => {
-        Geolocation.getCurrentPosition(info => {
-          if (info?.coords) {
-            setCoords({ ...info?.coords });
-          }
-        });
+        Geolocation.getCurrentPosition(
+          info => {
+            if (info?.coords) {
+              setCoords({ ...info?.coords });
+            }
+          },
+          error => {
+            console.log(error, " error in getting location");
+          },
+          { enableHighAccuracy: false, timeout: 5000, maximumAge: 10000 }
+        );
       })
       .catch(err => {
         if (err && err.code === "ERR00") {
           return;
         }
-        Geolocation.getCurrentPosition(info => {
-          if (info?.coords) {
-            setCoords({ ...info?.coords });
-          }
-        });
+        Geolocation.getCurrentPosition(
+          info => {
+            if (info?.coords) {
+              setCoords({ ...info?.coords });
+            }
+          },
+          error => {
+            console.log(error, " error in getting location");
+          },
+          { enableHighAccuracy: false, timeout: 5000, maximumAge: 10000 }
+        );
       });
   };
 
@@ -103,8 +121,8 @@ export default ({ route: { params } }) => {
     setSelectedCity({ ...city });
     if (city?.latitude && city?.longitude) {
       setCoords({
-        latitude: city?.latitude,
-        longitude: city?.longitude
+        latitude: parseFloat(city?.latitude),
+        longitude: parseFloat(city?.longitude)
       });
     } else {
       setCoords(null);
@@ -159,6 +177,8 @@ export default ({ route: { params } }) => {
       }
     }
   };
+
+  console.log(coords, " coords");
 
   const markerRender = () => (
     <View

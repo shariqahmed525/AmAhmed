@@ -10,7 +10,6 @@ import {
   TextInput,
   TouchableOpacity
 } from "react-native";
-
 import styles from "./styles";
 import Header from "../../components/Header";
 import Item from "../../components/Item/Item";

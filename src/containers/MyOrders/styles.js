@@ -110,7 +110,8 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 40,
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
+    // justifyContent: "space-between",
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
   orderListItemDateWrapper: isArabic => ({
@@ -130,9 +131,9 @@ const styles = StyleSheet.create({
     backgroundColor: darkGray
   },
   orderListItemStatus: color => ({
-    width: 100,
     height: 30,
     borderRadius: 100,
+    paddingHorizontal: 15,
     justifyContent: "center",
     backgroundColor: color
   }),
@@ -141,6 +142,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
+  }),
+  notFound: isArabic => ({
+    fontSize: 18,
+    color: darkGray,
+    textAlign: "center",
+    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   })
 });
 
