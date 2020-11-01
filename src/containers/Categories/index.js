@@ -9,13 +9,18 @@ import { ANDROID, ARABIC } from "../../common/constants";
 import ItemsTabs from "./ItemsTabs";
 import Header from "../../components/Header";
 
+let _isMounted = false;
+
 export default () => {
   const { language } = useSelector(state => state.app);
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
+    _isMounted = true;
+    if (_isMounted) {
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
+    }
   }, []);
 
   const header = (

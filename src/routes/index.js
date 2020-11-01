@@ -30,6 +30,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Feather, MaterialCommunityIcons } from "../common/icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
+let _isMounted = false;
+
 const { Navigator, Screen } = createStackNavigator();
 const {
   Screen: TabScreen,
@@ -237,28 +239,31 @@ const OnBoardStack = () => {
 
 export default () => {
   useEffect(() => {
-    // Assume a message-notification contains a "type" property in the data payload of the screen to open
+    _isMounted = true;
+    if (_isMounted) {
+      // Assume a message-notification contains a "type" property in the data payload of the screen to open
 
-    messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log(
-        "Notification caused app to open from background state:",
-        remoteMessage
-      );
-      // navigation.navigate(remoteMessage.data.type);
-    });
-
-    // Check whether an initial notification is available
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          console.log(
-            "Notification caused app to open from quit state:",
-            remoteMessage
-          );
-          // setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
-        }
+      messaging().onNotificationOpenedApp(remoteMessage => {
+        console.log(
+          "Notification caused app to open from background state:",
+          remoteMessage
+        );
+        // navigation.navigate(remoteMessage.data.type);
       });
+
+      // Check whether an initial notification is available
+      messaging()
+        .getInitialNotification()
+        .then(remoteMessage => {
+          if (remoteMessage) {
+            console.log(
+              "Notification caused app to open from quit state:",
+              remoteMessage
+            );
+            // setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
+          }
+        });
+    }
   }, []);
 
   return (

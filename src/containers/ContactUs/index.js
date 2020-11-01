@@ -10,10 +10,6 @@ import {
   TouchableOpacity,
   ActivityIndicator
 } from "react-native";
-import styles from "./styles";
-import Header from "../../components/Header";
-import { lightTheme, theme } from "../../common/colors";
-import { validateEmail, validatePhone } from "../../common/functions";
 import {
   IOS,
   ARABIC,
@@ -23,8 +19,14 @@ import {
   THUMB_IMG
 } from "../../common/constants";
 import Axios from "axios";
+import styles from "./styles";
 import { useSelector } from "react-redux";
 import Alert from "../../components/Alert";
+import Header from "../../components/Header";
+import { lightTheme, theme } from "../../common/colors";
+import { validateEmail, validatePhone } from "../../common/functions";
+
+let _isMounted = false;
 
 export default () => {
   const nameRef = useRef(null);
@@ -50,8 +52,11 @@ export default () => {
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
+    _isMounted = true;
+    if (_isMounted) {
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
+    }
   }, []);
 
   const handleBack = () => {

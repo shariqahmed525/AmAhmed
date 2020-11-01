@@ -15,6 +15,8 @@ import { SafeAreaView } from "react-navigation";
 import MapView, { MarkerAnimated } from "react-native-maps";
 import { ANDROID, ARABIC } from "../../common/constants";
 
+let _isMounted = false;
+
 export default ({ route: { params } }) => {
   const mapRef = useRef(null);
   const navigation = useNavigation();
@@ -24,13 +26,16 @@ export default ({ route: { params } }) => {
   const location = params?.location;
 
   useEffect(() => {
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
-    setTimeout(() => {
-      if (mapRef && mapRef.current && mapRef.current.fitToSuppliedMarkers) {
-        mapRef.current.fitToElements(true);
-      }
-    }, 0);
+    _isMounted = true;
+    if (_isMounted) {
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
+      setTimeout(() => {
+        if (mapRef && mapRef.current && mapRef.current.fitToSuppliedMarkers) {
+          mapRef.current.fitToElements(true);
+        }
+      }, 0);
+    }
   }, []);
 
   const handleBack = () => {

@@ -9,14 +9,19 @@ import { useNavigation } from "@react-navigation/native";
 import { ANDROID, ARABIC } from "../../common/constants";
 import { View, Text, StatusBar, ScrollView } from "react-native";
 
+let _isMounted = false;
+
 export default () => {
   const navigation = useNavigation();
   const { language } = useSelector(state => state.app);
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
+    _isMounted = true;
+    if (_isMounted) {
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
+    }
   }, []);
 
   const handleBack = () => {

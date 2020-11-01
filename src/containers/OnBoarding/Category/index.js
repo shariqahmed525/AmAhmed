@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from "react";
-import styles from "./styles";
-import LottieView from "lottie-react-native";
-import { SafeAreaView } from "react-navigation";
-import { View, Text, ScrollView } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import ImageButton from "../../../components/ImageButton";
-import OnBoardHeader from "../../../components/OnBoardHeader";
 import {
   useRoute,
   useNavigation,
   CommonActions
 } from "@react-navigation/native";
+import Axios from "axios";
+import styles from "./styles";
+import LottieView from "lottie-react-native";
+import { SafeAreaView } from "react-navigation";
 import Header from "../../../components/Header";
+import NotFound from "../../../components/NotFound";
+import { View, Text, ScrollView } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
+import { useDispatch, useSelector } from "react-redux";
+import NoInternet from "../../../components/NoInternet";
+import ImageButton from "../../../components/ImageButton";
 import { ARABIC, BASE_URL } from "../../../common/constants";
+import OnBoardHeader from "../../../components/OnBoardHeader";
 import { onSelectedCategoryAction } from "../../../redux/actions/app";
 import { backgroundColor, theme } from "../../../common/colors";
-import Axios from "axios";
-import NoInternet from "../../../components/NoInternet";
-import NotFound from "../../../components/NotFound";
+
+let _isMounted = false;
 
 export default () => {
   const { params } = useRoute();
@@ -33,7 +35,10 @@ export default () => {
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    checkConnection();
+    _isMounted = true;
+    if (_isMounted) {
+      checkConnection();
+    }
   }, []);
 
   const checkConnection = () => {

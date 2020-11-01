@@ -18,6 +18,8 @@ import CartListItem from "../../components/CartListItem";
 import { useNavigation } from "@react-navigation/native";
 import { ANDROID, ARABIC, ERROR_IMG } from "../../common/constants";
 
+let _isMounted = false;
+
 export default () => {
   const [alert, setAlert] = useState({
     alert: false,
@@ -34,8 +36,11 @@ export default () => {
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
+    _isMounted = true;
+    if (_isMounted) {
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
+    }
   }, []);
 
   const header = (

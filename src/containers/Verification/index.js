@@ -17,6 +17,7 @@ import { onReCallCheckout, saveUserData } from "../../redux/actions/user";
 import { ANDROID, ARABIC, BASE_URL, ERROR_IMG } from "../../common/constants";
 
 const TIMER = 60;
+let _isMounted = false;
 const VERFICATION_CODE = "7860";
 
 export default ({ route: { params } }) => {
@@ -44,8 +45,11 @@ export default ({ route: { params } }) => {
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
+    _isMounted = true;
+    if (_isMounted) {
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
+    }
   }, []);
 
   const alertClose = () =>
@@ -116,7 +120,6 @@ export default ({ route: { params } }) => {
         clearInterval(_interval);
       }
     }, 1000);
-
     return () => clearInterval(_interval);
   }, [timer]);
 

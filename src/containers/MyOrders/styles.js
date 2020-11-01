@@ -5,6 +5,7 @@ import {
   greenColor,
   backgroundColor
 } from "../../common/colors";
+import { WIDTH } from "../../common/constants";
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
@@ -110,8 +111,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 40,
     alignItems: "center",
-    justifyContent: "flex-end",
-    // justifyContent: "space-between",
+    justifyContent: "space-between",
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
   orderListItemDateWrapper: isArabic => ({
@@ -133,7 +133,8 @@ const styles = StyleSheet.create({
   orderListItemStatus: color => ({
     height: 30,
     borderRadius: 100,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
+    maxWidth: WIDTH * 0.35,
     justifyContent: "center",
     backgroundColor: color
   }),

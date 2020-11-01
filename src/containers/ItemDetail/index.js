@@ -34,6 +34,7 @@ import { calculatePercentage } from "../../common/functions";
 import { backgroundColor, gray, theme } from "../../common/colors";
 
 let timeOut = null;
+let _isMounted = false;
 
 const ImageRender = forwardRef(({ animatedObj, item, isArabic }, ref) => (
   <>
@@ -163,45 +164,51 @@ export default () => {
   );
 
   useEffect(() => {
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
+    _isMounted = true;
+    if (_isMounted) {
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
+    }
   }, []);
 
   useEffect(() => {
-    if (!findItem) {
-      if (hasCuttingWay) {
-        if (!item?.cuttingWays || item?.cuttingWays.length < 1) {
-          checkConnection(getCuttingWays);
-        } else {
-          setCuttingWays([...item?.cuttingWays]);
+    _isMounted = true;
+    if (_isMounted) {
+      if (!findItem) {
+        if (hasCuttingWay) {
+          if (!item?.cuttingWays || item?.cuttingWays.length < 1) {
+            checkConnection(getCuttingWays);
+          } else {
+            setCuttingWays([...item?.cuttingWays]);
+          }
         }
-      }
-      if (hasHeadAndLegs) {
-        if (!item?.headAndLegs || item?.headAndLegs.length < 1) {
-          checkConnection(getHeadAndLegs);
-        } else {
-          setHeadAndLegs([...item?.headAndLegs]);
+        if (hasHeadAndLegs) {
+          if (!item?.headAndLegs || item?.headAndLegs.length < 1) {
+            checkConnection(getHeadAndLegs);
+          } else {
+            setHeadAndLegs([...item?.headAndLegs]);
+          }
         }
-      }
-      if (hasPacking) {
-        if (!item?.packings || item?.packings.length < 1) {
-          checkConnection(getHeadAndLegs);
-        } else {
-          setPackings([...item?.packings]);
+        if (hasPacking) {
+          if (!item?.packings || item?.packings.length < 1) {
+            checkConnection(getHeadAndLegs);
+          } else {
+            setPackings([...item?.packings]);
+          }
         }
-      }
-    } else {
-      if (hasCuttingWay) {
-        setChecked1(findItem?.cuttingWay?.id);
-        setCuttingWays([...findItem?.cuttingWays]);
-      }
-      if (hasHeadAndLegs) {
-        setChecked2(findItem?.headAndLeg?.id);
-        setHeadAndLegs([...findItem?.headAndLegs]);
-      }
-      if (hasPacking) {
-        setChecked3(findItem?.packing?.id);
-        setPackings([...findItem?.packings]);
+      } else {
+        if (hasCuttingWay) {
+          setChecked1(findItem?.cuttingWay?.id);
+          setCuttingWays([...findItem?.cuttingWays]);
+        }
+        if (hasHeadAndLegs) {
+          setChecked2(findItem?.headAndLeg?.id);
+          setHeadAndLegs([...findItem?.headAndLegs]);
+        }
+        if (hasPacking) {
+          setChecked3(findItem?.packing?.id);
+          setPackings([...findItem?.packings]);
+        }
       }
     }
   }, [cart]);

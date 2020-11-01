@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { SafeAreaView } from "react-navigation";
-import { useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -10,16 +8,20 @@ import {
 } from "react-native";
 import styles from "./styles";
 import MapView from "react-native-maps";
+import { useSelector } from "react-redux";
 import Alert from "../../components/Alert";
 import { theme } from "../../common/colors";
 import Header from "../../components/Header";
-import { FontAwesome, MaterialIcons } from "../../common/icons";
+import { SafeAreaView } from "react-navigation";
 import { ERROR_IMG, IOS } from "../../common/constants";
-import { useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 import Geolocation from "@react-native-community/geolocation";
-import RNAndroidLocationEnabler from "react-native-android-location-enabler";
-import { ANDROID, ARABIC, HEIGHT, WIDTH } from "../../common/constants";
+import { FontAwesome, MaterialIcons } from "../../common/icons";
 import DropdownSection from "../../components/DropdownSection";
+import { ANDROID, ARABIC, HEIGHT, WIDTH } from "../../common/constants";
+import RNAndroidLocationEnabler from "react-native-android-location-enabler";
+
+let _isMounted = false;
 
 const LATITUDE = 40.74333; // Korea Town, New York, NY 10001
 const LONGITUDE = -73.99033; // Korea Town, New York, NY 10001
@@ -42,24 +44,27 @@ export default ({ route: { params } }) => {
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    if (params?.latitude && params?.longitude) {
-      setCoords({
-        latitude: params?.latitude,
-        longitude: params?.longitude,
-        latitudeDelta: params?.latitudeDelta,
-        longitudeDelta: params?.longitudeDelta
-      });
+    _isMounted = true;
+    if (_isMounted) {
+      if (params?.latitude && params?.longitude) {
+        setCoords({
+          latitude: params?.latitude,
+          longitude: params?.longitude,
+          latitudeDelta: params?.latitudeDelta,
+          longitudeDelta: params?.longitudeDelta
+        });
+      }
+      if (
+        params?.locationID &&
+        cities &&
+        cities.find(o => o.id === params?.locationID)
+      ) {
+        const city = cities.find(o => o.id === params?.locationID);
+        setSelectedCity({ ...city });
+      }
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
     }
-    if (
-      params?.locationID &&
-      cities &&
-      cities.find(o => o.id === params?.locationID)
-    ) {
-      const city = cities.find(o => o.id === params?.locationID);
-      setSelectedCity({ ...city });
-    }
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
   }, []);
 
   const AskLocationPopup = () => {

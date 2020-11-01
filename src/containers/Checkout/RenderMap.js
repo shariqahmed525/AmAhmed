@@ -8,6 +8,8 @@ import MapView, { MarkerAnimated } from "react-native-maps";
 import { BASE_URL, HEIGHT, WIDTH } from "../../common/constants";
 import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
 
+let _isMounted = false;
+
 const LATITUDE_DELTA = 0.28;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (WIDTH / HEIGHT);
 
@@ -34,30 +36,35 @@ export default ({ isArabic, city, navigation }) => {
         : city?.longitudeDelta || LONGITUDE_DELTA
   };
   useEffect(() => {
-    const fetchingDetails = async () => {
-      try {
-        setLoading(true);
-        const { data } = await Axios.get(`${BASE_URL}/stores/loc/${city?.id}`);
-        if (data && data.length > 0) {
-          setStores([...data]);
-          setTimeout(() => {
-            if (
-              mapRef &&
-              mapRef.current &&
-              mapRef.current.fitToSuppliedMarkers
-            ) {
-              mapRef.current.fitToElements(true);
-            }
-          }, 100);
+    _isMounted = true;
+    if (_isMounted) {
+      const fetchingDetails = async () => {
+        try {
+          setLoading(true);
+          const { data } = await Axios.get(
+            `${BASE_URL}/stores/loc/${city?.id}`
+          );
+          if (data && data.length > 0) {
+            setStores([...data]);
+            setTimeout(() => {
+              if (
+                mapRef &&
+                mapRef.current &&
+                mapRef.current.fitToSuppliedMarkers
+              ) {
+                mapRef.current.fitToElements(true);
+              }
+            }, 100);
+          }
+        } catch (error) {
+          console.log("error in fetchingDetails");
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.log("error in fetchingDetails");
-      } finally {
-        setLoading(false);
+      };
+      if (city?.id) {
+        fetchingDetails();
       }
-    };
-    if (city?.id) {
-      fetchingDetails();
     }
   }, []);
   return (

@@ -9,29 +9,21 @@ import {
   TouchableOpacity
 } from "react-native";
 import Axios from "axios";
+import "moment/locale/ar";
+import moment from "moment";
 import styles from "./styles";
+import { useSelector } from "react-redux";
 import LottieView from "lottie-react-native";
 import Header from "../../components/Header";
 import NoInternet from "../../components/NoInternet";
 import NetInfo from "@react-native-community/netinfo";
-import { useDispatch, useSelector } from "react-redux";
-import { ANDROID, ARABIC, BASE_URL } from "../../common/constants";
+import { ANDROID, ARABIC, BASE_URL, TABS } from "../../common/constants";
 import { theme, delivered, cancelled, pending } from "../../common/colors";
 
-const TABS = [
-  {
-    code: "act",
-    name: isArabic => (isArabic ? "تيار" : "CURRENT"),
-    data: [0, 1, 2, 3, 4, 5, 6, 7]
-  },
-  {
-    code: "pst",
-    name: isArabic => (isArabic ? "التاريخ" : "HISTORY"),
-    data: [0, 1, 2, 3, 4, 5, 6, 7]
-  }
-];
+let _isMounted = false;
 
-const _renderItems = ({ item, index, isArabic, isPast }) => {
+const _renderItems = ({ item, isArabic }) => {
+  moment.locale(isArabic ? "ar" : "en");
   return (
     <View style={styles.orderListWrapper(isArabic)}>
       <View style={styles.orderListHeader(isArabic)}>
@@ -57,22 +49,26 @@ const _renderItems = ({ item, index, isArabic, isPast }) => {
         ))}
       </View>
       <View style={styles.orderListFooter(isArabic)}>
-        {/* <View style={styles.orderListItemDateWrapper(isArabic)}>
+        <View style={styles.orderListItemDateWrapper(isArabic)}>
           <Text style={styles.orderListItemDate(isArabic)}>
-            {isArabic ? "17 مارس" : "17 March"}
+            {moment(item?.date).format("DD MMM.")}
           </Text>
           <View style={styles.dot} />
           <Text style={styles.orderListItemDate(isArabic)}>
-            {isArabic ? "06:56 مساءً" : "06:56 PM"}
+            {moment(item?.date).format("hh:mm A")}
           </Text>
-        </View> */}
+        </View>
         <View
           style={styles.orderListItemStatus(delivered)}
           // style={styles.orderListItemStatus(
           //   isPast ? (index === 0 ? cancelled : delivered) : pending
           // )}
         >
-          <Text style={styles.orderListStatusText(isArabic)}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={styles.orderListStatusText(isArabic)}
+          >
             {isArabic ? item?.orderStatusAr : item?.orderStatusEn}
           </Text>
         </View>
@@ -82,14 +78,13 @@ const _renderItems = ({ item, index, isArabic, isPast }) => {
 };
 
 export default props => {
-  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [internet, setInternet] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [pendingOrders, setPendingOrders] = useState([]);
   const [historyOrders, setHistoryOrders] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [pendingLoading, setPendingLoading] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const {
     app: { language },
     user: { userData }
@@ -97,10 +92,13 @@ export default props => {
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    checkConnection(getPendingOrders);
-    checkConnection(getHistoryOrders);
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
+    _isMounted = true;
+    if (_isMounted) {
+      checkConnection(getPendingOrders);
+      checkConnection(getHistoryOrders);
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
+    }
   }, []);
 
   const checkConnection = func => {

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "672328723505",
+    "firebase_url": "https://amahmed-2611.firebaseio.com",
+    "project_id": "amahmed-2611",
+    "storage_bucket": "amahmed-2611.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:672328723505:android:79bb49c210d8af2d45f910",
+        "android_client_info": {
+          "package_name": "com.amahmedapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "672328723505-b28p2bcsrnk6qvdfh9n6ciukei511m5i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyfXLcSRvPrCScDxdBi6xHLdAni8AZRdk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "672328723505-b28p2bcsrnk6qvdfh9n6ciukei511m5i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "672328723505-c6f34f4j1lb0e9vcbl313lekrgpu1pvd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "amahmed.com.amahmed"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

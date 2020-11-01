@@ -33,6 +33,8 @@ import {
   onSelectedAddressAction
 } from "../../redux/actions/user";
 
+let _isMounted = false;
+
 const ListItem = ({ isArabic, data, cities, navigation, onDeletePress }) => {
   const city = data.locationID && cities.find(o => o.id === data.locationID);
   return (
@@ -119,12 +121,18 @@ export default () => {
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
+    _isMounted = true;
+    if (_isMounted) {
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
+    }
   }, []);
 
   useEffect(() => {
-    checkConnection(getAddresses);
+    _isMounted = true;
+    if (_isMounted) {
+      checkConnection(getAddresses);
+    }
   }, [random]);
 
   const checkConnection = func => {

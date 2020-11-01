@@ -1,7 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import LottieView from "lottie-react-native";
-import { SafeAreaView } from "react-navigation";
 import {
   View,
   Text,
@@ -10,15 +7,20 @@ import {
   TextInput,
   TouchableOpacity
 } from "react-native";
+import Axios from "axios";
 import styles from "./styles";
+import { useSelector } from "react-redux";
+import LottieView from "lottie-react-native";
 import Header from "../../components/Header";
 import Item from "../../components/Item/Item";
+import { SafeAreaView } from "react-navigation";
+import NoInternet from "../../components/NoInternet";
+import NetInfo from "@react-native-community/netinfo";
 import { secondaryHeader, theme } from "../../common/colors";
 import { Octicons, MaterialIcons } from "../../common/icons";
 import { ANDROID, ARABIC, BASE_URL, WIDTH } from "../../common/constants";
-import NoInternet from "../../components/NoInternet";
-import NetInfo from "@react-native-community/netinfo";
-import Axios from "axios";
+
+let _isMounted = false;
 
 const renderItem = ({ item, isArabic }) => {
   return <Item item={item} isArabic={isArabic} />;
@@ -45,8 +47,11 @@ export default props => {
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
+    _isMounted = true;
+    if (_isMounted) {
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
+    }
   }, []);
 
   const keyExtractor = (item, index) => item + index;
@@ -64,12 +69,15 @@ export default props => {
   );
 
   useEffect(() => {
-    setPage(1);
-    setText("");
-    setItems([]);
-    setSearchText("");
-    setLoading(false);
-    setLastItemsLength(0);
+    _isMounted = true;
+    if (_isMounted) {
+      setPage(1);
+      setText("");
+      setItems([]);
+      setSearchText("");
+      setLoading(false);
+      setLastItemsLength(0);
+    }
   }, [selectedCategory]);
 
   const checkConnection = () => {

@@ -40,6 +40,8 @@ import { RNSlidingButton, SlideDirection } from "rn-sliding-button";
 import { clearCart, onAddressesAction } from "../../redux/actions/user";
 import RNAndroidLocationEnabler from "react-native-android-location-enabler";
 
+let _isMounted = false;
+
 const paymentMethod = id => {
   switch (id) {
     case "p-2":
@@ -98,13 +100,17 @@ export default () => {
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
+    _isMounted = true;
+    if (_isMounted) {
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
+    }
   }, []);
 
   // fetching purpose
   useEffect(() => {
-    if (userData) {
+    _isMounted = true;
+    if (_isMounted && userData) {
       fetchingDetails(userData.phone);
     }
   }, [randomCheckout]);

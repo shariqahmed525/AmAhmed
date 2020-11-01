@@ -8,6 +8,8 @@ import { ANDROID, ARABIC, LANGUAGES } from "../../common/constants";
 import Header from "../../components/Header";
 import { useDispatch, useSelector } from "react-redux";
 
+let _isMounted = false;
+
 export default () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -15,8 +17,11 @@ export default () => {
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
+    _isMounted = true;
+    if (_isMounted) {
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
+    }
   }, []);
 
   const handleBack = () => {

@@ -59,7 +59,9 @@ export default ({
   }, []);
 
   useEffect(() => {
+    _isMounted = true;
     if (
+      _isMounted &&
       ref &&
       ref.current &&
       typeof ref.current.scrollToOffset === "function"

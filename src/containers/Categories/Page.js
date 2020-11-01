@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import Item from "../../components/Item/Item";
-import { BASE_URL, WIDTH } from "../../common/constants";
-import { FlatList, StyleSheet, View, Text } from "react-native";
-import { backgroundColor, darkGray } from "../../common/colors";
-import NetInfo from "@react-native-community/netinfo";
 import NotFound from "../../components/NotFound";
+import { BASE_URL } from "../../common/constants";
+import { FlatList, StyleSheet } from "react-native";
+import { backgroundColor } from "../../common/colors";
+import NetInfo from "@react-native-community/netinfo";
 
 let _isMounted = false;
 

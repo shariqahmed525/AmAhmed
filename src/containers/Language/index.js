@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView } from "react-navigation";
-import { Feather } from "../../common/icons";
-import { useNavigation } from "@react-navigation/native";
-import { View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
 import styles from "./styles";
 import { theme } from "../../common/colors";
-import { ANDROID, ARABIC, LANGUAGES } from "../../common/constants";
 import Header from "../../components/Header";
-import { onLanguageAction } from "../../redux/actions/app";
+import { Feather } from "../../common/icons";
+import { SafeAreaView } from "react-navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
+import { onLanguageAction } from "../../redux/actions/app";
+import { ANDROID, ARABIC, LANGUAGES } from "../../common/constants";
+import { View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
+
+let _isMounted = false;
 
 const List = ({ text, selected, isArabic, source, ...rest }) => (
   <TouchableOpacity
@@ -32,8 +34,11 @@ export default () => {
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
+    _isMounted = true;
+    if (_isMounted) {
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
+    }
   }, []);
 
   const handleListItem = async code => {

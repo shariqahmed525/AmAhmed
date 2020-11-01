@@ -4,6 +4,8 @@ import { FontAwesome5 } from "../common/icons";
 import { gray, tabIconColor, theme } from "../common/colors";
 import { View, Text, StyleSheet, Animated } from "react-native";
 
+let _isMounted = false;
+
 export default ({ focused, color, cirlceColor, cirlceTextColor }) => {
   const springValue = new Animated.Value(1);
   const { cart } = useSelector(state => state.user);
@@ -17,7 +19,10 @@ export default ({ focused, color, cirlceColor, cirlceTextColor }) => {
   };
 
   useEffect(() => {
-    spring();
+    _isMounted = true;
+    if (_isMounted) {
+      spring();
+    }
   }, [cart.length]);
 
   const memo = useMemo(

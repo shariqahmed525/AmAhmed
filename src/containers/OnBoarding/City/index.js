@@ -1,27 +1,29 @@
 import React, { useState, useEffect } from "react";
-import styles from "./styles";
-import LottieView from "lottie-react-native";
-import { SafeAreaView } from "react-navigation";
-import { View, Text, ScrollView } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import ImageButton from "../../../components/ImageButton";
-import OnBoardHeader from "../../../components/OnBoardHeader";
-import { ARABIC, BASE_URL, ENGLISH } from "../../../common/constants";
-import { useDispatch, useSelector } from "react-redux";
 import {
   onCitiesAction,
   onLanguageAction,
-  onSelectedCategoryAction,
-  onSelectedCityAction
+  onSelectedCityAction,
+  onSelectedCategoryAction
 } from "../../../redux/actions/app";
-import { backgroundColor, theme } from "../../../common/colors";
-import Header from "../../../components/Header";
+import Axios from "axios";
+import styles from "./styles";
+import LottieView from "lottie-react-native";
 import Alert from "../../../components/Alert";
+import Header from "../../../components/Header";
+import { SafeAreaView } from "react-navigation";
+import NotFound from "../../../components/NotFound";
 import NetInfo from "@react-native-community/netinfo";
+import { View, Text, ScrollView } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import { clearCart } from "../../../redux/actions/user";
 import NoInternet from "../../../components/NoInternet";
-import Axios from "axios";
-import NotFound from "../../../components/NotFound";
+import ImageButton from "../../../components/ImageButton";
+import OnBoardHeader from "../../../components/OnBoardHeader";
+import { backgroundColor, theme } from "../../../common/colors";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { ARABIC, BASE_URL, ENGLISH } from "../../../common/constants";
+
+let _isMounted = false;
 
 export default () => {
   const { params } = useRoute();
@@ -41,8 +43,12 @@ export default () => {
     app: { language, selectedCity }
   } = useSelector(state => state);
   const isArabic = language === ARABIC;
+
   useEffect(() => {
-    checkConnection();
+    _isMounted = true;
+    if (_isMounted) {
+      checkConnection();
+    }
   }, []);
 
   const checkConnection = () => {

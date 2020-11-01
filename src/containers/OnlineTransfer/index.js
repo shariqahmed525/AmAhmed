@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-import { SafeAreaView } from "react-navigation";
-import { useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -16,7 +14,11 @@ import { useSelector } from "react-redux";
 import { theme } from "../../common/colors";
 import Header from "../../components/Header";
 import { AntDesign } from "../../common/icons";
+import { SafeAreaView } from "react-navigation";
+import { useNavigation } from "@react-navigation/native";
 import { ANDROID, ARABIC } from "../../common/constants";
+
+let _isMounted = false;
 
 export default ({ route: { params } }) => {
   const navigation = useNavigation();
@@ -24,8 +26,11 @@ export default ({ route: { params } }) => {
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
+    _isMounted = true;
+    if (_isMounted) {
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
+    }
   }, []);
 
   const handleBack = () => {

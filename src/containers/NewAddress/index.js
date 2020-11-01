@@ -9,23 +9,25 @@ import {
   ScrollView,
   TouchableOpacity
 } from "react-native";
-import Axios from "axios";
-import styles from "./styles";
-import Alert from "../../components/Alert";
-import Header from "../../components/Header";
-import { theme, lightTheme } from "../../common/colors";
-import { useDispatch, useSelector } from "react-redux";
-import { ANDROID, ARABIC, MAP_API_KEY } from "../../common/constants";
-import { BASE_URL, ERROR_IMG, INFO_IMG } from "../../common/constants";
-import { removePreviousRoutes } from "../../common/functions";
 import {
   onReCallCheckout,
   onReCallMyAddresses,
   onUpdateAddressAction
 } from "../../redux/actions/user";
-import { ActivityIndicator } from "react-native-paper";
+import Axios from "axios";
+import styles from "./styles";
+import Alert from "../../components/Alert";
+import Header from "../../components/Header";
 import NoInternet from "../../components/NoInternet";
 import NetInfo from "@react-native-community/netinfo";
+import { ActivityIndicator } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+import { theme, lightTheme } from "../../common/colors";
+import { removePreviousRoutes } from "../../common/functions";
+import { ANDROID, ARABIC, MAP_API_KEY } from "../../common/constants";
+import { BASE_URL, ERROR_IMG, INFO_IMG } from "../../common/constants";
+
+let _isMounted = false;
 
 export default ({ route: { params } }) => {
   const dispatch = useDispatch();
@@ -48,15 +50,18 @@ export default ({ route: { params } }) => {
   const isArabic = language === ARABIC;
 
   useEffect(() => {
-    if (!params?.isEdit) {
-      getAddressDetails();
-    } else {
-      setLoading(false);
+    _isMounted = true;
+    if (_isMounted) {
+      if (!params?.isEdit) {
+        getAddressDetails();
+      } else {
+        setLoading(false);
+      }
+      if (params?.area) setName(params?.area);
+      if (params?.address) setAddress(params?.address);
+      StatusBar.setBarStyle("light-content");
+      ANDROID && StatusBar.setBackgroundColor(theme);
     }
-    if (params?.area) setName(params?.area);
-    if (params?.address) setAddress(params?.address);
-    StatusBar.setBarStyle("light-content");
-    ANDROID && StatusBar.setBackgroundColor(theme);
   }, []);
 
   const handleBack = () => {

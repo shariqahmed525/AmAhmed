@@ -60,3 +60,16 @@ export const payments = [
     icon: <MaterialCommunityIcons size={27} name="bank" color={theme} />
   }
 ];
+
+export const TABS = [
+  {
+    code: "act",
+    name: isArabic => (isArabic ? "تيار" : "CURRENT"),
+    data: [0, 1, 2, 3, 4, 5, 6, 7]
+  },
+  {
+    code: "pst",
+    name: isArabic => (isArabic ? "التاريخ" : "HISTORY"),
+    data: [0, 1, 2, 3, 4, 5, 6, 7]
+  }
+];
