@@ -1,4 +1,4 @@
-package amahmed.com.amahmed;
+package com.amahmedapp;
 
 import android.content.Intent;
 import android.os.Bundle;

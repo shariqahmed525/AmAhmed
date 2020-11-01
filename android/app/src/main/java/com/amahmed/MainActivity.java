@@ -1,4 +1,4 @@
-package amahmed.com.amahmed;
+package com.amahmedapp;
 import com.facebook.react.ReactActivity;
 import org.devio.rn.splashscreen.SplashScreen;
 import android.os.Bundle;

@@ -129,7 +129,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "amahmed.com.amahmed"
+        applicationId "com.amahmedapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled true
