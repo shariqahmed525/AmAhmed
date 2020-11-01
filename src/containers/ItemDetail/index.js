@@ -124,7 +124,6 @@ export default () => {
   } = useSelector(state => state);
   const isArabic = language === ARABIC;
   let findItem = cart.find(v => v.id === item.id);
-  console.log(findItem, " findItem");
   const ref = useRef(null);
   const scrollRef = useRef(null);
   const cuttingRef = useRef(null);
@@ -231,7 +230,6 @@ export default () => {
       if (data && data.length > 0) {
         setCuttingWays([...data]);
       }
-      console.log(data, " getCuttingWays");
     } catch (error) {
       console.log(error, " error in getting cutting ways");
     } finally {
@@ -246,7 +244,6 @@ export default () => {
       if (data && data.length > 0) {
         setHeadAndLegs([...data]);
       }
-      console.log(data, " getHeadAndLegs");
     } catch (error) {
       console.log(error, " error in getting head and legs");
     } finally {
@@ -261,7 +258,6 @@ export default () => {
       if (data && data.length > 0) {
         setPackings([...data]);
       }
-      console.log(data, " getPackings");
     } catch (error) {
       console.log(error, " error in getting packing");
     } finally {
@@ -483,6 +479,7 @@ export default () => {
                           value={v.id}
                           color={theme}
                           style={styles.radioItem(isArabic)}
+                          labelStyle={styles.radioItemText(isArabic)}
                           label={
                             isArabic
                               ? `${v.nameAr} ${
@@ -492,7 +489,6 @@ export default () => {
                                   v.cost && v.cost > 0 ? `(SAR ${v.cost})` : ""
                                 }`
                           }
-                          labelStyle={styles.radioItemText(isArabic)}
                         />
                       ))}
                     </RadioButton.Group>
@@ -524,6 +520,7 @@ export default () => {
                           value={v.id}
                           color={theme}
                           style={styles.radioItem(isArabic)}
+                          labelStyle={styles.radioItemText(isArabic)}
                           label={
                             isArabic
                               ? `${v.nameAr} ${
@@ -533,7 +530,6 @@ export default () => {
                                   v.cost && v.cost > 0 ? `(SAR ${v.cost})` : ""
                                 }`
                           }
-                          labelStyle={styles.radioItemText(isArabic)}
                         />
                       ))}
                     </RadioButton.Group>
@@ -562,15 +558,10 @@ export default () => {
                       {packings.map((v, i) => (
                         <RadioButton.Item
                           key={i}
-                          labelStyle={{
-                            flex: 1,
-                            color: "#111111",
-                            fontFamily: isArabic
-                              ? "Cairo-SemiBold"
-                              : "Rubik-Regular"
-                          }}
                           value={v.id}
                           color={theme}
+                          style={styles.radioItem(isArabic)}
+                          labelStyle={styles.radioItemText(isArabic)}
                           label={
                             isArabic
                               ? `${v.nameAr} ${
@@ -580,7 +571,6 @@ export default () => {
                                   v.cost && v.cost > 0 ? `(SAR ${v.cost})` : ""
                                 }`
                           }
-                          style={styles.radioItem(isArabic)}
                         />
                       ))}
                     </RadioButton.Group>

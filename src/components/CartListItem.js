@@ -208,7 +208,7 @@ export default ({ item, isArabic }) => {
           </View>
         </View>
         <View style={styles.cartItemTotal(isArabic)}>
-          {item?.hasCuttingWay && item?.cuttingWay?.cost > 0 && (
+          {/* {item?.hasCuttingWay && item?.cuttingWay?.cost > 0 && (
             <View style={styles.costWrapper}>
               <Text style={styles.cost}>
                 {item?.cuttingWay?.cost * item?.quantity}
@@ -231,7 +231,7 @@ export default ({ item, isArabic }) => {
               </Text>
               <Text style={styles.plus}>+</Text>
             </View>
-          )}
+          )} */}
           <Text style={styles.cartItemTotalText(isArabic)}>
             {!isArabic && "SAR "}
             <Text style={styles.cartItemTotalPriceText(isArabic)}>
@@ -334,6 +334,7 @@ const styles = StyleSheet.create({
   cartItemTotalText: isArabic => ({
     fontSize: 11,
     textAlign: "center",
+    paddingRight: isArabic ? 5 : 0,
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
   cartItemTotalPriceText: () => ({
@@ -410,6 +411,7 @@ const styles = StyleSheet.create({
   cartSubItemTitle: isArabic => ({
     color: black,
     fontSize: 14,
+    textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
   cartSubItemTotalText: isArabic => ({
