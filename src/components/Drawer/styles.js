@@ -11,8 +11,6 @@ export default StyleSheet.create({
   safeAreaView: isArabic => ({
     flex: 1,
     backgroundColor: theme,
-    // borderTopLeftRadius: isArabic ? 30 : 0,
-    // borderTopRightRadius: isArabic ? 0 : 30,
     borderBottomLeftRadius: isArabic ? 30 : 0,
     borderBottomRightRadius: isArabic ? 0 : 30
   }),
@@ -34,15 +32,12 @@ export default StyleSheet.create({
     elevation: 3
   }),
   iconWrapper: isArabic => ({
-    width: 55,
-    height: 55,
+    width: 65,
+    height: 65,
     borderRadius: 100,
-    overflow: "hidden",
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#efefef",
-    marginLeft: isArabic ? WIDTH * 0.03 : 0,
-    marginRight: isArabic ? 0 : WIDTH * 0.03
+    marginLeft: isArabic ? 6 : 0,
+    marginRight: isArabic ? 0 : 6
   }),
   profileWrapper: isArabic => ({
     marginTop: 30,

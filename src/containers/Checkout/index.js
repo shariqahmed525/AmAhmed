@@ -194,9 +194,12 @@ export default () => {
     try {
       setLoading(true);
       const verificationCode = getRandom(4);
+      // const msg = isArabic
+      //   ? `رمز التحقق الخاص بـعم أحمد الخاص بك هو: ${verificationCode}`
+      //   : `Your AmAhmed's verification code is: ${verificationCode}`;
       const msg = isArabic
-        ? `رمز التحقق الخاص بـعم أحمد الخاص بك هو: ${verificationCode}`
-        : `Your AmAhmed's verification code is: ${verificationCode}`;
+        ? `استخدم OTP هذا: ${verificationCode}`
+        : `Use this OTP: ${verificationCode}`;
       await Axios.post(`${BASE_URL}/sms/send`, {
         text: msg,
         number: `966${text}`

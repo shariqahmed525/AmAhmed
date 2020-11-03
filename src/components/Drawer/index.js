@@ -1,14 +1,13 @@
 import React, { useMemo, useState } from "react";
 import styles from "./styles";
-import { View, Text, TouchableOpacity, Share } from "react-native";
+import { View, Text, TouchableOpacity, Image, Share } from "react-native";
 import {
-  FontAwesome5,
-  AntDesign,
   Entypo,
-  MaterialIcons,
+  Icon,
   Feather,
-  MaterialCommunityIcons,
-  Icon
+  AntDesign,
+  MaterialIcons,
+  MaterialCommunityIcons
 } from "../../common/icons";
 import Alert from "../Alert";
 import { SafeAreaView } from "react-navigation";
@@ -112,13 +111,12 @@ export default ({ navigation, drawerClose }) => {
 
         <View style={styles.main(isArabic)}>
           <View style={styles.container(isArabic)}>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={styles.profileWrapper(isArabic)}
-            >
-              <View style={styles.iconWrapper(isArabic)}>
-                <FontAwesome5 name="user-alt" size={20} />
-              </View>
+            <View style={styles.profileWrapper(isArabic)}>
+              <Image
+                resizeMode="contain"
+                style={styles.iconWrapper(isArabic)}
+                source={require("../../../assets/images/logo.png")}
+              />
               <View style={styles.nameWrapper(isArabic)}>
                 <Text
                   numberOfLines={1}
@@ -127,11 +125,8 @@ export default ({ navigation, drawerClose }) => {
                 >
                   {isArabic ? "عم احمد" : "AmAhmed"}
                 </Text>
-                <Text style={styles.listText(isArabic, false)}>
-                  {isArabic ? "الملف الشخصي" : "Profile"}
-                </Text>
               </View>
-            </TouchableOpacity>
+            </View>
             <View style={styles.line} />
 
             <View style={styles.listWrapper}>

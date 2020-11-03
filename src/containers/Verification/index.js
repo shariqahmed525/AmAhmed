@@ -16,7 +16,7 @@ import { convertSecondstoTime, getRandom } from "../../common/functions";
 import { onReCallCheckout, saveUserData } from "../../redux/actions/user";
 import { ANDROID, ARABIC, BASE_URL, ERROR_IMG } from "../../common/constants";
 
-const TIMER = 60;
+const TIMER = 30;
 let _isMounted = false;
 const VERFICATION_CODE = "7860";
 
@@ -127,8 +127,8 @@ export default ({ route: { params } }) => {
     try {
       const vfCode = getRandom(4);
       const msg = isArabic
-        ? `رمز التحقق الخاص بـعم أحمد الخاص بك هو: ${vfCode}`
-        : `Your AmAhmed's verification code is: ${vfCode}`;
+        ? `استخدم OTP هذا: ${vfCode}`
+        : `Use this OTP: ${vfCode}`;
       await Axios.post(`${BASE_URL}/sms/send`, {
         text: msg,
         number: `966${params?.phone}`
