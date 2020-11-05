@@ -110,8 +110,9 @@ export default () => {
   // fetching purpose
   useEffect(() => {
     _isMounted = true;
-    if (_isMounted && userData) {
-      fetchingDetails(userData.phone);
+    const trimText = text.trim();
+    if (_isMounted && (trimText || userData?.phone)) {
+      fetchingDetails(trimText || userData?.phone);
     }
   }, [randomCheckout]);
 
@@ -125,6 +126,7 @@ export default () => {
       const { data } = await Axios.get(
         `${BASE_URL}/UserAddresses/get/mob/${phone}`
       );
+      console.log(data, " getting addresses");
       if (data && data.length > 0) {
         dispatch(onAddressesAction([...data]));
       } else {

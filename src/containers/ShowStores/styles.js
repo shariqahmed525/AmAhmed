@@ -25,24 +25,28 @@ const styles = StyleSheet.create({
     shadowRadius: 1.0,
     elevation: 1
   },
-  back: isArabic => ({
-    top: 10,
-    left: isArabic ? undefined : 10,
-    right: isArabic ? 10 : undefined,
-    width: 45,
-    height: 45,
-    zIndex: 1000,
-    borderRadius: 100,
-    alignItems: "center",
-    position: "absolute",
-    justifyContent: "center",
-    transform: [
-      {
-        rotateY: isArabic ? "180deg" : "0deg"
-      }
-    ],
-    backgroundColor: "rgba(0,0,0,0.2)"
-  })
+  back: isArabic => {
+    let obj = {};
+    obj[isArabic ? "right" : "left"] = 10;
+    return {
+      ...obj,
+      top: 10,
+      width: 45,
+      height: 45,
+      zIndex: 1000,
+      borderRadius: 100,
+      alignItems: "center",
+      position: "absolute",
+      justifyContent: "center",
+      transform: [
+        {
+          rotateY: isArabic ? "180deg" : "0deg"
+        }
+      ],
+      backgroundColor: "rgba(0,0,0,0.2)"
+      // backgroundColor: "#000"
+    };
+  }
 });
 
 export default styles;

@@ -110,7 +110,7 @@ const SearchStack = () => {
 
 const CartStack = () => {
   return (
-    <Navigator initialRouteName="Checkout">
+    <Navigator initialRouteName="CartScreen">
       <Screen component={Cart} name="CartScreen" options={StackOptions} />
       <Screen component={Checkout} name="Checkout" options={StackOptions} />
       <Screen component={Payment} name="Payment" options={StackOptions} />
@@ -174,7 +174,7 @@ const getTabBarVisible = (route, array) => {
 
 const Tab = () => {
   return (
-    <TabNavigator initialRouteName="Cart" tabBarOptions={tabOptions}>
+    <TabNavigator initialRouteName="Home" tabBarOptions={tabOptions}>
       <TabScreen
         name="Home"
         component={HomeStack}
@@ -220,7 +220,7 @@ const Tab = () => {
 
 const OnBoardStack = () => {
   return (
-    <Navigator initialRouteName={"MainStack"}>
+    <Navigator initialRouteName={"OnBoardingCity"}>
       <Screen
         name="OnBoardingCity"
         options={StackOptions}
