@@ -13,7 +13,10 @@ import { useSelector } from "react-redux";
 import { Entypo } from "../../common/icons";
 import { SafeAreaView } from "react-navigation";
 import MapView, { MarkerAnimated } from "react-native-maps";
-import { ANDROID, ARABIC } from "../../common/constants";
+import { ANDROID, ARABIC, HEIGHT, WIDTH } from "../../common/constants";
+
+const LATITUDE_DELTA = 0.28;
+const LONGITUDE_DELTA = LATITUDE_DELTA * (WIDTH / HEIGHT);
 
 let _isMounted = false;
 
@@ -24,6 +27,25 @@ export default ({ route: { params } }) => {
   const isArabic = language === ARABIC;
   const stores = params?.stores;
   const location = params?.location;
+
+  const locationObj = {
+    latitude:
+      typeof location.latitude === "string"
+        ? parseFloat(location.latitude)
+        : location.latitude || 21.553596,
+    longitude:
+      typeof location?.longitude === "string"
+        ? parseFloat(location?.longitude)
+        : location?.longitude || 39.194024,
+    latitudeDelta:
+      typeof location?.latitudeDelta === "string"
+        ? parseFloat(location?.latitudeDelta)
+        : location?.latitudeDelta || LATITUDE_DELTA,
+    longitudeDelta:
+      typeof location?.longitudeDelta === "string"
+        ? parseFloat(location?.longitudeDelta)
+        : location?.longitudeDelta || LONGITUDE_DELTA
+  };
 
   useEffect(() => {
     _isMounted = true;
@@ -48,12 +70,7 @@ export default ({ route: { params } }) => {
         <MapView
           zoomEnabled={false}
           ref={mapRef}
-          region={{
-            latitude: location.latitude,
-            longitude: location.longitude,
-            latitudeDelta: location.latitudeDelta,
-            longitudeDelta: location.longitudeDelta
-          }}
+          region={locationObj}
           loadingEnabled={true}
           loadingIndicatorColor={theme}
           loadingBackgroundColor={"#fafafa"}

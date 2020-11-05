@@ -226,6 +226,58 @@ export default () => {
     }
   };
 
+  const getPaymentGatewayLink = async () => {
+    try {
+      const { data } = await Axios.post(
+        `https://secure.telr.com/gateway/order.json`,
+        {
+          method: "create",
+          store: 23837,
+          authkey: "Jcv9^NQJPW@6vh73",
+          order: {
+            cartid: `${getRandom(10)}-${getRandom(1)}`,
+            test: "0",
+            amount: "1",
+            // amount: `${(total() + calculateVat() + calculateShipping()).toFixed(
+            //   2
+            // )}`,
+            currency: "SAR",
+            description: "Test Transaction",
+            trantype: "ecom"
+          },
+          customer: {
+            ref: `${new Date().getFullYear()}`,
+            email: "sales@amahmed.com",
+            name: {
+              forenames: "Ahmed",
+              surname: "Am"
+            },
+            address: {
+              line1: selectedAddress?.address,
+              city: selectedCity?.nameEn,
+              country: "SA"
+            },
+            phone: `966${userData?.phone}`
+          },
+          return: {
+            authorised: "https://www.amahmed.com/done/",
+            declined: "https://www.amahmed.com/declined/",
+            cancelled: "https://www.amahmed.com/cancelled/"
+          }
+        }
+      );
+      console.log(data, " response");
+      if (data && data?.order && data?.order?.url) {
+        navigation.navigate("Payment", {
+          handleCardCallBack,
+          paymentGatewayLink: data?.order?.url
+        });
+      }
+    } catch (error) {
+      console.log(error, " error in getting payment gateway link");
+    }
+  };
+
   const handleAddressListItem = (isNew, address, currentLocation) => {
     if (isNew) {
       navigation.navigate("PinLocation", {
@@ -258,18 +310,31 @@ export default () => {
 
   const handlePaymentListItem = paymentOption => {
     if (!paymentOption) return;
-    setSelectedPayment({ ...paymentOption });
     if (paymentOption?.id === "p-1") {
       setCardDetails(null);
+      setSelectedPayment({ ...paymentOption });
     }
     if (paymentOption?.id === "p-2") {
-      navigation.navigate("Payment", {
-        handleCardCallBack
-      });
+      if (!selectedAddress || !selectedAddress?.address) {
+        setAlert({
+          alert: true,
+          error: true,
+          alertImg: ERROR_IMG,
+          alertTitle: isArabic ? "خطأ" : "Error",
+          alertText: isArabic ? "الرجاء تحديد العنوان" : "Please select address"
+        });
+        scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
+        return;
+      }
+      getPaymentGatewayLink();
+      // navigation.navigate("Payment", {
+      //   handleCardCallBack
+      // });
       return;
     }
     if (paymentOption?.id === "p-3") {
       setCardDetails(null);
+      setSelectedPayment({ ...paymentOption });
       navigation.navigate("OnlineTransfer", {
         handleOnlineTransferCallBack
       });
@@ -285,17 +350,37 @@ export default () => {
     }
   };
 
-  const handleCardCallBack = (cardDetails, type) => {
-    if (!cardDetails) return;
-    setCardDetails({ ...cardDetails });
-    if (!selectedAddress || !selectedAddress?.address) {
-      scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
-    } else {
-      scrollRef.current.scrollToEnd({ animated: true });
-      setTimeout(() => {
-        animatedRef.current.bounceIn(1000);
-      }, 500);
+  const handleCardCallBack = status => {
+    if (status === "other") {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "عذرا ، حدث خطأ ما في عملية الدفع. حاول مرة اخرى!"
+          : "Sorry, Something went wrong in payment proccess. Please try again!"
+      });
+      setSelectedPayment(null);
+      return;
     }
+    setSelectedPayment({ ...payments.find(o => o.id === "p-2") });
+    scrollRef.current.scrollToEnd({
+      animated: true
+    });
+    setTimeout(() => {
+      animatedRef.current.bounceIn(1000);
+    }, 500);
+    // if (!cardDetails) return;
+    // setCardDetails({ ...cardDetails });
+    // if (!selectedAddress || !selectedAddress?.address) {
+    //   scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
+    // } else {
+    //   scrollRef.current.scrollToEnd({ animated: true });
+    //   setTimeout(() => {
+    //     animatedRef.current.bounceIn(1000);
+    //   }, 500);
+    // }
   };
 
   const handleOnlineTransferCallBack = () => {

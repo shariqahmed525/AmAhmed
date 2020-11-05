@@ -1,11 +1,5 @@
 import { StyleSheet } from "react-native";
-import {
-  backgroundColor,
-  black,
-  darkGray,
-  lightGray,
-  theme
-} from "../../common/colors";
+import { backgroundColor, black, theme } from "../../common/colors";
 import { WIDTH } from "../../common/constants";
 import { isIphoneXorAbove } from "../../common/functions";
 const styles = StyleSheet.create({
@@ -113,7 +107,12 @@ const styles = StyleSheet.create({
     marginBottom: isArabic ? 5 : 10,
     textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Bold"
-  })
+  }),
+  webViewWrapper: {
+    flex: 1,
+    backgroundColor,
+    marginBottom: 20
+  }
 });
 
 export default styles;

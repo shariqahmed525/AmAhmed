@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { SafeAreaView } from "react-navigation";
 import {
   View,
-  Image,
   Text,
   Linking,
   StatusBar,
@@ -346,6 +345,7 @@ export default () => {
     >
       <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
         <View style={styles.container}>
+          {/* <WebView source={{ uri: "https://reactnative.dev/" }} /> */}
           {_renderHeader()}
           {!internet ? (
             <NoInternet isArabic={isArabic} onPress={handleRetry} />

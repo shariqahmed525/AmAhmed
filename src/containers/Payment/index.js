@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import Alert from "../../components/Alert";
 import { theme } from "../../common/colors";
 import Header from "../../components/Header";
+import { WebView } from "react-native-webview";
 // import Cardscan from "react-native-cardscan";
 import { SafeAreaView } from "react-navigation";
 import { useNavigation } from "@react-navigation/native";
@@ -50,9 +51,9 @@ export default ({ route: { params } }) => {
     navigation.goBack();
   };
 
-  const handleCardForm = form => {
-    setFormDetails({ ...form });
-  };
+  // const handleCardForm = form => {
+  //   setFormDetails({ ...form });
+  // };
 
   const alertClose = () =>
     setAlert({
@@ -63,119 +64,119 @@ export default ({ route: { params } }) => {
       alertTitle: ""
     });
 
-  const handlePayment = details => {
-    if (!formDetails) {
-      setAlert({
-        alert: true,
-        error: true,
-        alertImg: ERROR_IMG,
-        alertTitle: isArabic ? "خطأ" : "Error",
-        alertText: isArabic
-          ? "يجب أن تكون تفاصيل البطاقة مطلوبة"
-          : "Card details must be required"
-      });
-      return;
-    }
-    if (!formDetails?.valid) {
-      if (formDetails?.status) {
-        const { number, cvc, expiry } = formDetails?.status;
-        if (number === "incomplete" || number === "invalid") {
-          setAlert({
-            alert: true,
-            error: true,
-            alertImg: ERROR_IMG,
-            alertTitle: isArabic ? "خطأ" : "Error",
-            alertText:
-              number === "incomplete"
-                ? isArabic
-                  ? "رقم البطاقة غير مكتمل"
-                  : "Incomplete card number"
-                : isArabic
-                ? "رقم البطاقة غير صالحة"
-                : "Invalid card number"
-          });
-        } else if (expiry === "incomplete" || expiry === "invalid") {
-          setAlert({
-            alert: true,
-            error: true,
-            alertImg: ERROR_IMG,
-            alertTitle: isArabic ? "خطأ" : "Error",
-            alertText:
-              expiry === "incomplete"
-                ? isArabic
-                  ? "تاريخ انتهاء الصلاحية غير مكتمل"
-                  : "Incomplete expiry date"
-                : isArabic
-                ? "تاريخ انتهاء الصلاحية غير صالح"
-                : "Invalid expiry date"
-          });
-        } else if (cvc === "incomplete" || cvc === "invalid") {
-          setAlert({
-            alert: true,
-            error: true,
-            alertImg: ERROR_IMG,
-            alertTitle: isArabic ? "خطأ" : "Error",
-            alertText:
-              cvc === "incomplete"
-                ? isArabic
-                  ? "رقم كود غير مكتمل"
-                  : "Incomplete CVV number"
-                : isArabic
-                ? "رقم كود غير صالح"
-                : "Invalid CVV number"
-          });
-        }
-      } else {
-        setAlert({
-          alert: true,
-          error: true,
-          alertImg: ERROR_IMG,
-          alertTitle: isArabic ? "خطأ" : "Error",
-          alertText: isArabic
-            ? "تفاصيل البطاقة غير صحيحة"
-            : "Invalid card details"
-        });
-      }
-      return;
-    }
-    const trimeCardHolderName = cardHolderName.trim();
-    // const trimPostalCode = postalCode.trim();
-    if (!trimeCardHolderName) {
-      setAlert({
-        alert: true,
-        error: true,
-        alertImg: ERROR_IMG,
-        alertTitle: isArabic ? "خطأ" : "Error",
-        alertText: isArabic
-          ? "الرجاء إدخال اسم صاحب البطاقة"
-          : "Please enter the card holder's name"
-      });
-      return;
-    }
-    // if (!trimPostalCode) {
-    //   setAlert({
-    //     alert: true,
-    //     error: true,
-    //     alertImg: ERROR_IMG,
-    //     alertTitle: isArabic ? "خطأ" : "Error",
-    //     alertText: isArabic
-    //       ? "الرجاء إدخال الرمز البريدي"
-    //       : "Please enter the postal code"
-    //   });
-    //   return;
-    // }
-    const { number, cvc, expiry } = formDetails?.values;
-    const obj = {
-      expiry,
-      cvv: cvc,
-      cardNumber: number,
-      // postalCode: trimPostalCode,
-      cardHolderName: trimeCardHolderName
-    };
-    navigation.goBack();
-    params?.handleCardCallBack &&
-      params?.handleCardCallBack(details || obj, "mn");
-  };
+  // const handlePayment = details => {
+  //   if (!formDetails) {
+  //     setAlert({
+  //       alert: true,
+  //       error: true,
+  //       alertImg: ERROR_IMG,
+  //       alertTitle: isArabic ? "خطأ" : "Error",
+  //       alertText: isArabic
+  //         ? "يجب أن تكون تفاصيل البطاقة مطلوبة"
+  //         : "Card details must be required"
+  //     });
+  //     return;
+  //   }
+  //   if (!formDetails?.valid) {
+  //     if (formDetails?.status) {
+  //       const { number, cvc, expiry } = formDetails?.status;
+  //       if (number === "incomplete" || number === "invalid") {
+  //         setAlert({
+  //           alert: true,
+  //           error: true,
+  //           alertImg: ERROR_IMG,
+  //           alertTitle: isArabic ? "خطأ" : "Error",
+  //           alertText:
+  //             number === "incomplete"
+  //               ? isArabic
+  //                 ? "رقم البطاقة غير مكتمل"
+  //                 : "Incomplete card number"
+  //               : isArabic
+  //               ? "رقم البطاقة غير صالحة"
+  //               : "Invalid card number"
+  //         });
+  //       } else if (expiry === "incomplete" || expiry === "invalid") {
+  //         setAlert({
+  //           alert: true,
+  //           error: true,
+  //           alertImg: ERROR_IMG,
+  //           alertTitle: isArabic ? "خطأ" : "Error",
+  //           alertText:
+  //             expiry === "incomplete"
+  //               ? isArabic
+  //                 ? "تاريخ انتهاء الصلاحية غير مكتمل"
+  //                 : "Incomplete expiry date"
+  //               : isArabic
+  //               ? "تاريخ انتهاء الصلاحية غير صالح"
+  //               : "Invalid expiry date"
+  //         });
+  //       } else if (cvc === "incomplete" || cvc === "invalid") {
+  //         setAlert({
+  //           alert: true,
+  //           error: true,
+  //           alertImg: ERROR_IMG,
+  //           alertTitle: isArabic ? "خطأ" : "Error",
+  //           alertText:
+  //             cvc === "incomplete"
+  //               ? isArabic
+  //                 ? "رقم كود غير مكتمل"
+  //                 : "Incomplete CVV number"
+  //               : isArabic
+  //               ? "رقم كود غير صالح"
+  //               : "Invalid CVV number"
+  //         });
+  //       }
+  //     } else {
+  //       setAlert({
+  //         alert: true,
+  //         error: true,
+  //         alertImg: ERROR_IMG,
+  //         alertTitle: isArabic ? "خطأ" : "Error",
+  //         alertText: isArabic
+  //           ? "تفاصيل البطاقة غير صحيحة"
+  //           : "Invalid card details"
+  //       });
+  //     }
+  //     return;
+  //   }
+  //   const trimeCardHolderName = cardHolderName.trim();
+  //   // const trimPostalCode = postalCode.trim();
+  //   if (!trimeCardHolderName) {
+  //     setAlert({
+  //       alert: true,
+  //       error: true,
+  //       alertImg: ERROR_IMG,
+  //       alertTitle: isArabic ? "خطأ" : "Error",
+  //       alertText: isArabic
+  //         ? "الرجاء إدخال اسم صاحب البطاقة"
+  //         : "Please enter the card holder's name"
+  //     });
+  //     return;
+  //   }
+  //   // if (!trimPostalCode) {
+  //   //   setAlert({
+  //   //     alert: true,
+  //   //     error: true,
+  //   //     alertImg: ERROR_IMG,
+  //   //     alertTitle: isArabic ? "خطأ" : "Error",
+  //   //     alertText: isArabic
+  //   //       ? "الرجاء إدخال الرمز البريدي"
+  //   //       : "Please enter the postal code"
+  //   //   });
+  //   //   return;
+  //   // }
+  //   const { number, cvc, expiry } = formDetails?.values;
+  //   const obj = {
+  //     expiry,
+  //     cvv: cvc,
+  //     cardNumber: number,
+  //     // postalCode: trimPostalCode,
+  //     cardHolderName: trimeCardHolderName
+  //   };
+  //   navigation.goBack();
+  //   params?.handleCardCallBack &&
+  //     params?.handleCardCallBack(details || obj, "mn");
+  // };
 
   // const handleScanCard = () => {
   //   Cardscan.isSupportedAsync().then(supported => {
@@ -250,6 +251,24 @@ export default ({ route: { params } }) => {
   //   });
   // };
 
+  const onNavigationStateChangeHandler = ({ url }) => {
+    // if (
+    //   url === params?.paymentGatewayLink ||
+    //   url === "https://secure.telr.com/gateway/details.html"
+    // ) {
+    //   return;
+    // }
+    if (url === "http://www.amahmed.com/done/") {
+      navigation.goBack();
+      params?.handleCardCallBack && params?.handleCardCallBack("done");
+    }
+    //  else {
+    //   navigation.goBack();
+    //   params?.handleCardCallBack && params?.handleCardCallBack("other");
+    // }
+    console.log(url, " s");
+  };
+  console.log(params?.paymentGatewayLink, " params?.paymentGatewayLink");
   return (
     <KeyboardAvoidingView style={styles.container} behavior={IOS && "padding"}>
       <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
@@ -269,102 +288,112 @@ export default ({ route: { params } }) => {
             title={alert.alertTitle}
             btnText={isArabic ? "حسنا" : "OK"}
           />
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
-            {/* <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={handleScanCard}
-            style={styles.scannerWrapper}
-          >
-            <Image
-              resizeMode="contain"
-              style={styles.scannerImg}
-              source={require("../../../assets/images/scanner.png")}
-            />
-            <Text style={styles.scannerText(isArabic)}>
-              {isArabic ? "امسح بطاقتك ضوئيًا" : "Scan your card"}
-            </Text>
-          </TouchableOpacity> */}
-            {/* <View style={styles.line} /> */}
-            <View style={{ marginBottom: 20 }}>
-              <CreditCardInput
-                onChange={handleCardForm}
-                inputContainerStyle={{
-                  borderBottomWidth: 0
-                }}
-                cardImageBack={require("../../../assets/images/banks/back.png")}
-                cardImageFront={require("../../../assets/images/banks/front.png")}
-                labelStyle={{
-                  ...styles.label(isArabic),
-                  marginLeft: 0,
-                  marginRight: 0
-                }}
-                labels={{
-                  number: isArabic ? "رقم البطاقة" : "CARD NUMBER",
-                  expiry: isArabic ? "انقضاء" : "EXPIRY",
-                  cvc: "CVV"
-                }}
-                placeholders={{
-                  cvc: "CVV",
-                  expiry: "MM/YY",
-                  number: "1234 5678 1234 5678"
-                }}
-                allowScroll
-                placeholderColor="#C7C7CD"
-                cardFontFamily="Rubik-Regular"
-                inputStyle={styles.input(isArabic)}
+          {params?.paymentGatewayLink && (
+            <View style={styles.webViewWrapper}>
+              <WebView
+                startInLoadingState
+                source={{ uri: params?.paymentGatewayLink }}
+                onNavigationStateChange={onNavigationStateChangeHandler}
               />
             </View>
-            <Text style={styles.label(isArabic)}>
-              {isArabic ? "اسم حامل البطاقة" : "CARD HOLDER'S NAME"}
-            </Text>
-            <TextInput
-              spellCheck={false}
-              autoCorrect={false}
-              value={cardHolderName}
-              ref={cardHolderNameRef}
-              style={{
-                ...styles.input(isArabic),
-                marginBottom: 20,
-                width: WIDTH - 60,
-                alignSelf: "center"
-              }}
-              placeholderTextColor="#C7C7CD"
-              onChangeText={text => setCardHolderName(text)}
-              placeholder={
-                isArabic
-                  ? "الاسم الكامل لحامل البطاقة"
-                  : "Card Holder Full Name"
-              }
-            />
-            {/* <Text style={styles.label(isArabic)}>
-            {isArabic ? "الرمز البريدي" : "POSTAL CODE"}
-          </Text>
-          <TextInput
-            spellCheck={false}
-            autoCorrect={false}
-            value={postalCode}
-            ref={postalCodeRef}
-            placeholderTextColor="#C7C7CD"
-            style={{
-              ...styles.input(isArabic),
-              width: WIDTH - 60,
-              alignSelf: "center"
-            }}
-            onChangeText={text => setPostalCode(text)}
-            placeholder={isArabic ? "الرمز البريدي" : "Postal Code"}
-          /> */}
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => handlePayment()}
-              style={styles.btn(WIDTH - 60)}
-            >
-              <Text style={styles.btnText(isArabic)}>
-                {isArabic ? "إضافة بطاقة" : "ADD CARD"}
-              </Text>
-            </TouchableOpacity>
-          </ScrollView>
+          )}
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
 };
+
+// Card data
+
+//  <ScrollView contentContainerStyle={styles.scrollContainer}>
+//    {/* <TouchableOpacity
+//             activeOpacity={0.7}
+//             onPress={handleScanCard}
+//             style={styles.scannerWrapper}
+//           >
+//             <Image
+//               resizeMode="contain"
+//               style={styles.scannerImg}
+//               source={require("../../../assets/images/scanner.png")}
+//             />
+//             <Text style={styles.scannerText(isArabic)}>
+//               {isArabic ? "امسح بطاقتك ضوئيًا" : "Scan your card"}
+//             </Text>
+//           </TouchableOpacity> */}
+//    {/* <View style={styles.line} /> */}
+//    <View style={{ marginBottom: 20 }}>
+//      <CreditCardInput
+//        onChange={handleCardForm}
+//        inputContainerStyle={{
+//          borderBottomWidth: 0
+//        }}
+//        cardImageBack={require("../../../assets/images/banks/back.png")}
+//        cardImageFront={require("../../../assets/images/banks/front.png")}
+//        labelStyle={{
+//          ...styles.label(isArabic),
+//          marginLeft: 0,
+//          marginRight: 0
+//        }}
+//        labels={{
+//          number: isArabic ? "رقم البطاقة" : "CARD NUMBER",
+//          expiry: isArabic ? "انقضاء" : "EXPIRY",
+//          cvc: "CVV"
+//        }}
+//        placeholders={{
+//          cvc: "CVV",
+//          expiry: "MM/YY",
+//          number: "1234 5678 1234 5678"
+//        }}
+//        allowScroll
+//        placeholderColor="#C7C7CD"
+//        cardFontFamily="Rubik-Regular"
+//        inputStyle={styles.input(isArabic)}
+//      />
+//    </View>
+//    <Text style={styles.label(isArabic)}>
+//      {isArabic ? "اسم حامل البطاقة" : "CARD HOLDER'S NAME"}
+//    </Text>
+//    <TextInput
+//      spellCheck={false}
+//      autoCorrect={false}
+//      value={cardHolderName}
+//      ref={cardHolderNameRef}
+//      style={{
+//        ...styles.input(isArabic),
+//        marginBottom: 20,
+//        width: WIDTH - 60,
+//        alignSelf: "center"
+//      }}
+//      placeholderTextColor="#C7C7CD"
+//      onChangeText={text => setCardHolderName(text)}
+//      placeholder={
+//        isArabic ? "الاسم الكامل لحامل البطاقة" : "Card Holder Full Name"
+//      }
+//    />
+//    {/* <Text style={styles.label(isArabic)}>
+//             {isArabic ? "الرمز البريدي" : "POSTAL CODE"}
+//           </Text>
+//           <TextInput
+//             spellCheck={false}
+//             autoCorrect={false}
+//             value={postalCode}
+//             ref={postalCodeRef}
+//             placeholderTextColor="#C7C7CD"
+//             style={{
+//               ...styles.input(isArabic),
+//               width: WIDTH - 60,
+//               alignSelf: "center"
+//             }}
+//             onChangeText={text => setPostalCode(text)}
+//             placeholder={isArabic ? "الرمز البريدي" : "Postal Code"}
+//           /> */}
+//    <TouchableOpacity
+//      activeOpacity={0.7}
+//      onPress={() => handlePayment()}
+//      style={styles.btn(WIDTH - 60)}
+//    >
+//      <Text style={styles.btnText(isArabic)}>
+//        {isArabic ? "إضافة بطاقة" : "ADD CARD"}
+//      </Text>
+//    </TouchableOpacity>
+//  </ScrollView>;
