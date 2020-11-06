@@ -258,9 +258,14 @@ export default ({ route: { params } }) => {
     // ) {
     //   return;
     // }
-    if (url === "http://www.amahmed.com/done/") {
+    if (url === "https://www.amahmed.com/done/") {
       navigation.goBack();
       params?.handleCardCallBack && params?.handleCardCallBack("done");
+      return;
+    }
+    if (url === "https://www.amahmed.com/declined/") {
+      navigation.goBack();
+      params?.handleCardCallBack && params?.handleCardCallBack("declined");
     }
     //  else {
     //   navigation.goBack();

@@ -84,6 +84,7 @@ export default () => {
     alertText: "",
     alertTitle: ""
   });
+  const [ref, setRef] = useState("");
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [internet, setInternet] = useState(true);
@@ -126,7 +127,6 @@ export default () => {
       const { data } = await Axios.get(
         `${BASE_URL}/UserAddresses/get/mob/${phone}`
       );
-      console.log(data, " getting addresses");
       if (data && data.length > 0) {
         dispatch(onAddressesAction([...data]));
       } else {
@@ -228,8 +228,23 @@ export default () => {
     }
   };
 
+  const paymentError = (
+    text = isArabic
+      ? "عذرا ، حدث خطأ ما في عملية الدفع. حاول مرة اخرى!"
+      : "Sorry, Something went wrong in payment proccess. Please try again!"
+  ) => {
+    setAlert({
+      alert: true,
+      error: true,
+      alertText: text,
+      alertImg: ERROR_IMG,
+      alertTitle: isArabic ? "خطأ" : "Error"
+    });
+  };
+
   const getPaymentGatewayLink = async () => {
     try {
+      setCurrentLocatioLoading(true);
       const { data } = await Axios.post(
         `https://secure.telr.com/gateway/order.json`,
         {
@@ -239,10 +254,10 @@ export default () => {
           order: {
             cartid: `${getRandom(10)}-${getRandom(1)}`,
             test: "0",
-            amount: "1",
-            // amount: `${(total() + calculateVat() + calculateShipping()).toFixed(
-            //   2
-            // )}`,
+            // amount: "1",
+            amount: `${(total() + calculateVat() + calculateShipping()).toFixed(
+              2
+            )}`,
             currency: "SAR",
             description: "Test Transaction",
             trantype: "ecom"
@@ -270,13 +285,22 @@ export default () => {
       );
       console.log(data, " response");
       if (data && data?.order && data?.order?.url) {
+        setRef(data?.order?.ref);
         navigation.navigate("Payment", {
           handleCardCallBack,
           paymentGatewayLink: data?.order?.url
         });
+        return;
+      }
+      if (data && data?.error) {
+        paymentError();
+        return;
       }
     } catch (error) {
+      paymentError();
       console.log(error, " error in getting payment gateway link");
+    } finally {
+      setCurrentLocatioLoading(false);
     }
   };
 
@@ -353,16 +377,8 @@ export default () => {
   };
 
   const handleCardCallBack = status => {
-    if (status === "other") {
-      setAlert({
-        alert: true,
-        error: true,
-        alertImg: ERROR_IMG,
-        alertTitle: isArabic ? "خطأ" : "Error",
-        alertText: isArabic
-          ? "عذرا ، حدث خطأ ما في عملية الدفع. حاول مرة اخرى!"
-          : "Sorry, Something went wrong in payment proccess. Please try again!"
-      });
+    if (status === "declined") {
+      paymentError(isArabic ? "بطاقة غير صالحة!" : "Invalid Card!");
       setSelectedPayment(null);
       return;
     }
@@ -421,26 +437,26 @@ export default () => {
       });
       return;
     }
-    if (
-      selectedPayment &&
-      selectedPayment?.id === "p-2" &&
-      (!cardDetails ||
-        !cardDetails?.cardNumber ||
-        !cardDetails?.expiry ||
-        !cardDetails?.cvv ||
-        !cardDetails?.cardHolderName)
-    ) {
-      setAlert({
-        alert: true,
-        error: true,
-        alertImg: ERROR_IMG,
-        alertTitle: isArabic ? "خطأ" : "Error",
-        alertText: isArabic
-          ? "الرجاء استكمال تفاصيل البطاقة"
-          : "Please complete card details"
-      });
-      return;
-    }
+    // if (
+    //   selectedPayment &&
+    //   selectedPayment?.id === "p-2" &&
+    //   (!cardDetails ||
+    //     !cardDetails?.cardNumber ||
+    //     !cardDetails?.expiry ||
+    //     !cardDetails?.cvv ||
+    //     !cardDetails?.cardHolderName)
+    // ) {
+    //   setAlert({
+    //     alert: true,
+    //     error: true,
+    //     alertImg: ERROR_IMG,
+    //     alertTitle: isArabic ? "خطأ" : "Error",
+    //     alertText: isArabic
+    //       ? "الرجاء استكمال تفاصيل البطاقة"
+    //       : "Please complete card details"
+    //   });
+    //   return;
+    // }
     placeOrder();
   };
 
@@ -467,11 +483,11 @@ export default () => {
         total: (total() + calculateVat() + calculateShipping()).toFixed(2),
         paymentType: paymentMethod(selectedPayment?.id),
         payment: {
-          postalCode: "",
-          cvv: cardDetails?.cvv,
-          expiry: cardDetails?.expiry,
-          cardNumber: cardDetails?.cardNumber,
-          cardHolderName: cardDetails?.cardHolderName
+          ref: ref
+          // cvv: cardDetails?.cvv,
+          // expiry: cardDetails?.expiry,
+          // cardNumber: cardDetails?.cardNumber,
+          // cardHolderName: cardDetails?.cardHolderName
         },
         shippingDetails: {
           address: selectedAddress?.address,
@@ -511,6 +527,9 @@ export default () => {
   const btnPress = () => {
     navigation.goBack();
     navigation.navigate("Home");
+    setTimeout(() => {
+      navigation.navigate("MyOrders");
+    }, 0);
   };
 
   const focusInput = () => {

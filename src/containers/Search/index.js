@@ -100,12 +100,11 @@ export default props => {
       );
       if (data && data.length > 0) {
         !moreFetch && setItems([...data]);
-        moreFetch && setItems(state => [...state, ...data]);
-        moreFetch && setPage(state => state + 1);
+        moreFetch && setItems([...items, ...data]);
+        setPage(page + 1);
         setLastItemsLength(data.length);
       } else {
         !moreFetch && setItems([]);
-        moreFetch && setItems([...data]);
         setLastItemsLength(0);
       }
     } catch (error) {
