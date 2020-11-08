@@ -244,48 +244,53 @@ export default () => {
 
   const getPaymentGatewayLink = async () => {
     try {
-      setCurrentLocatioLoading(true);
-      const { data } = await Axios.post(
-        `https://secure.telr.com/gateway/order.json`,
-        {
-          method: "create",
-          store: 23837,
-          authkey: "Jcv9^NQJPW@6vh73",
-          order: {
-            cartid: `${getRandom(10)}-${getRandom(1)}`,
-            test: "0",
-            // amount: "1",
-            amount: `${(total() + calculateVat() + calculateShipping()).toFixed(
-              2
-            )}`,
-            currency: "SAR",
-            description: "Test Transaction",
-            trantype: "ecom"
-          },
-          customer: {
-            ref: `${new Date().getFullYear()}`,
-            email: "sales@amahmed.com",
-            name: {
-              forenames: "Ahmed",
-              surname: "Am"
-            },
-            address: {
-              line1: selectedAddress?.address,
-              city: selectedCity?.nameEn,
-              country: "SA"
-            },
-            phone: `966${userData?.phone}`
-          },
-          return: {
-            authorised: "https://www.amahmed.com/done/",
-            declined: "https://www.amahmed.com/declined/",
-            cancelled: "https://www.amahmed.com/cancelled/"
-          }
-        }
+      const amount = (total() + calculateVat() + calculateShipping()).toFixed(
+        2
       );
+      const gatewayURL = `https://amahmed.com/api/pay/generate?test=0&amount=1&currency=SAR&description=For payment purpose&authorisedUrl=https://www.amahmed.com/done/&declinedUrl=https://www.amahmed.com/declined/&cancelledUrl=https://www.amahmed.com/cancelled/`;
+      // const gatewayURL = "https://secure.telr.com/gateway/order.json";
+      setCurrentLocatioLoading(true);
+      const { data } = await Axios.get(gatewayURL);
+      // const { data } = await Axios.post(
+      //   gatewayURL,
+      //   {
+      //     method: "create",
+      //     store: 23837,
+      //     authkey: "Jcv9^NQJPW@6vh73",
+      //     order: {
+      //       cartid: `${getRandom(10)}-${getRandom(1)}`,
+      //       test: "0",
+      //       // amount: "1",
+      //       amount: amount,
+      //       currency: "SAR",
+      //       description: "Test Transaction",
+      //       trantype: "ecom"
+      //     },
+      //     customer: {
+      //       ref: `${new Date().getFullYear()}`,
+      //       email: "sales@amahmed.com",
+      //       name: {
+      //         forenames: "Ahmed",
+      //         surname: "Am"
+      //       },
+      //       address: {
+      //         line1: selectedAddress?.address,
+      //         city: selectedCity?.nameEn,
+      //         country: "SA"
+      //       },
+      //       phone: `966${userData?.phone}`
+      //     },
+      //     return: {
+      //       authorised: "https://www.amahmed.com/done/",
+      //       declined: "https://www.amahmed.com/declined/",
+      //       cancelled: "https://www.amahmed.com/cancelled/"
+      //     }
+      //   }
+      // );
       console.log(data, " response");
       if (data && data?.order && data?.order?.url) {
-        setRef(data?.order?.ref);
+        // setRef(data?.order?.ref);
+        setRef(data?.order?.refs);
         navigation.navigate("Payment", {
           handleCardCallBack,
           paymentGatewayLink: data?.order?.url
