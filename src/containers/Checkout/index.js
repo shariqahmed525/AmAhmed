@@ -746,7 +746,7 @@ export default () => {
                       selected={selectedAddress}
                       onPress={handleAddressListItem}
                       btnText={isArabic ? "حدد العنوان" : "Select Address"}
-                      title={isArabic ? "الرأس والساقين" : "Delivery Address"}
+                      title={isArabic ? "عنوان التسليم" : "Delivery Address"}
                     />
 
                     {mapMemo}

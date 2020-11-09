@@ -121,7 +121,7 @@ export default ({ item = {}, isArabic, dummy }) => {
       {stockQuantity < minOrderQty && (
         <View style={styles.outOfStockWrapper}>
           <Text style={styles.outOfStockWrapperLabel(isArabic)}>
-            {isArabic ? "إنتهى من المخزن" : "OUT OF STOCK"}
+            {isArabic ? "نفذت الكمية" : "OUT OF STOCK"}
           </Text>
         </View>
       )}
@@ -224,7 +224,7 @@ export default ({ item = {}, isArabic, dummy }) => {
               style={styles.cartBtn(isArabic)}
             >
               <Text style={styles.cartBtnText(isArabic)}>
-                {isArabic ? "أضف إلى العربة" : "ADD TO CART"}
+                {isArabic ? "أضف الى السلة" : "ADD TO CART"}
               </Text>
             </TouchableOpacity>
           )}

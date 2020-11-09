@@ -53,7 +53,7 @@ export default () => {
       titleFontFamily={isArabic ? "Cairo-Bold" : "Rubik-SemiBold"}
       title={
         isArabic
-          ? `العربة ${cart && cart.length > 0 ? `(${cart.length})` : ""}`
+          ? `سلة التسوق ${cart && cart.length > 0 ? `(${cart.length})` : ""}`
           : `Cart ${cart && cart.length > 0 ? `(${cart.length})` : ""}`
       }
     />
@@ -188,7 +188,7 @@ export default () => {
               {isArabic ? "فارغة" : "Empty"}
             </Text>
             <Text style={styles.emptySubText(isArabic)}>
-              {isArabic ? "العربة فارغة" : "The cart is empty"}
+              {isArabic ? "السلة فارغة" : "The cart is empty"}
             </Text>
           </View>
         )}

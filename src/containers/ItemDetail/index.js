@@ -457,7 +457,7 @@ export default () => {
               {hasCuttingWay && (
                 <View style={styles.boxWrapper} ref={cuttingRef}>
                   <Text style={styles.heading(isArabic)}>
-                    {isArabic ? "طريقة القطع" : "Cutting Way"}
+                    {isArabic ? "طريقة التقطيع" : "Cutting Way"}
                   </Text>
                   {cuttingLoading ? (
                     <View style={styles.miniLoaderWrapper}>
@@ -480,15 +480,16 @@ export default () => {
                           color={theme}
                           style={styles.radioItem(isArabic)}
                           labelStyle={styles.radioItemText(isArabic)}
-                          label={
-                            isArabic
-                              ? `${v.nameAr} ${
-                                  v.cost && v.cost > 0 ? `(ر.س ${v.cost})` : ""
-                                }`
-                              : `${v.nameEn} ${
-                                  v.cost && v.cost > 0 ? `(SAR ${v.cost})` : ""
-                                }`
-                          }
+                          // label={
+                          //   isArabic
+                          //     ? `${v.nameAr} ${
+                          //         v.cost && v.cost > 0 ? `(ر.س ${v.cost})` : ""
+                          //       }`
+                          //     : `${v.nameEn} ${
+                          //         v.cost && v.cost > 0 ? `(SAR ${v.cost})` : ""
+                          //       }`
+                          // }
+                          label={isArabic ? v.nameAr : v.nameEn}
                         />
                       ))}
                     </RadioButton.Group>
@@ -498,7 +499,7 @@ export default () => {
               {hasHeadAndLegs && (
                 <View style={styles.boxWrapper}>
                   <Text style={styles.heading(isArabic)}>
-                    {isArabic ? "الرأس والساقين" : "Head & Legs"}
+                    {isArabic ? "الرأس" : "Head & Legs"}
                   </Text>
                   {headAndLegsLoading ? (
                     <View style={styles.miniLoaderWrapper}>
@@ -521,15 +522,16 @@ export default () => {
                           color={theme}
                           style={styles.radioItem(isArabic)}
                           labelStyle={styles.radioItemText(isArabic)}
-                          label={
-                            isArabic
-                              ? `${v.nameAr} ${
-                                  v.cost && v.cost > 0 ? `(ر.س ${v.cost})` : ""
-                                }`
-                              : `${v.nameEn} ${
-                                  v.cost && v.cost > 0 ? `(SAR ${v.cost})` : ""
-                                }`
-                          }
+                          // label={
+                          //   isArabic
+                          //     ? `${v.nameAr} ${
+                          //         v.cost && v.cost > 0 ? `(ر.س ${v.cost})` : ""
+                          //       }`
+                          //     : `${v.nameEn} ${
+                          //         v.cost && v.cost > 0 ? `(SAR ${v.cost})` : ""
+                          //       }`
+                          // }
+                          label={isArabic ? v.nameAr : v.nameEn}
                         />
                       ))}
                     </RadioButton.Group>
@@ -539,7 +541,7 @@ export default () => {
               {hasPacking && (
                 <View style={styles.boxWrapper} ref={packingRef}>
                   <Text style={styles.heading(isArabic)}>
-                    {isArabic ? "التعبئة" : "Packing"}
+                    {isArabic ? "التغليف" : "Packing"}
                   </Text>
                   {packingLoading ? (
                     <View style={styles.miniLoaderWrapper}>
@@ -562,15 +564,16 @@ export default () => {
                           color={theme}
                           style={styles.radioItem(isArabic)}
                           labelStyle={styles.radioItemText(isArabic)}
-                          label={
-                            isArabic
-                              ? `${v.nameAr} ${
-                                  v.cost && v.cost > 0 ? `(ر.س ${v.cost})` : ""
-                                }`
-                              : `${v.nameEn} ${
-                                  v.cost && v.cost > 0 ? `(SAR ${v.cost})` : ""
-                                }`
-                          }
+                          // label={
+                          //   isArabic
+                          //     ? `${v.nameAr} ${
+                          //         v.cost && v.cost > 0 ? `(ر.س ${v.cost})` : ""
+                          //       }`
+                          //     : `${v.nameEn} ${
+                          //         v.cost && v.cost > 0 ? `(SAR ${v.cost})` : ""
+                          //       }`
+                          // }
+                          label={isArabic ? v.nameAr : v.nameEn}
                         />
                       ))}
                     </RadioButton.Group>
@@ -603,7 +606,7 @@ export default () => {
                   onPress={handleUpdateCart}
                 >
                   <Text style={styles.btnText(isArabic)}>
-                    {isArabic ? "تحديث العربة" : "UPDATE CART"}
+                    {isArabic ? "تحديث السلة" : "UPDATE CART"}
                   </Text>
                 </TouchableOpacity>
               ) : findItem ? (
@@ -640,7 +643,7 @@ export default () => {
                   }
                 >
                   <Text style={styles.btnText(isArabic)}>
-                    {isArabic ? "أضف إلى العربة" : "ADD TO CART"}
+                    {isArabic ? "أضف إلى السلة" : "ADD TO CART"}
                   </Text>
                 </TouchableOpacity>
               )}

@@ -155,7 +155,7 @@ export default ({ route: { params } }) => {
             onPress={handleDone}
           >
             <Text style={styles.btnText(isArabic)}>
-              {isArabic ? "فعله" : "DONE"}
+              {isArabic ? "تم" : "DONE"}
             </Text>
           </TouchableOpacity>
         </ScrollView>

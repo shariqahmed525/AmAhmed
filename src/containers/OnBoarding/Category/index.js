@@ -149,23 +149,14 @@ export default () => {
             </View>
           ) : categories && categories.length > 0 ? (
             <View style={styles.centerContainer}>
-              <Text style={styles.heading(isArabic)}>
-                {isArabic ? "اختر مدينتك، من فضلك" : "Choose your city, please"}
-              </Text>
               {categories.map((v, i) => (
                 <ImageButton
-                  isCity
                   key={i}
                   isArabic={isArabic}
                   source={{ uri: v.pictureUrl }}
-                  text={`${isArabic ? v.nameAr : v.nameEn}${
-                    isArabic ? "؟" : "?"
-                  }`}
                   onPress={() => handleListItem(v)}
+                  text={isArabic ? v.nameAr : v.nameEn}
                   selected={v.id === selectedCategory?.id}
-                  primaryText={
-                    isArabic ? "عما تبحث" : "What are you looking for"
-                  }
                 />
               ))}
             </View>

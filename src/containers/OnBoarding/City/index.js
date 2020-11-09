@@ -207,23 +207,14 @@ export default () => {
               </View>
             ) : cities && cities.length > 0 ? (
               <View style={styles.centerContainer}>
-                <Text style={styles.heading(isArabic)}>
-                  {isArabic
-                    ? "اختر مدينتك، من فضلك"
-                    : "Choose your city, please"}
-                </Text>
                 {cities.map((v, i) => (
                   <ImageButton
-                    isCity
                     key={i}
                     isArabic={isArabic}
                     source={{ uri: v.pictureUrl }}
-                    text={`${isArabic ? v.nameAr : v.nameEn}${
-                      isArabic ? "؟" : "?"
-                    }`}
                     onPress={() => handleListItem(v)}
                     selected={v.id === selectedCity?.id}
-                    primaryText={isArabic ? "هل انت من" : "Are you from"}
+                    text={isArabic ? v.nameAr : v.nameEn}
                   />
                 ))}
               </View>
