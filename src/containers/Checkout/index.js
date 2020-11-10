@@ -36,9 +36,9 @@ import { useNavigation } from "@react-navigation/native";
 import Geolocation from "@react-native-community/geolocation";
 import DropdownSection from "../../components/DropdownSection";
 import { getRandom, validatePhone } from "../../common/functions";
-import { RNSlidingButton, SlideDirection } from "rn-sliding-button";
 import { clearCart, onAddressesAction } from "../../redux/actions/user";
 import RNAndroidLocationEnabler from "react-native-android-location-enabler";
+import SlotButton from "../../components/SlotButton";
 
 let _isMounted = false;
 
@@ -105,6 +105,7 @@ export default () => {
     if (_isMounted) {
       StatusBar.setBarStyle("light-content");
       ANDROID && StatusBar.setBackgroundColor(theme);
+      handleCurrentLocation(true);
     }
   }, []);
 
@@ -612,9 +613,9 @@ export default () => {
     return total() < 200 ? 40 : 0;
   };
 
-  const getAddressDetails = async (lat, lng) => {
+  const getAddressDetails = async (lat, lng, fromStart) => {
     try {
-      setCurrentLocatioLoading(true);
+      if (!fromStart) setCurrentLocatioLoading(true);
       const { data } = await Axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${MAP_API_KEY}`
       );
@@ -633,17 +634,19 @@ export default () => {
           area: isArabic ? "الموقع الحالي" : "Current Location"
         };
         setSelectedAddress({ ...obj });
-        scrollRef.current.scrollToEnd({ animated: true });
-        if (
-          (selectedPayment &&
-            selectedPayment?.id === "p-2" &&
-            cardDetails &&
-            cardDetails?.cardNumber) ||
-          selectedPayment
-        ) {
-          setTimeout(() => {
-            animatedRef.current.bounceIn(1000);
-          }, 500);
+        if (!fromStart) {
+          scrollRef.current.scrollToEnd({ animated: true });
+          if (
+            (selectedPayment &&
+              selectedPayment?.id === "p-2" &&
+              cardDetails &&
+              cardDetails?.cardNumber) ||
+            selectedPayment
+          ) {
+            setTimeout(() => {
+              animatedRef.current.bounceIn(1000);
+            }, 500);
+          }
         }
       }
     } catch (error) {
@@ -653,12 +656,12 @@ export default () => {
     }
   };
 
-  const getLocation = () => {
+  const getLocation = fromStart => {
     Geolocation.getCurrentPosition(
       info => {
         if (info?.coords) {
           const coords = info?.coords;
-          getAddressDetails(coords.latitude, coords.longitude);
+          getAddressDetails(coords.latitude, coords.longitude, fromStart);
         } else {
           setAlert({
             alert: true,
@@ -678,9 +681,9 @@ export default () => {
     );
   };
 
-  const handleCurrentLocation = () => {
+  const handleCurrentLocation = fromStart => {
     if (IOS) {
-      getLocation();
+      getLocation(fromStart);
       return;
     }
     RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
@@ -688,7 +691,7 @@ export default () => {
       fastInterval: 5000
     })
       .then(() => {
-        getLocation();
+        getLocation(fromStart);
       })
       .catch(err => {
         if (err && err.code === "ERR00") {
@@ -761,6 +764,70 @@ export default () => {
                         isArabic ? "اختار طريقة الدفع" : "Select Payment Method"
                       }
                     />
+                    <Text ref={contactRef} style={styles.heading(isArabic)}>
+                      {isArabic ? "تفاصيل الطلب" : "Delivery Days"}
+                    </Text>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.verticalScroll}
+                    >
+                      <SlotButton
+                        isActive
+                        mainText="Tuesday"
+                        secondaryText="10-11-2020"
+                      />
+                      <SlotButton
+                        mainText="Tuesday"
+                        secondaryText="10-11-2020"
+                      />
+                      <SlotButton
+                        mainText="Tuesday"
+                        secondaryText="10-11-2020"
+                      />
+                      <SlotButton
+                        mainText="Tuesday"
+                        secondaryText="10-11-2020"
+                      />
+                      <SlotButton
+                        mainText="Tuesday"
+                        secondaryText="10-11-2020"
+                      />
+                      <SlotButton
+                        mainText="Tuesday"
+                        secondaryText="10-11-2020"
+                      />
+                    </ScrollView>
+                    <Text ref={contactRef} style={styles.heading(isArabic)}>
+                      {isArabic ? "تفاصيل الطلب" : "Delivery Slots"}
+                    </Text>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.verticalScroll}
+                    >
+                      <SlotButton
+                        isActive
+                        mainText="First Slot-Zayed"
+                        secondaryText="From 11:00 AM To 02:00 PM"
+                      />
+                      <SlotButton
+                        mainText="First Slot-Zayed"
+                        secondaryText="From 11:00 AM To 02:00 PM"
+                      />
+                      <SlotButton
+                        mainText="First Slot-Zayed"
+                        secondaryText="From 11:00 AM To 02:00 PM"
+                      />
+                      <SlotButton
+                        mainText="First Slot-Zayed"
+                        secondaryText="From 11:00 AM To 02:00 PM"
+                      />
+                      <SlotButton
+                        mainText="First Slot-Zayed"
+                        secondaryText="From 11:00 AM To 02:00 PM"
+                      />
+                    </ScrollView>
                     <Text ref={contactRef} style={styles.heading(isArabic)}>
                       {isArabic ? "تفاصيل الطلب" : "Order Details"}
                     </Text>
@@ -878,21 +945,11 @@ export default () => {
                   style={styles.animtedButton}
                 >
                   {userData?.isVerify && !orderLoading ? (
-                    <RNSlidingButton
-                      height={50}
+                    <TouchableOpacity
                       activeOpacity={0.7}
-                      style={{
-                        width: "100%",
-                        borderWidth: 1,
-                        borderRadius: 100,
-                        borderColor: theme,
-                        paddingHorizontal: 15,
-                        backgroundColor: theme
-                      }}
-                      onSlidingSuccess={handleSubmit}
-                      slideDirection={
-                        isArabic ? SlideDirection.LEFT : SlideDirection.RIGHT
-                      }
+                      onPress={handleSubmit}
+                      style={styles.btn(isArabic)}
+                      disabled={orderLoading || loading}
                     >
                       <Text
                         style={{
@@ -900,11 +957,9 @@ export default () => {
                           fontSize: isArabic ? WIDTH * 0.05 : WIDTH * 0.045
                         }}
                       >
-                        {isArabic
-                          ? "مزلاق لوضع النظام >>>"
-                          : "SLIDE TO PLACE ORDER >>>"}
+                        {isArabic ? "مكان الامر" : "PLACE ORDER"}
                       </Text>
-                    </RNSlidingButton>
+                    </TouchableOpacity>
                   ) : (
                     <TouchableOpacity
                       activeOpacity={0.7}

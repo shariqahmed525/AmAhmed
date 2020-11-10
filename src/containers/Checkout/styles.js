@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   }),
-  textWrapper: isArabic => ({
+  textWrapper: () => ({
     flex: 1
   }),
   listIcon: isArabic => ({
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
       }
     ]
   }),
-  optionRight: isArabic => ({
+  optionRight: () => ({
     flex: 1,
     alignItems: "center",
     flexDirection: "row",
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
       }
     ]
   }),
-  orderCard: isArabic => ({
+  orderCard: () => ({
     backgroundColor: "#ffffff",
     borderColor: "#fff",
     borderWidth: 1,
@@ -290,6 +290,10 @@ const styles = StyleSheet.create({
   pd10: {
     width: "100%",
     paddingVertical: 10
+  },
+  verticalScroll: {
+    paddingTop: 8,
+    paddingBottom: 25
   }
 });
 
