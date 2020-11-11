@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
+  Linking,
   StatusBar,
   TextInput,
   ScrollView,
@@ -25,6 +26,7 @@ import Alert from "../../components/Alert";
 import Header from "../../components/Header";
 import { lightTheme, theme } from "../../common/colors";
 import { validateEmail, validatePhone } from "../../common/functions";
+import { MaterialCommunityIcons } from "../../common/icons";
 
 let _isMounted = false;
 
@@ -208,14 +210,18 @@ export default () => {
       alertTitle: ""
     });
 
+  const handleNumber = () => {
+    Linking.openURL("tel:0568042000");
+  };
+
   return (
     <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
       <View style={styles.container}>
         <Header
           back
           onBackPress={handleBack}
-          title={isArabic ? "اتصل بنا" : "Contact Us"}
           titleAlign={isArabic ? "right" : "left"}
+          title={isArabic ? "اتصل بنا" : "Contact Us"}
         />
         <Alert
           error={alert.error}
@@ -231,6 +237,21 @@ export default () => {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.scrollContainer}
         >
+          <View style={styles.textWrapper(isArabic)}>
+            <View style={styles.iconWrapper(isArabic)}>
+              <View style={styles.rotateIcon(isArabic)}>
+                <MaterialCommunityIcons size={30} name="phone" color={theme} />
+              </View>
+              <Text style={styles.text(isArabic)}>
+                {isArabic ? " الاتصال بنا:" : "Call us at: "}
+              </Text>
+            </View>
+            <TouchableOpacity activeOpacity={0.7} onPress={handleNumber}>
+              <Text style={styles.link(isArabic)}>
+                {isArabic ? "0568042000 " : "0568042000"}
+              </Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.inputWrapper(isArabic)}>
             <Text style={styles.heading(isArabic)}>
               {isArabic ? "عنوان" : "Full Name"}

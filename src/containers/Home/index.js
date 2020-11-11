@@ -204,7 +204,7 @@ export default () => {
   };
 
   const handleOpenDialer = () => {
-    Linking.openURL("tel:+966568042000");
+    Linking.openURL("tel:0568042000");
   };
 
   const _renderSliderLoadingOrNotGetting = (loading = true) => (
@@ -345,7 +345,6 @@ export default () => {
     >
       <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
         <View style={styles.container}>
-          {/* <WebView source={{ uri: "https://reactnative.dev/" }} /> */}
           {_renderHeader()}
           {!internet ? (
             <NoInternet isArabic={isArabic} onPress={handleRetry} />

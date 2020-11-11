@@ -13,7 +13,7 @@ import Alert from "../Alert";
 import { SafeAreaView } from "react-navigation";
 import { gray, lightTheme } from "../../common/colors";
 import { useDispatch, useSelector } from "react-redux";
-import { ARABIC } from "../../common/constants";
+import { ARABIC, IOS } from "../../common/constants";
 import { clearUserData, onAddressesAction } from "../../redux/actions/user";
 
 const List = ({ onPress, text, icon, isArabic }) => (
@@ -78,13 +78,25 @@ export default ({ navigation, drawerClose }) => {
   };
 
   const onShare = async () => {
+    const AndroidURL =
+      "https://play.google.com/store/apps/details?id=com.amahmedapp";
+    const IosURL = "https://apps.apple.com/sa/app/amahmed/id1535201763";
     try {
-      await Share.share({
-        title: "AmAhmed's Share",
-        message: "Please install this app and stay safe"
-        // url:
-        //   "https://play.google.com/store/apps/details?id=nic.goi.aarogyasetu&hl=en"
-      });
+      await Share.share(
+        {
+          title: "AmAhmed",
+          message: isArabic
+            ? `قم بتنزيل التطبيق باستخدام رابط معين: \n${
+                IOS ? IosURL : AndroidURL
+              }`
+            : `Download the app using given link: \n${
+                IOS ? IosURL : AndroidURL
+              }`
+        },
+        {
+          dialogTitle: isArabic ? "شارك عم احمد التطبيق" : "Share AmAhmed's App"
+        }
+      );
     } catch (error) {
       console.log("error ", error);
     }

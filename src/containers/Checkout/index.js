@@ -261,6 +261,7 @@ export default props => {
       const msg = isArabic
         ? `رمز التعريف : ${verificationCode}`
         : `Your verification code is: ${verificationCode}`;
+      console.log(msg, " msg");
       await Axios.post(`${BASE_URL}/sms/send`, {
         text: msg,
         number: `966${text}`
@@ -591,7 +592,7 @@ export default props => {
   };
 
   const calculateShipping = () => {
-    return total() < 200 ? 40 : 0;
+    return total() < 150 ? 20 : 0;
   };
 
   const getAddressDetails = async (lat, lng, fromStart) => {
@@ -874,7 +875,7 @@ export default props => {
                     <TextInput
                       multiline
                       value={comments}
-                      numberOfLines={12}
+                      numberOfLines={7}
                       spellCheck={false}
                       editable={!orderLoading}
                       autoCorrect={false}

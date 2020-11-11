@@ -145,7 +145,7 @@ export default ({ route: { params } }) => {
             </Text>
             <Text style={styles.description(isArabic)}>
               {isArabic
-                ? "عند إجراء التحويل ، يرجى إرسال إيصال الدفع الخاص بك على رقم الواتساب التالي 966568042000 ، \n وسوف نؤكد الدفع الخاص بك."
+                ? "عند إجراء التحويل ،الرجاء التكرم بإرسال صورة من بعد اجراء التحويل 966568042000 ، \n وسوف نؤكد الدفع الخاص بك."
                 : "When you make transfer,  please send your payment slip on following whatsapp number 966568042000, \nWe will confirm your payment."}
             </Text>
           </View>
