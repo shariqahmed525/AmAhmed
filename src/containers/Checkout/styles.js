@@ -294,47 +294,27 @@ const styles = StyleSheet.create({
   verticalScroll: {
     paddingTop: 8,
     paddingBottom: 25
-  }
+  },
+  radioItem: isArabic => ({
+    marginBottom: 10,
+    borderRadius: 10,
+    backgroundColor: "#ffffff",
+    borderColor: "#fff",
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+    elevation: 1,
+    flexDirection: isArabic ? "row-reverse" : "row"
+  }),
+  radioItemText: isArabic => ({
+    color: "#111111",
+    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
+  })
 });
 
 export default styles;
-
-// const placeorderObject = {
-//   phone: "",
-//   locationId: "",
-//   items: [
-//     {
-//       quantity: "",
-//       productId: "",
-//       packingId: "",
-//       cuttingWayId: "",
-//       headAndLegId: ""
-//     }
-//   ],
-//   vat: "",
-//   total: "",
-//   subTotal: "",
-//   shippingCost: "",
-//   status: "pending",
-//   paymentType: "card",
-//   payment: {
-//     cvv: "",
-//     expiry: "",
-//     cardNumber: "",
-//     postalCode: "",
-//     cardHolderName: ""
-//   },
-//   shippingDetails: {
-//     lat: "",
-//     long: "",
-//     address: ""
-//   }
-// };
-
-// const ContactUsObject = {
-//   name: "",
-//   email: "",
-//   phone: "",
-//   subject: "",
-//   message: ""
-// };

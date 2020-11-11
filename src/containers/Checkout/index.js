@@ -27,7 +27,6 @@ import styles from "./styles";
 import RenderMap from "./RenderMap";
 import Alert from "../../components/Alert";
 import Header from "../../components/Header";
-import { Divider } from "react-native-paper";
 import { SafeAreaView } from "react-navigation";
 import NoInternet from "../../components/NoInternet";
 import SlotButton from "../../components/SlotButton";
@@ -35,11 +34,12 @@ import NetInfo from "@react-native-community/netinfo";
 import * as Animatable from "react-native-animatable";
 import { useDispatch, useSelector } from "react-redux";
 import { ActivityIndicator } from "react-native-paper";
-import { lightTheme, theme } from "../../common/colors";
 import { useNavigation } from "@react-navigation/native";
+import { Divider, RadioButton } from "react-native-paper";
 import Geolocation from "@react-native-community/geolocation";
 import DropdownSection from "../../components/DropdownSection";
 import { getRandom, validatePhone } from "../../common/functions";
+import { lightGray, lightTheme, theme } from "../../common/colors";
 import { clearCart, onAddressesAction } from "../../redux/actions/user";
 import RNAndroidLocationEnabler from "react-native-android-location-enabler";
 import moment from "moment";
@@ -92,15 +92,17 @@ export default props => {
   const [text, setText] = useState("");
   const [dates, setDates] = useState([]);
   const [slots, setSlots] = useState([]);
+  const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(false);
   const [internet, setInternet] = useState(true);
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedSlot, setSelectedSlot] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedSlot, setSelectedSlot] = useState(null);
   const [cardDetails, setCardDetails] = useState(null);
   const [orderLoading, setOrderLoading] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [fetchingLoading, setFetchingLoading] = useState(false);
+  const [callBeforeDelivery, setCallBeforeDelivery] = useState(false);
   const [currentLocatioLoading, setCurrentLocatioLoading] = useState(false);
   const {
     app: { language, selectedCity },
@@ -141,7 +143,6 @@ export default props => {
         .add(i, "d")
         .format("DD-MM-YYYY")
     }));
-
     moment.locale("en");
     const arr = [];
     DELIVERY_SLOTS.map(v => {
@@ -351,18 +352,6 @@ export default props => {
       return;
     }
     setSelectedAddress({ ...address });
-    scrollRef.current.scrollToEnd({ animated: true });
-    if (
-      (selectedPayment &&
-        selectedPayment?.id === "p-2" &&
-        cardDetails &&
-        cardDetails?.cardNumber) ||
-      selectedPayment
-    ) {
-      setTimeout(() => {
-        animatedRef.current.bounceIn(1000);
-      }, 500);
-    }
   };
 
   const handlePaymentListItem = paymentOption => {
@@ -400,7 +389,6 @@ export default props => {
     if (!selectedAddress || !selectedAddress?.address) {
       scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
     } else {
-      scrollRef.current.scrollToEnd({ animated: true });
       setTimeout(() => {
         animatedRef.current.bounceIn(1000);
       }, 500);
@@ -414,29 +402,15 @@ export default props => {
       return;
     }
     setSelectedPayment({ ...payments.find(o => o.id === "p-2") });
-    scrollRef.current.scrollToEnd({
-      animated: true
-    });
     setTimeout(() => {
       animatedRef.current.bounceIn(1000);
     }, 500);
-    // if (!cardDetails) return;
-    // setCardDetails({ ...cardDetails });
-    // if (!selectedAddress || !selectedAddress?.address) {
-    //   scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
-    // } else {
-    //   scrollRef.current.scrollToEnd({ animated: true });
-    //   setTimeout(() => {
-    //     animatedRef.current.bounceIn(1000);
-    //   }, 500);
-    // }
   };
 
   const handleOnlineTransferCallBack = () => {
     if (!selectedAddress || !selectedAddress?.address) {
       scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
     } else {
-      scrollRef.current.scrollToEnd({ animated: true });
       setTimeout(() => {
         animatedRef.current.bounceIn(1000);
       }, 500);
@@ -456,7 +430,6 @@ export default props => {
       return;
     }
     if (!selectedPayment) {
-      scrollRef.current.scrollToEnd({ animated: true });
       setAlert({
         alert: true,
         error: true,
@@ -468,26 +441,6 @@ export default props => {
       });
       return;
     }
-    // if (
-    //   selectedPayment &&
-    //   selectedPayment?.id === "p-2" &&
-    //   (!cardDetails ||
-    //     !cardDetails?.cardNumber ||
-    //     !cardDetails?.expiry ||
-    //     !cardDetails?.cvv ||
-    //     !cardDetails?.cardHolderName)
-    // ) {
-    //   setAlert({
-    //     alert: true,
-    //     error: true,
-    //     alertImg: ERROR_IMG,
-    //     alertTitle: isArabic ? "خطأ" : "Error",
-    //     alertText: isArabic
-    //       ? "الرجاء استكمال تفاصيل البطاقة"
-    //       : "Please complete card details"
-    //   });
-    //   return;
-    // }
     placeOrder();
   };
 
@@ -504,15 +457,19 @@ export default props => {
         };
       });
       const obj = {
-        phone: userData?.phone,
-        locationId: selectedCity?.id,
         items: cartItems,
         status: "pending",
+        phone: userData?.phone,
         subTotal: total().toFixed(2),
+        locationId: selectedCity?.id,
         vat: calculateVat().toFixed(2),
+        comments: comments,
+        deliveryDate: selectedDate.fullDate,
+        deliverySlot: selectedSlot,
+        callBeforeDelivery: callBeforeDelivery,
         shippingCost: calculateShipping().toFixed(2),
-        total: (total() + calculateVat() + calculateShipping()).toFixed(2),
         paymentType: paymentMethod(selectedPayment?.id),
+        total: (total() + calculateVat() + calculateShipping()).toFixed(2),
         payment: {
           ref: ref
           // cvv: cardDetails?.cvv,
@@ -581,7 +538,6 @@ export default props => {
   const animateButton = () => {
     setTimeout(() => {
       if (userData?.isVerify) {
-        scrollRef.current.scrollToEnd({ animated: true });
         setTimeout(() => {
           animatedRef.current.bounceIn(1000);
         }, 500);
@@ -659,20 +615,6 @@ export default props => {
           area: isArabic ? "الموقع الحالي" : "Current Location"
         };
         setSelectedAddress({ ...obj });
-        if (!fromStart) {
-          scrollRef.current.scrollToEnd({ animated: true });
-          if (
-            (selectedPayment &&
-              selectedPayment?.id === "p-2" &&
-              cardDetails &&
-              cardDetails?.cardNumber) ||
-            selectedPayment
-          ) {
-            setTimeout(() => {
-              animatedRef.current.bounceIn(1000);
-            }, 500);
-          }
-        }
       }
     } catch (error) {
       console.log(error, " error in getting address");
@@ -910,6 +852,43 @@ export default props => {
                       keyExtractor={keyExtractor}
                     />
 
+                    <RadioButton.Group
+                      value={true}
+                      onValueChange={() =>
+                        setCallBeforeDelivery(!callBeforeDelivery)
+                      }
+                    >
+                      <RadioButton.Item
+                        value={true}
+                        disabled={orderLoading}
+                        style={styles.radioItem(isArabic)}
+                        labelStyle={styles.radioItemText(isArabic)}
+                        color={callBeforeDelivery ? theme : lightGray}
+                        label={
+                          isArabic
+                            ? "الاتصال قبل التوصيل"
+                            : "Call before delivery"
+                        }
+                      />
+                    </RadioButton.Group>
+                    <TextInput
+                      multiline
+                      value={comments}
+                      numberOfLines={12}
+                      spellCheck={false}
+                      editable={!orderLoading}
+                      autoCorrect={false}
+                      keyboardType="default"
+                      style={{
+                        ...styles.input(isArabic),
+                        marginTop: 5,
+                        textAlignVertical: "top",
+                        paddingTop: 15,
+                        height: IOS ? 150 : undefined
+                      }}
+                      onChangeText={text => setComments(text)}
+                      placeholder={isArabic ? "تعليقات..." : "Any comment..."}
+                    />
                     <Text ref={contactRef} style={styles.heading(isArabic)}>
                       {isArabic ? "تفاصيل الطلب" : "Order Details"}
                     </Text>
