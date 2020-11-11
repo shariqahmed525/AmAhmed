@@ -98,18 +98,6 @@ export default ({ route: { params } }) => {
     const cityId = params?.city?.id;
     const phone = userData?.phone;
     const id = params?.id;
-    if (!trimName) {
-      setAlert({
-        alert: true,
-        error: true,
-        alertImg: ERROR_IMG,
-        alertTitle: isArabic ? "خطأ" : "Error",
-        alertText: isArabic
-          ? "الرجاء إدخال اسم العنوان"
-          : "Please enter address name"
-      });
-      return;
-    }
     if (!cityId) {
       setAlert({
         alert: true,
@@ -155,7 +143,7 @@ export default ({ route: { params } }) => {
       setLoading(true);
       await Axios.post(`${BASE_URL}/UserAddresses/update`, {
         id,
-        area: trimName,
+        area: trimName || (isArabic ? "لا شيء" : "None"),
         mobileNo: phone,
         locationID: cityId,
         address: trimAddress,
@@ -210,18 +198,6 @@ export default ({ route: { params } }) => {
     const trimAddress = address.trim();
     const cityId = params?.city?.id;
     const phone = userData?.phone;
-    if (!trimName) {
-      setAlert({
-        alert: true,
-        error: true,
-        alertImg: ERROR_IMG,
-        alertTitle: isArabic ? "خطأ" : "Error",
-        alertText: isArabic
-          ? "الرجاء إدخال اسم العنوان"
-          : "Please enter address name"
-      });
-      return;
-    }
     if (!cityId) {
       setAlert({
         alert: true,
@@ -261,7 +237,7 @@ export default ({ route: { params } }) => {
     try {
       setLoading(true);
       await Axios.post(`${BASE_URL}/UserAddresses/register`, {
-        area: trimName,
+        area: trimName || (isArabic ? "لا شيء" : "None"),
         mobileNo: phone,
         locationID: cityId,
         address: trimAddress,
@@ -282,8 +258,6 @@ export default ({ route: { params } }) => {
           ? "تمت إضافة العنوان بنجاح!"
           : "Address added successfully!"
       });
-      // setTimeout(() => {
-      // }, 500);
     } catch (error) {
       setAlert({
         alert: true,
@@ -328,7 +302,19 @@ export default ({ route: { params } }) => {
           back
           onBackPress={handleBack}
           titleAlign={isArabic ? "right" : "left"}
-          title={isArabic ? "عنوان جديد" : "New Address"}
+          title={
+            isArabic
+              ? params?.textAr
+                ? params?.textAr
+                : params?.isEdit
+                ? "تحديث العنوان"
+                : "موقع جديد"
+              : params?.textEn
+              ? params?.textEn
+              : params?.isEdit
+              ? "Update Address"
+              : "New Address"
+          }
         />
         <Alert
           error={alert.error}
@@ -351,7 +337,7 @@ export default ({ route: { params } }) => {
           <>
             <ScrollView contentContainerStyle={styles.mainContainer}>
               <Text style={styles.heading(isArabic)}>
-                {isArabic ? "اسم" : "Name"}
+                {isArabic ? "الاسم (اختياري)" : "Name (Optional)"}
               </Text>
               <TextInput
                 value={name}

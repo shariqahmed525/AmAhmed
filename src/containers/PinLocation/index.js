@@ -23,8 +23,6 @@ import RNAndroidLocationEnabler from "react-native-android-location-enabler";
 
 let _isMounted = false;
 
-const LATITUDE = 40.74333; // Korea Town, New York, NY 10001
-const LONGITUDE = -73.99033; // Korea Town, New York, NY 10001
 const LATITUDE_DELTA = 0.28;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (WIDTH / HEIGHT);
 
@@ -183,8 +181,6 @@ export default ({ route: { params } }) => {
     }
   };
 
-  console.log(coords, " coords");
-
   const markerRender = () => (
     <View
       pointerEvents="none"
@@ -221,9 +217,13 @@ export default ({ route: { params } }) => {
           titleAlign={isArabic ? "right" : "left"}
           title={
             isArabic
-              ? params?.isEdit
+              ? params?.textAr
+                ? params?.textAr
+                : params?.isEdit
                 ? "تحديث العنوان"
-                : "عنوان جديد"
+                : "موقع جديد"
+              : params?.textEn
+              ? params?.textEn
               : params?.isEdit
               ? "Update Address"
               : "New Address"

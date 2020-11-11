@@ -72,7 +72,7 @@ export default ({ route: { params } }) => {
           back
           onBackPress={handleBack}
           titleAlign={isArabic ? "right" : "left"}
-          title={isArabic ? "تحویل آن لائن" : "Online Transfer"}
+          title={isArabic ? "معلومات التحويل البنكي" : "Online Transfer"}
         />
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Image
@@ -100,7 +100,7 @@ export default ({ route: { params } }) => {
                 onPress={() =>
                   handleCopy(
                     "2621085259940",
-                    isArabic ? "رقم الحساب المنسوخ!" : "Copied Account Number!"
+                    isArabic ? "نسخ رقم الحساب!" : "Copied Account Number!"
                   )
                 }
               >
@@ -126,7 +126,7 @@ export default ({ route: { params } }) => {
                 onPress={() =>
                   handleCopy(
                     "SA4520000002621085259940",
-                    isArabic ? "رقم البيان المنسوخ!" : "Copied IBAN Number!"
+                    isArabic ? "نسخ رقم الايبان!" : "Copied IBAN Number!"
                   )
                 }
               >
@@ -141,7 +141,7 @@ export default ({ route: { params } }) => {
                 marginRight: isArabic ? 3 : 0
               }}
             >
-              {isArabic ? "ملحوظة:" : "Note:"}
+              {isArabic ? "ملاحظة:" : "Note:"}
             </Text>
             <Text style={styles.description(isArabic)}>
               {isArabic

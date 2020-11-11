@@ -127,8 +127,8 @@ export default ({ route: { params } }) => {
     try {
       const vfCode = getRandom(4);
       const msg = isArabic
-        ? `استخدم OTP هذا: ${vfCode}`
-        : `Use this OTP: ${vfCode}`;
+        ? `رمز التعريف : ${vfCode}`
+        : `Your verification code is: ${vfCode}`;
       await Axios.post(`${BASE_URL}/sms/send`, {
         text: msg,
         number: `966${params?.phone}`
@@ -172,8 +172,8 @@ export default ({ route: { params } }) => {
         <Header
           back
           onBackPress={handleBack}
-          title={isArabic ? "التحقق" : "Verification"}
           titleAlign={isArabic ? "right" : "left"}
+          title={isArabic ? "التحقق" : "Verification"}
         />
         <Alert
           error={alert.error}
@@ -202,7 +202,7 @@ export default ({ route: { params } }) => {
               <Text style={styles.description(isArabic)}>
                 {`${
                   isArabic
-                    ? "أدخل الرمز المكون من 4 أرقام المرسل إلى"
+                    ? "ادخل رقم التعريف تم ارساله الى :\n"
                     : "Enter the 4-digit code sent to\n"
                 }`}
               </Text>
@@ -223,7 +223,7 @@ export default ({ route: { params } }) => {
                       }
                     ]}
                   >
-                    {isArabic ? "رقم غير صحيح؟" : "Wrong number?"}
+                    {isArabic ? "الرقم خطاء؟" : "Wrong number?"}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -252,7 +252,7 @@ export default ({ route: { params } }) => {
                   {disabled
                     ? `${
                         isArabic
-                          ? ` أعد إرسال رمز التحقق في ${" "}${convertSecondstoTime(
+                          ? ` إعادة إرسال رمز التحقق في ${" "}${convertSecondstoTime(
                               timer
                             )}`
                           : `Resend verification code in ${convertSecondstoTime(
@@ -260,19 +260,10 @@ export default ({ route: { params } }) => {
                             )}`
                       }`
                     : isArabic
-                    ? "إعادة التحقق"
+                    ? "اعادة إرسال"
                     : "Resend Verification"}
                 </Text>
               </TouchableOpacity>
-              {/* <TouchableOpacity
-              style={styles.btn}
-              activeOpacity={0.7}
-              onPress={handleVerification}
-            >
-              <Text style={styles.btnText(isArabic)}>
-                {isArabic ? "تحقق" : "VERIFY"}
-              </Text>
-            </TouchableOpacity> */}
             </View>
           </View>
         )}

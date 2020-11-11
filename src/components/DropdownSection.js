@@ -3,7 +3,8 @@ import {
   Entypo,
   Fontisto,
   MaterialIcons,
-  MaterialCommunityIcons
+  MaterialCommunityIcons,
+  Feather
 } from "../common/icons";
 import {
   View,
@@ -31,9 +32,9 @@ export default forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
-  const handleListItem = (isNew, item, currentLocation) => {
+  const handleListItem = (isNew, item, currentLocation, giftAddress) => {
     if (isAddress) {
-      onPress(isNew, item, currentLocation);
+      onPress(isNew, item, currentLocation, giftAddress);
     } else {
       onPress(item);
     }
@@ -113,7 +114,7 @@ export default forwardRef((props, ref) => {
                   </View>
                   <View style={styles.textWrapper(isArabic)}>
                     <Text style={styles.listItemText(isArabic)}>
-                      {isArabic ? "عنوان جديد" : "New Address"}
+                      {isArabic ? "موقع جديد" : "New Address"}
                     </Text>
                   </View>
                   <View style={styles.listIconRight(isArabic)}>
@@ -123,6 +124,27 @@ export default forwardRef((props, ref) => {
               }
               titleStyle={{ width: WIDTH - 52 }}
               onPress={() => handleListItem(true)}
+              style={styles.menuItem(isArabic)}
+            />
+            <Divider />
+            <Menu.Item
+              title={
+                <View style={styles.listItem(isArabic)}>
+                  <View style={styles.listIcon(isArabic)}>
+                    <Feather size={20} color={theme} name="gift" />
+                  </View>
+                  <View style={styles.textWrapper(isArabic)}>
+                    <Text style={styles.listItemText(isArabic)}>
+                      {isArabic ? "إرسال هدية" : "Gift Address"}
+                    </Text>
+                  </View>
+                  <View style={styles.listIconRight(isArabic)}>
+                    <Entypo size={20} color={theme} name="chevron-thin-right" />
+                  </View>
+                </View>
+              }
+              titleStyle={{ width: WIDTH - 52 }}
+              onPress={() => handleListItem(false, undefined, false, true)}
               style={styles.menuItem(isArabic)}
             />
             {data && data.length > 0 && <Divider />}

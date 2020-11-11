@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   View,
   Text,
+  FlatList,
   TextInput,
   StatusBar,
   ScrollView,
@@ -17,8 +18,10 @@ import {
   BASE_URL,
   ERROR_IMG,
   THANKS_IMG,
-  MAP_API_KEY
+  MAP_API_KEY,
+  DELIVERY_SLOTS
 } from "../../common/constants";
+import "moment/locale/ar";
 import Axios from "axios";
 import styles from "./styles";
 import RenderMap from "./RenderMap";
@@ -27,6 +30,7 @@ import Header from "../../components/Header";
 import { Divider } from "react-native-paper";
 import { SafeAreaView } from "react-navigation";
 import NoInternet from "../../components/NoInternet";
+import SlotButton from "../../components/SlotButton";
 import NetInfo from "@react-native-community/netinfo";
 import * as Animatable from "react-native-animatable";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,7 +42,7 @@ import DropdownSection from "../../components/DropdownSection";
 import { getRandom, validatePhone } from "../../common/functions";
 import { clearCart, onAddressesAction } from "../../redux/actions/user";
 import RNAndroidLocationEnabler from "react-native-android-location-enabler";
-import SlotButton from "../../components/SlotButton";
+import moment from "moment";
 
 let _isMounted = false;
 
@@ -68,7 +72,7 @@ const LIST = ({
   </View>
 );
 
-export default () => {
+export default props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const inputRef = useRef(null);
@@ -86,13 +90,17 @@ export default () => {
   });
   const [ref, setRef] = useState("");
   const [text, setText] = useState("");
+  const [dates, setDates] = useState([]);
+  const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(false);
   const [internet, setInternet] = useState(true);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedSlot, setSelectedSlot] = useState("");
   const [cardDetails, setCardDetails] = useState(null);
   const [orderLoading, setOrderLoading] = useState(false);
-  const [fetchingLoading, setFetchingLoading] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState(null);
+  const [fetchingLoading, setFetchingLoading] = useState(false);
   const [currentLocatioLoading, setCurrentLocatioLoading] = useState(false);
   const {
     app: { language, selectedCity },
@@ -105,6 +113,7 @@ export default () => {
     if (_isMounted) {
       StatusBar.setBarStyle("light-content");
       ANDROID && StatusBar.setBackgroundColor(theme);
+      makeDates();
       handleCurrentLocation(true);
     }
   }, []);
@@ -117,6 +126,57 @@ export default () => {
       fetchingDetails(trimText || userData?.phone);
     }
   }, [randomCheckout]);
+
+  const makeDates = () => {
+    moment.locale(isArabic ? "ar" : "en");
+    const dates = new Array(7).fill("days").map((_, i) => ({
+      id: i + 1,
+      name: moment()
+        .add(i, "d")
+        .format("dddd"),
+      fullDate: moment()
+        .add(i, "d")
+        .format(),
+      date: moment()
+        .add(i, "d")
+        .format("DD-MM-YYYY")
+    }));
+
+    moment.locale("en");
+    const arr = [];
+    DELIVERY_SLOTS.map(v => {
+      const currentTime = moment().format("HH");
+      const endTime = moment(v.endTime, "ha").format("HH");
+      if (currentTime >= endTime) {
+        arr.push(false);
+      } else {
+        arr.push(true);
+      }
+      return v;
+    });
+
+    setDates([...dates]);
+    setSlots([...DELIVERY_SLOTS]);
+
+    if (arr.every(Boolean)) {
+      setSelectedDate({ ...dates[0] });
+      setSelectedSlot({ ...DELIVERY_SLOTS[0] });
+      return;
+    }
+    if (arr.every(o => !o)) {
+      setSelectedDate({ ...dates[1] });
+      setSelectedSlot({ ...DELIVERY_SLOTS[0] });
+      return;
+    }
+    if (!arr[0]) {
+      setSelectedDate({ ...dates[0] });
+      setSelectedSlot({ ...DELIVERY_SLOTS[1] });
+      return;
+    }
+
+    setSelectedDate({ ...dates[0] });
+    setSelectedSlot({ ...DELIVERY_SLOTS[0] });
+  };
 
   const fetchingDetails = async phone => {
     try {
@@ -197,12 +257,9 @@ export default () => {
     try {
       setLoading(true);
       const verificationCode = getRandom(4);
-      // const msg = isArabic
-      //   ? `رمز التحقق الخاص بـعم أحمد الخاص بك هو: ${verificationCode}`
-      //   : `Your AmAhmed's verification code is: ${verificationCode}`;
       const msg = isArabic
-        ? `استخدم OTP هذا: ${verificationCode}`
-        : `Use this OTP: ${verificationCode}`;
+        ? `رمز التعريف : ${verificationCode}`
+        : `Your verification code is: ${verificationCode}`;
       await Axios.post(`${BASE_URL}/sms/send`, {
         text: msg,
         number: `966${text}`
@@ -249,48 +306,9 @@ export default () => {
         2
       );
       const gatewayURL = `https://amahmed.com/api/pay/generate?test=0&amount=1&currency=SAR&description=For payment purpose&authorisedUrl=https://www.amahmed.com/done/&declinedUrl=https://www.amahmed.com/declined/&cancelledUrl=https://www.amahmed.com/cancelled/`;
-      // const gatewayURL = "https://secure.telr.com/gateway/order.json";
       setCurrentLocatioLoading(true);
       const { data } = await Axios.get(gatewayURL);
-      // const { data } = await Axios.post(
-      //   gatewayURL,
-      //   {
-      //     method: "create",
-      //     store: 23837,
-      //     authkey: "Jcv9^NQJPW@6vh73",
-      //     order: {
-      //       cartid: `${getRandom(10)}-${getRandom(1)}`,
-      //       test: "0",
-      //       // amount: "1",
-      //       amount: amount,
-      //       currency: "SAR",
-      //       description: "Test Transaction",
-      //       trantype: "ecom"
-      //     },
-      //     customer: {
-      //       ref: `${new Date().getFullYear()}`,
-      //       email: "sales@amahmed.com",
-      //       name: {
-      //         forenames: "Ahmed",
-      //         surname: "Am"
-      //       },
-      //       address: {
-      //         line1: selectedAddress?.address,
-      //         city: selectedCity?.nameEn,
-      //         country: "SA"
-      //       },
-      //       phone: `966${userData?.phone}`
-      //     },
-      //     return: {
-      //       authorised: "https://www.amahmed.com/done/",
-      //       declined: "https://www.amahmed.com/declined/",
-      //       cancelled: "https://www.amahmed.com/cancelled/"
-      //     }
-      //   }
-      // );
-      console.log(data, " response");
       if (data && data?.order && data?.order?.url) {
-        // setRef(data?.order?.ref);
         setRef(data?.order?.refs);
         navigation.navigate("Payment", {
           handleCardCallBack,
@@ -310,10 +328,17 @@ export default () => {
     }
   };
 
-  const handleAddressListItem = (isNew, address, currentLocation) => {
-    if (isNew) {
+  const handleAddressListItem = (
+    isNew,
+    address,
+    currentLocation,
+    giftAddress
+  ) => {
+    if (isNew || giftAddress) {
       navigation.navigate("PinLocation", {
-        fromCheckout: true
+        fromCheckout: true,
+        textEn: giftAddress ? "Gift Address" : "New Address",
+        textAr: giftAddress ? "إرسال هدية" : "موقع جديد"
       });
       return;
     }
@@ -701,6 +726,77 @@ export default () => {
       });
   };
 
+  const keyExtractor = (item, index) => item + index;
+
+  const handleSelectedDate = date => {
+    if (selectedDate?.id === date?.id) {
+      return;
+    }
+    if (date?.id === 1) {
+      moment.locale("en");
+      const arr = [];
+      DELIVERY_SLOTS.map(v => {
+        const currentTime = moment().format("HH");
+        const endTime = moment(v.endTime, "ha").format("HH");
+        if (currentTime >= endTime) {
+          arr.push(false);
+        } else {
+          arr.push(true);
+        }
+        return v;
+      });
+      if (arr.every(Boolean)) {
+        setSelectedDate({ ...date });
+        return;
+      }
+      if (arr.every(o => !o)) {
+        setAlert({
+          alert: true,
+          error: true,
+          alertImg: ERROR_IMG,
+          alertTitle: isArabic ? "خطأ" : "Error",
+          alertText: isArabic
+            ? "عذرًا ، لا يمكنك تحديد تاريخ لا تتوفر فيه فترة زمنية"
+            : "Sorry, you cannot select a date for which no slot is available"
+        });
+        return;
+      }
+      if (!arr[0]) {
+        setSelectedDate({ ...date });
+        setSelectedSlot({ ...DELIVERY_SLOTS[1] });
+        return;
+      }
+      setSelectedDate({ ...date });
+      return;
+    }
+    setSelectedDate({ ...date });
+  };
+
+  const handleSelectedSlot = slot => {
+    if (selectedSlot?.id === slot?.id) {
+      return;
+    }
+    if (selectedDate?.id === 1) {
+      const currentTime = moment().format("HH");
+      const endTime = moment(slot.endTime, "ha").format("HH");
+      if (currentTime >= endTime) {
+        setAlert({
+          alert: true,
+          error: true,
+          alertImg: ERROR_IMG,
+          alertTitle: isArabic ? "خطأ" : "Error",
+          alertText: isArabic
+            ? "عذرًا ، لا يمكنك تحديد فترة زمنية سابقة"
+            : "Sorry, you can't select a past slot"
+        });
+      } else {
+        setSelectedSlot({ ...slot });
+      }
+      return;
+    }
+    setSelectedSlot({ ...slot });
+  };
+
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={IOS && "padding"}>
       <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
@@ -749,7 +845,7 @@ export default () => {
                       selected={selectedAddress}
                       onPress={handleAddressListItem}
                       btnText={isArabic ? "حدد العنوان" : "Select Address"}
-                      title={isArabic ? "عنوان التسليم" : "Delivery Address"}
+                      title={isArabic ? "عنوان التوصيل" : "Delivery Address"}
                     />
 
                     {mapMemo}
@@ -761,73 +857,59 @@ export default () => {
                       onPress={handlePaymentListItem}
                       title={isArabic ? "طريقة الدفع" : "Payment Method"}
                       btnText={
-                        isArabic ? "اختار طريقة الدفع" : "Select Payment Method"
+                        isArabic ? "اختر طريقة الدفع" : "Select Payment Method"
                       }
                     />
                     <Text ref={contactRef} style={styles.heading(isArabic)}>
-                      {isArabic ? "تفاصيل الطلب" : "Delivery Days"}
+                      {isArabic ? "ايام التوصيل" : "Delivery Days"}
                     </Text>
-                    <ScrollView
+                    <FlatList
                       horizontal
+                      data={dates}
+                      extraData={props}
+                      inverted={isArabic}
                       showsHorizontalScrollIndicator={false}
                       contentContainerStyle={styles.verticalScroll}
-                    >
-                      <SlotButton
-                        isActive
-                        mainText="Tuesday"
-                        secondaryText="10-11-2020"
-                      />
-                      <SlotButton
-                        mainText="Tuesday"
-                        secondaryText="10-11-2020"
-                      />
-                      <SlotButton
-                        mainText="Tuesday"
-                        secondaryText="10-11-2020"
-                      />
-                      <SlotButton
-                        mainText="Tuesday"
-                        secondaryText="10-11-2020"
-                      />
-                      <SlotButton
-                        mainText="Tuesday"
-                        secondaryText="10-11-2020"
-                      />
-                      <SlotButton
-                        mainText="Tuesday"
-                        secondaryText="10-11-2020"
-                      />
-                    </ScrollView>
+                      renderItem={({ item }) => (
+                        <SlotButton
+                          isArabic={isArabic}
+                          mainText={item.name}
+                          secondaryText={item.date}
+                          isActive={item.id === selectedDate?.id}
+                          onPress={() => handleSelectedDate(item)}
+                        />
+                      )}
+                      keyExtractor={keyExtractor}
+                    />
+
                     <Text ref={contactRef} style={styles.heading(isArabic)}>
-                      {isArabic ? "تفاصيل الطلب" : "Delivery Slots"}
+                      {isArabic ? "وقت التوصيل" : "Delivery Slots"}
                     </Text>
-                    <ScrollView
+                    <FlatList
                       horizontal
+                      data={slots}
+                      extraData={props}
+                      inverted={isArabic}
                       showsHorizontalScrollIndicator={false}
                       contentContainerStyle={styles.verticalScroll}
-                    >
-                      <SlotButton
-                        isActive
-                        mainText="First Slot-Zayed"
-                        secondaryText="From 11:00 AM To 02:00 PM"
-                      />
-                      <SlotButton
-                        mainText="First Slot-Zayed"
-                        secondaryText="From 11:00 AM To 02:00 PM"
-                      />
-                      <SlotButton
-                        mainText="First Slot-Zayed"
-                        secondaryText="From 11:00 AM To 02:00 PM"
-                      />
-                      <SlotButton
-                        mainText="First Slot-Zayed"
-                        secondaryText="From 11:00 AM To 02:00 PM"
-                      />
-                      <SlotButton
-                        mainText="First Slot-Zayed"
-                        secondaryText="From 11:00 AM To 02:00 PM"
-                      />
-                    </ScrollView>
+                      renderItem={({ item }) => (
+                        <SlotButton
+                          isArabic={isArabic}
+                          onPress={() => handleSelectedSlot(item)}
+                          isActive={item.id === selectedSlot?.id}
+                          mainText={
+                            isArabic ? item?.mainTextAr : item?.mainTextEn
+                          }
+                          secondaryText={
+                            isArabic
+                              ? item?.secondaryTextAr
+                              : item?.secondaryTextEn
+                          }
+                        />
+                      )}
+                      keyExtractor={keyExtractor}
+                    />
+
                     <Text ref={contactRef} style={styles.heading(isArabic)}>
                       {isArabic ? "تفاصيل الطلب" : "Order Details"}
                     </Text>
@@ -836,7 +918,7 @@ export default () => {
                         bold
                         isArabic={isArabic}
                         primaryText={
-                          isArabic ? "طريقة الدفع او السداد" : "Payment Method"
+                          isArabic ? "طريقة الدفع" : "Payment Method"
                         }
                         secondaryText={
                           isArabic
@@ -920,7 +1002,7 @@ export default () => {
                       ref={contactRef}
                       style={styles.heading(isArabic, true)}
                     >
-                      {isArabic ? "أدخل رقم الهاتف" : "Enter Phone Number"}
+                      {isArabic ? "أدخل رقم الجوال" : "Enter Phone Number"}
                     </Text>
                     <TextInput
                       blurOnSubmit
@@ -957,7 +1039,7 @@ export default () => {
                           fontSize: isArabic ? WIDTH * 0.05 : WIDTH * 0.045
                         }}
                       >
-                        {isArabic ? "مكان الامر" : "PLACE ORDER"}
+                        {isArabic ? "إنهاء الطلب" : "PLACE ORDER"}
                       </Text>
                     </TouchableOpacity>
                   ) : (
@@ -979,7 +1061,7 @@ export default () => {
                         </View>
                       ) : (
                         <Text style={styles.btnText(isArabic)}>
-                          {isArabic ? "إرسال التحقق" : "SEND VERIFICATION"}
+                          {isArabic ? "إرسال رمز التحقق" : "SEND VERIFICATION"}
                         </Text>
                       )}
                     </TouchableOpacity>

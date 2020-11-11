@@ -43,7 +43,7 @@ export const payments = [
   },
   {
     id: "p-2",
-    nameAr: "بطاقة الائتمان/الخصم",
+    nameAr: "بطاقه",
     nameEn: "Credit/Debit Card",
     icon: (
       <MaterialCommunityIcons
@@ -55,7 +55,7 @@ export const payments = [
   },
   {
     id: "p-3",
-    nameAr: "تحویل آن لائن",
+    nameAr: "التحويل البنكي",
     nameEn: "Online Transfer",
     icon: <MaterialCommunityIcons size={27} name="bank" color={theme} />
   }
@@ -71,5 +71,26 @@ export const TABS = [
     code: "pst",
     name: isArabic => (isArabic ? "التاريخ" : "HISTORY"),
     data: [0, 1, 2, 3, 4, 5, 6, 7]
+  }
+];
+
+export const DELIVERY_SLOTS = [
+  {
+    id: "1",
+    mainTextAr: "الفترة الأولى",
+    mainTextEn: "First Slot-Morning",
+    secondaryTextEn: "From 10:00 AM to 02:00 PM",
+    secondaryTextAr: "من ١٠:٠٠ صباحا الي ٠٢:٠٠ مساء",
+    startTime: "10am",
+    endTime: "2pm"
+  },
+  {
+    id: "2",
+    mainTextAr: "الفترة الثانية",
+    mainTextEn: "Second Slot-Evening",
+    secondaryTextEn: "From 05:00 PM to 09:00 PM",
+    secondaryTextAr: "من ٠٥:٠٠ مساء  الي ٠٩:٠٠ مساء",
+    startTime: "5pm",
+    endTime: "9pm"
   }
 ];

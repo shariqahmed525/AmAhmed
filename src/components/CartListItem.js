@@ -121,7 +121,13 @@ export default ({ item, isArabic }) => {
             )}
           </View>
           <View style={styles.cartDetailsWrapper(isArabic)}>
-            <View style={styles.cartDetails(isArabic)}>
+            <View
+              style={styles.cartDetails(
+                item?.hasCuttingWay || item?.hasHeadAndLegs || item?.hasPacking
+                  ? 10
+                  : 0
+              )}
+            >
               <Text
                 ellipsizeMode="tail"
                 numberOfLines={isArabic ? 1 : 2}
@@ -208,30 +214,6 @@ export default ({ item, isArabic }) => {
           </View>
         </View>
         <View style={styles.cartItemTotal(isArabic)}>
-          {/* {item?.hasCuttingWay && item?.cuttingWay?.cost > 0 && (
-            <View style={styles.costWrapper}>
-              <Text style={styles.cost}>
-                {item?.cuttingWay?.cost * item?.quantity}
-              </Text>
-              <Text style={styles.plus}>+</Text>
-            </View>
-          )}
-          {item?.hasHeadAndLegs && item?.headAndLeg?.cost > 0 && (
-            <View style={styles.costWrapper}>
-              <Text style={styles.cost}>
-                {item?.headAndLeg?.cost * item?.quantity}
-              </Text>
-              <Text style={styles.plus}>+</Text>
-            </View>
-          )}
-          {item?.hasPacking && item?.packing?.cost > 0 && (
-            <View style={styles.costWrapper}>
-              <Text style={styles.cost}>
-                {item?.packing?.cost * item?.quantity}
-              </Text>
-              <Text style={styles.plus}>+</Text>
-            </View>
-          )} */}
           <Text style={styles.cartItemTotalText(isArabic)}>
             {!isArabic && "SAR "}
             <Text style={styles.cartItemTotalPriceText(isArabic)}>
@@ -306,9 +288,9 @@ const styles = StyleSheet.create({
     textAlign: isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
   }),
-  cartDetails: () => ({
+  cartDetails: (paddingBottom = 0) => ({
     width: "100%",
-    paddingBottom: 10
+    paddingBottom: paddingBottom
   }),
   cartActionWrapper: () => ({
     marginTop: 10,

@@ -185,10 +185,10 @@ export default () => {
               source={require("../../../assets/animations/emptycart.json")}
             />
             <Text style={styles.emptyText(isArabic)}>
-              {isArabic ? "فارغة" : "Empty"}
+              {isArabic ? "لايوجد رصيد" : "Empty"}
             </Text>
             <Text style={styles.emptySubText(isArabic)}>
-              {isArabic ? "السلة فارغة" : "The cart is empty"}
+              {isArabic ? "لا يوجد رصيد في البطاقة" : "The cart is empty"}
             </Text>
           </View>
         )}
