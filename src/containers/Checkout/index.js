@@ -38,7 +38,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Divider, RadioButton } from "react-native-paper";
 import Geolocation from "@react-native-community/geolocation";
 import DropdownSection from "../../components/DropdownSection";
-import { getRandom, validatePhone } from "../../common/functions";
+import { getRandom, makeOtpCode, validatePhone } from "../../common/functions";
 import { lightGray, lightTheme, theme } from "../../common/colors";
 import { clearCart, onAddressesAction } from "../../redux/actions/user";
 import RNAndroidLocationEnabler from "react-native-android-location-enabler";
@@ -257,20 +257,17 @@ export default props => {
     const trimText = text.trim();
     try {
       setLoading(true);
-      const verificationCode = getRandom(4);
-      const msg = isArabic
-        ? `رمز التعريف : ${verificationCode}`
-        : `Your verification code is: ${verificationCode}`;
-      console.log(msg, " msg");
+      const otp = makeOtpCode(isArabic);
+      console.log(otp.msg, " msg");
       await Axios.post(`${BASE_URL}/sms/send`, {
-        text: msg,
+        text: otp.msg,
         number: `966${text}`
       });
       navigation.navigate("Verification", {
         focusInput,
         animateButton,
         phone: trimText,
-        verificationCode
+        verificationCode: otp.vfCode
       });
     } catch (error) {
       console.log(error, " error in send verification");
@@ -307,7 +304,7 @@ export default props => {
       const amount = (total() + calculateVat() + calculateShipping()).toFixed(
         2
       );
-      const gatewayURL = `https://amahmed.com/api/pay/generate?test=0&amount=1&currency=SAR&description=For payment purpose&authorisedUrl=https://www.amahmed.com/done/&declinedUrl=https://www.amahmed.com/declined/&cancelledUrl=https://www.amahmed.com/cancelled/`;
+      const gatewayURL = `https://amahmed.com/api/pay/generate?test=0&amount=${amount}&currency=SAR&description=For payment purpose&authorisedUrl=https://www.amahmed.com/done/&declinedUrl=https://www.amahmed.com/declined/&cancelledUrl=https://www.amahmed.com/cancelled/`;
       setCurrentLocatioLoading(true);
       const { data } = await Axios.get(gatewayURL);
       if (data && data?.order && data?.order?.url) {

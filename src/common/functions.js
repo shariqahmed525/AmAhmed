@@ -1,7 +1,13 @@
 import _ from "lodash";
 import { Toast } from "native-base";
 import { Platform } from "react-native";
-import { HEIGHT, WIDTH } from "./constants";
+import {
+  DEBUG_SMS_RETRIVER_CODE,
+  RELEASE_SMS_RETRIVER_CODE,
+  HEIGHT,
+  IOS,
+  WIDTH
+} from "./constants";
 import { CommonActions } from "@react-navigation/native";
 
 export const Random = arr => {
@@ -144,4 +150,21 @@ export const getRandom = length => {
   return Math.floor(
     Math.pow(10, length - 1) + Math.random() * 9 * Math.pow(10, length - 1)
   );
+};
+
+export const makeOtpCode = isArabic => {
+  const vfCode = getRandom(4);
+  if (IOS) {
+    const msg = isArabic
+      ? `رمز التعريف: ${vfCode}`
+      : `Your verification code is: ${vfCode}`;
+    return msg;
+  }
+  const msg = isArabic
+    ? `رمز التعريف: ${vfCode}\n${RELEASE_SMS_RETRIVER_CODE}`
+    : `<#> Your verification code is: ${vfCode}\n${RELEASE_SMS_RETRIVER_CODE}`;
+  return {
+    msg,
+    vfCode
+  };
 };

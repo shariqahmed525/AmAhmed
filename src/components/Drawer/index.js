@@ -86,10 +86,10 @@ export default ({ navigation, drawerClose }) => {
         {
           title: "AmAhmed",
           message: isArabic
-            ? `قم بتنزيل التطبيق باستخدام رابط معين: \n${
+            ? `قم بتحميل تطبيق عم احمد باستخدام الرابط: \n${
                 IOS ? IosURL : AndroidURL
               }`
-            : `Download the app using given link: \n${
+            : `Download the AmAhmed's app using given link: \n${
                 IOS ? IosURL : AndroidURL
               }`
         },

@@ -1,4 +1,11 @@
 import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  Clipboard,
+  StatusBar,
+  TouchableOpacity
+} from "react-native";
 import Axios from "axios";
 import styles from "./styles";
 import Alert from "../../components/Alert";
@@ -8,11 +15,11 @@ import LottieView from "lottie-react-native";
 import { SafeAreaView } from "react-navigation";
 import NoInternet from "../../components/NoInternet";
 import NetInfo from "@react-native-community/netinfo";
+import SmsRetriever from "react-native-sms-retriever";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import OTPInputView from "@twotalltotems/react-native-otp-input";
-import { View, Text, TouchableOpacity, StatusBar } from "react-native";
-import { convertSecondstoTime, getRandom } from "../../common/functions";
+import { convertSecondstoTime, makeOtpCode } from "../../common/functions";
 import { onReCallCheckout, saveUserData } from "../../redux/actions/user";
 import { ANDROID, ARABIC, BASE_URL, ERROR_IMG } from "../../common/constants";
 
@@ -49,6 +56,8 @@ export default ({ route: { params } }) => {
     if (_isMounted) {
       StatusBar.setBarStyle("light-content");
       ANDROID && StatusBar.setBackgroundColor(theme);
+      // ANDROID && _onSmsListener();
+      _onSmsListener();
     }
   }, []);
 
@@ -60,6 +69,32 @@ export default ({ route: { params } }) => {
       alertText: "",
       alertTitle: ""
     });
+
+  // Get the SMS message (second gif)
+  const _onSmsListener = async () => {
+    try {
+      const registered = await SmsRetriever.startSmsRetriever();
+      if (registered) {
+        SmsRetriever.addSmsListener(event => {
+          otpCode(event.message);
+          SmsRetriever.removeSmsListener();
+        });
+      }
+    } catch (error) {
+      console.log(error, " error in _onSmsListener");
+    }
+  };
+
+  const otpCode = message => {
+    try {
+      const retreivedCode = message
+        .split("<#> Your verification code is: ")[1]
+        .split(".")[0];
+      Clipboard.setString(retreivedCode);
+    } catch (error) {
+      console.log(error, " error in otpCode");
+    }
+  };
 
   const checkConnection = func => {
     NetInfo.fetch().then(state => {
@@ -77,6 +112,7 @@ export default ({ route: { params } }) => {
   };
 
   const handleVerification = async text => {
+    if (!text || (text && text.length !== 4)) return;
     if (text == verificationCode || text == VERFICATION_CODE) {
       setLoading(true);
       try {
@@ -125,16 +161,13 @@ export default ({ route: { params } }) => {
 
   const handleResend = async () => {
     try {
-      const vfCode = getRandom(4);
-      const msg = isArabic
-        ? `رمز التعريف : ${vfCode}`
-        : `Your verification code is: ${vfCode}`;
+      const otp = makeOtpCode(isArabic);
       await Axios.post(`${BASE_URL}/sms/send`, {
-        text: msg,
+        text: otp.msg,
         number: `966${params?.phone}`
       });
       setTimer(TIMER);
-      setVerificationCode(vfCode);
+      setVerificationCode(otp.vfCode);
     } catch (error) {
       console.log(error, " error in re-send verification");
       setAlert({
