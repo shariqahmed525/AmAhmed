@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView } from "react-navigation";
-import { useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -8,27 +6,44 @@ import {
   StatusBar,
   TouchableOpacity
 } from "react-native";
+import {
+  TABS,
+  ARABIC,
+  ANDROID,
+  BASE_URL,
+  INFO_IMG,
+  ERROR_IMG
+} from "../../common/constants";
 import Axios from "axios";
 import "moment/locale/ar";
 import moment from "moment";
 import styles from "./styles";
 import { useSelector } from "react-redux";
+import Alert from "../../components/Alert";
 import LottieView from "lottie-react-native";
 import Header from "../../components/Header";
+import { SafeAreaView } from "react-navigation";
 import NoInternet from "../../components/NoInternet";
 import NetInfo from "@react-native-community/netinfo";
-import { ANDROID, ARABIC, BASE_URL, TABS } from "../../common/constants";
-import { theme, delivered, cancelled, pending } from "../../common/colors";
+import { useNavigation } from "@react-navigation/native";
+import { theme, delivered, lightTheme } from "../../common/colors";
+import { EvilIcons } from "../../common/icons";
 
 let _isMounted = false;
 
-const _renderItems = ({ item, isArabic }) => {
+const _renderItems = ({ item, isArabic, onDeletePress }) => {
   moment.locale(isArabic ? "ar" : "en");
   return (
     <View style={styles.orderListWrapper(isArabic)}>
       <View style={styles.orderListHeader(isArabic)}>
         <Text style={styles.title(isArabic)}>
-          {isArabic ? item?.locationNameAr : item?.locationNameEn}
+          {isArabic
+            ? item?.userLocationAr
+              ? item?.userLocationAr
+              : "الموقع الحالي"
+            : item?.userLocationEn
+            ? item?.userLocationEn
+            : "Current Location"}
         </Text>
         <Text style={styles.totalPrice(isArabic)}>
           {!isArabic && "SAR "}
@@ -58,12 +73,7 @@ const _renderItems = ({ item, isArabic }) => {
             {moment(item?.date).format("hh:mm A")}
           </Text>
         </View>
-        <View
-          style={styles.orderListItemStatus(delivered)}
-          // style={styles.orderListItemStatus(
-          //   isPast ? (index === 0 ? cancelled : delivered) : pending
-          // )}
-        >
+        <View style={styles.orderListItemStatus(delivered)}>
           <Text
             numberOfLines={1}
             ellipsizeMode="tail"
@@ -73,6 +83,14 @@ const _renderItems = ({ item, isArabic }) => {
           </Text>
         </View>
       </View>
+      <View style={styles.afterFooter(isArabic)}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => onDeletePress(item.orderId)}
+        >
+          <EvilIcons size={25} color={theme} name="trash" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -80,9 +98,17 @@ const _renderItems = ({ item, isArabic }) => {
 export default props => {
   const navigation = useNavigation();
   const [internet, setInternet] = useState(true);
+  const [alert, setAlert] = useState({
+    alert: false,
+    error: false,
+    alertImg: "",
+    alertText: "",
+    alertTitle: ""
+  });
   const [currentIndex, setCurrentIndex] = useState(0);
   const [pendingOrders, setPendingOrders] = useState([]);
   const [historyOrders, setHistoryOrders] = useState([]);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [pendingLoading, setPendingLoading] = useState(true);
   const {
@@ -94,10 +120,10 @@ export default props => {
   useEffect(() => {
     _isMounted = true;
     if (_isMounted) {
-      checkConnection(getPendingOrders);
-      checkConnection(getHistoryOrders);
       StatusBar.setBarStyle("light-content");
       ANDROID && StatusBar.setBackgroundColor(theme);
+      checkConnection(getPendingOrders);
+      checkConnection(getHistoryOrders);
     }
   }, []);
 
@@ -160,7 +186,70 @@ export default props => {
 
   const keyExtractor = (item, index) => item + index;
 
-  const handleRetry = () => {};
+  const handleRetry = () => {
+    checkConnection(getPendingOrders);
+    checkConnection(getHistoryOrders);
+  };
+
+  const handleConfirm = (orderId, isPast) => {
+    setAlert({
+      alert: true,
+      error: false,
+      btnPress: () => onDeletePress(orderId, isPast),
+      cancelText: isArabic ? "إلغاء" : "Cancel",
+      alertText: isArabic
+        ? "هل أنت متأكد من حذف هذا الطلب؟"
+        : "Are you sure to delete this order?"
+    });
+  };
+
+  const alertClose = () =>
+    setAlert({
+      alert: false,
+      error: false,
+      alertImg: "",
+      alertText: "",
+      alertTitle: ""
+    });
+
+  const onDeletePress = (orderId, isPast) => {
+    checkConnection(() => deleteOrder(orderId, isPast));
+    alertClose();
+  };
+
+  const deleteOrder = async (orderId, isPast) => {
+    try {
+      setDeleteLoading(true);
+      console.log(orderId, " order id");
+      await Axios.get(`${BASE_URL}/Orders/hide/orderId/${orderId}`);
+      if (isPast) {
+        setHistoryOrders(res => [...res.filter(o => o.orderId !== orderId)]);
+      } else {
+        setPendingOrders(res => [...res.filter(o => o.orderId !== orderId)]);
+      }
+      setAlert({
+        alert: true,
+        error: false,
+        alertImg: INFO_IMG,
+        alertText: isArabic
+          ? "تم حذف العنوان بنجاح!"
+          : "Order deleted successfully!"
+      });
+    } catch (error) {
+      console.log(error, " error in deleting order");
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic
+          ? "عذرا، هناك خطأ ما. حاول مرة اخرى!"
+          : "Sorry, something went wrong. Please try again!"
+      });
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
@@ -171,10 +260,33 @@ export default props => {
           title={isArabic ? "طلباتي" : "My Orders"}
           titleAlign={isArabic ? "right" : "left"}
         />
+        <Alert
+          error={alert.error}
+          alert={alert.alert}
+          img={alert.alertImg}
+          btnColor={lightTheme}
+          text={alert.alertText}
+          title={alert.alertTitle}
+          onCancelPress={alertClose}
+          cancelText={alert.cancelText}
+          btnText={isArabic ? "حسنا" : "OK"}
+          onBtnPress={alert.btnPress || alertClose}
+        />
+
         {!internet ? (
           <NoInternet isArabic={isArabic} onPress={handleRetry} />
         ) : (
           <>
+            {deleteLoading && (
+              <View style={styles.absoluteLoaderWrapper}>
+                <LottieView
+                  loop
+                  autoPlay
+                  style={styles.loader}
+                  source={require("../../../assets/animations/loader.json")}
+                />
+              </View>
+            )}
             <View style={styles.tabs(isArabic)}>
               {TABS.map((v, i) => {
                 return (
@@ -190,6 +302,8 @@ export default props => {
                     )}
                   >
                     <Text
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
                       style={styles.tabItemText(isArabic, i === currentIndex)}
                     >
                       {v.name(isArabic)}
@@ -225,7 +339,8 @@ export default props => {
                   renderItem={props =>
                     _renderItems({
                       ...props,
-                      isArabic
+                      isArabic,
+                      onDeletePress: orderId => handleConfirm(orderId)
                     })
                   }
                 />
@@ -257,6 +372,7 @@ export default props => {
                   _renderItems({
                     ...props,
                     isArabic,
+                    onDeletePress: orderId => handleConfirm(orderId, isPast),
                     isPast: true
                   })
                 }

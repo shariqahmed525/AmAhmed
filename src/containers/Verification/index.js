@@ -56,8 +56,7 @@ export default ({ route: { params } }) => {
     if (_isMounted) {
       StatusBar.setBarStyle("light-content");
       ANDROID && StatusBar.setBackgroundColor(theme);
-      // ANDROID && _onSmsListener();
-      _onSmsListener();
+      ANDROID && _onSmsListener();
     }
   }, []);
 
@@ -256,7 +255,7 @@ export default ({ route: { params } }) => {
                       }
                     ]}
                   >
-                    {isArabic ? "الرقم خطاء؟" : "Wrong number?"}
+                    {isArabic ? "تغيير رقم الجوال" : "Wrong number?"}
                   </Text>
                 </TouchableOpacity>
               </View>

@@ -20,6 +20,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
+  absoluteLoaderWrapper: {
+    zIndex: 100,
+    width: "100%",
+    height: "100%",
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center"
+  },
   loader: {
     width: 120
   },
@@ -30,7 +38,7 @@ const styles = StyleSheet.create({
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
   tabItem: (isArabic, isActive, first, last) => ({
-    width: "40%",
+    width: "42%",
     borderWidth: 1,
     borderColor: theme,
     paddingVertical: isArabic ? 3 : 10,
@@ -149,6 +157,13 @@ const styles = StyleSheet.create({
     color: darkGray,
     textAlign: "center",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
+  }),
+  afterFooter: isArabic => ({
+    marginTop: 5,
+    paddingTop: 7,
+    borderTopWidth: 1,
+    borderTopColor: "#e3e3e3",
+    alignItems: isArabic ? "flex-start" : "flex-end"
   })
 });
 

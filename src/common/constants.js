@@ -4,7 +4,6 @@ import { Dimensions, Platform } from "react-native";
 import { theme } from "./colors";
 import { MaterialCommunityIcons } from "./icons";
 
-// export const BASE_URL = "http://api.amahmed.com";
 export const BASE_URL = "https://amahmed.com/api";
 export const MAP_API_KEY = "AIzaSyA3X_iki3k_oSwkrDp3zbLeTTKTAnlAX80";
 
@@ -47,7 +46,7 @@ export const payments = [
   },
   {
     id: "p-2",
-    nameAr: "بطاقه",
+    nameAr: "الدفع الإلكتروني",
     nameEn: "Credit/Debit Card",
     icon: (
       <MaterialCommunityIcons
@@ -68,12 +67,12 @@ export const payments = [
 export const TABS = [
   {
     code: "act",
-    name: isArabic => (isArabic ? "تيار" : "CURRENT"),
+    name: isArabic => (isArabic ? "الطلبات الحالية" : "CURRENT"),
     data: [0, 1, 2, 3, 4, 5, 6, 7]
   },
   {
     code: "pst",
-    name: isArabic => (isArabic ? "التاريخ" : "HISTORY"),
+    name: isArabic => (isArabic ? "الطلبات السابقة" : "HISTORY"),
     data: [0, 1, 2, 3, 4, 5, 6, 7]
   }
 ];

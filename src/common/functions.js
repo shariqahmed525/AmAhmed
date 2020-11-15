@@ -158,11 +158,14 @@ export const makeOtpCode = isArabic => {
     const msg = isArabic
       ? `رمز التعريف: ${vfCode}`
       : `Your verification code is: ${vfCode}`;
-    return msg;
+    return {
+      msg,
+      vfCode
+    };
   }
   const msg = isArabic
-    ? `رمز التعريف: ${vfCode}\n${RELEASE_SMS_RETRIVER_CODE}`
-    : `<#> Your verification code is: ${vfCode}\n${RELEASE_SMS_RETRIVER_CODE}`;
+    ? `رمز التعريف: ${vfCode}. ${RELEASE_SMS_RETRIVER_CODE}`
+    : `<#> Your verification code is: ${vfCode}. ${RELEASE_SMS_RETRIVER_CODE}`;
   return {
     msg,
     vfCode

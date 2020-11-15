@@ -38,7 +38,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Divider, RadioButton } from "react-native-paper";
 import Geolocation from "@react-native-community/geolocation";
 import DropdownSection from "../../components/DropdownSection";
-import { getRandom, makeOtpCode, validatePhone } from "../../common/functions";
+import { makeOtpCode, validatePhone } from "../../common/functions";
 import { lightGray, lightTheme, theme } from "../../common/colors";
 import { clearCart, onAddressesAction } from "../../redux/actions/user";
 import RNAndroidLocationEnabler from "react-native-android-location-enabler";
@@ -97,7 +97,6 @@ export default props => {
   const [internet, setInternet] = useState(true);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
-  const [cardDetails, setCardDetails] = useState(null);
   const [orderLoading, setOrderLoading] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState(null);
@@ -131,7 +130,7 @@ export default props => {
 
   const makeDates = () => {
     moment.locale(isArabic ? "ar" : "en");
-    const dates = new Array(7).fill("days").map((_, i) => ({
+    const generateDates = new Array(7).fill("days").map((_, i) => ({
       id: i + 1,
       name: moment()
         .add(i, "d")
@@ -144,6 +143,14 @@ export default props => {
         .format("DD-MM-YYYY")
     }));
     moment.locale("en");
+    const dates = generateDates.map((v, i) => {
+      return {
+        ...v,
+        enDate: moment()
+          .add(i, "d")
+          .format()
+      };
+    });
     const arr = [];
     DELIVERY_SLOTS.map(v => {
       const currentTime = moment().format("HH");
@@ -271,18 +278,22 @@ export default props => {
       });
     } catch (error) {
       console.log(error, " error in send verification");
-      setAlert({
-        alert: true,
-        error: true,
-        alertImg: ERROR_IMG,
-        alertTitle: isArabic ? "خطأ" : "Error",
-        alertText: isArabic
-          ? "عذرا، هناك خطأ ما. حاول مرة اخرى!"
-          : "Sorry, something went wrong. Please try again!"
-      });
+      errorMessage();
     } finally {
       setLoading(false);
     }
+  };
+
+  const errorMessage = () => {
+    setAlert({
+      alert: true,
+      error: true,
+      alertImg: ERROR_IMG,
+      alertTitle: isArabic ? "خطأ" : "Error",
+      alertText: isArabic
+        ? "عذرا، هناك خطأ ما. حاول مرة اخرى!"
+        : "Sorry, something went wrong. Please try again!"
+    });
   };
 
   const paymentError = (
@@ -355,7 +366,6 @@ export default props => {
   const handlePaymentListItem = paymentOption => {
     if (!paymentOption) return;
     if (paymentOption?.id === "p-1") {
-      setCardDetails(null);
       setSelectedPayment({ ...paymentOption });
     }
     if (paymentOption?.id === "p-2") {
@@ -377,7 +387,6 @@ export default props => {
       return;
     }
     if (paymentOption?.id === "p-3") {
-      setCardDetails(null);
       setSelectedPayment({ ...paymentOption });
       navigation.navigate("OnlineTransfer", {
         handleOnlineTransferCallBack
@@ -462,27 +471,33 @@ export default props => {
         locationId: selectedCity?.id,
         vat: calculateVat().toFixed(2),
         comments: comments,
-        deliveryDate: selectedDate.fullDate,
-        deliverySlot: selectedSlot,
+        deliveryDate: selectedDate.enDate,
+        deliverySlot: `${selectedSlot.mainTextEn} -- ${selectedSlot.secondaryTextEn}, ${selectedSlot.mainTextAr} -- ${selectedSlot.secondaryTextAr}`,
         callBeforeDelivery: callBeforeDelivery,
         shippingCost: calculateShipping().toFixed(2),
         paymentType: paymentMethod(selectedPayment?.id),
-        total: (total() + calculateVat() + calculateShipping()).toFixed(2),
+        total: (total() + calculateShipping() + calculateVat()).toFixed(2),
         payment: {
-          ref: ref
-          // cvv: cardDetails?.cvv,
-          // expiry: cardDetails?.expiry,
-          // cardNumber: cardDetails?.cardNumber,
-          // cardHolderName: cardDetails?.cardHolderName
+          paymentRef: ref
+          // expiry:"",
+          // cardNumber:"",
+          // postalCode:"",
+          // cardHolderName:""
         },
         shippingDetails: {
           address: selectedAddress?.address,
           latitude: selectedAddress?.latitude,
-          longitude: selectedAddress?.longitude
+          longitude: selectedAddress?.longitude,
+          addressId: selectedAddress?.id
         }
       };
       console.log(obj, " place order object");
-      await Axios.post(`${BASE_URL}/PlaceOrder/submit`, obj);
+      const { data } = await Axios.post(`${BASE_URL}/PlaceOrder/submit`, obj);
+      console.log(data, " place order response");
+      if (data.isError) {
+        errorMessage();
+        return;
+      }
       dispatch(clearCart());
       setAlert({
         alert: true,
@@ -495,15 +510,7 @@ export default props => {
           : "Thank you for ordering, your order will be delivered very soon"
       });
     } catch (error) {
-      setAlert({
-        alert: true,
-        error: true,
-        alertImg: ERROR_IMG,
-        alertTitle: isArabic ? "خطأ" : "Error",
-        alertText: isArabic
-          ? "عذرا، هناك خطأ ما. حاول مرة اخرى!"
-          : "Sorry, something went wrong. Please try again!"
-      });
+      errorMessage();
       console.log(error, " error in place order");
     } finally {
       setOrderLoading(false);
@@ -585,7 +592,7 @@ export default props => {
   };
 
   const calculateVat = () => {
-    return total() * 0.15;
+    return (total() + calculateShipping()) * 0.15;
   };
 
   const calculateShipping = () => {
@@ -888,7 +895,7 @@ export default props => {
                       placeholder={isArabic ? "تعليقات..." : "Any comment..."}
                     />
                     <Text ref={contactRef} style={styles.heading(isArabic)}>
-                      {isArabic ? "تفاصيل الطلب" : "Order Details"}
+                      {isArabic ? "معلومات الدفع" : "Order Details"}
                     </Text>
                     <View style={styles.orderCard(isArabic)}>
                       <LIST
@@ -903,18 +910,6 @@ export default props => {
                             : selectedPayment?.nameEn
                         }
                       />
-                      {selectedPayment &&
-                        selectedPayment?.id === "p-2" &&
-                        cardDetails &&
-                        cardDetails?.cardNumber && (
-                          <LIST
-                            isArabic={isArabic}
-                            secondaryText={cardDetails?.cardNumber}
-                            primaryText={
-                              isArabic ? "رقم البطاقة" : "Card Number"
-                            }
-                          />
-                        )}
                       <View style={styles.pd10}>
                         <Divider />
                       </View>
@@ -941,19 +936,19 @@ export default props => {
                         }
                       />
                       <LIST
+                        secondaryText={calculateShipping().toFixed(2)}
+                        isArabic={isArabic}
+                        primaryText={
+                          isArabic ? "تكلفة الشحن :" : "Shipping Cost :"
+                        }
+                      />
+                      <LIST
                         secondaryText={calculateVat().toFixed(2)}
                         isArabic={isArabic}
                         primaryText={
                           isArabic
                             ? "الضريبة قيمة المضافة 15% :"
                             : "VAT (15%) :"
-                        }
-                      />
-                      <LIST
-                        secondaryText={calculateShipping().toFixed(2)}
-                        isArabic={isArabic}
-                        primaryText={
-                          isArabic ? "تكلفة الشحن :" : "Shipping Cost :"
                         }
                       />
                       <LIST
@@ -1052,3 +1047,28 @@ export default props => {
     </KeyboardAvoidingView>
   );
 };
+
+// const placeOrder = {
+//   vat: "",
+//   phone: "",
+//   subTotal: "",
+//   items: "cart items array",
+//   status: "",
+//   comments: "",
+//   locationId: "user's city name",
+//   deliveryDate: "",
+//   deliverySlot: "",
+//   callBeforeDelivery: "",
+//   shippingCost: "",
+//   paymentType: "",
+//   total: "",
+//   payment: {
+//     ref: ""
+//   },
+//   shippingDetails: {
+//     address: "",
+//     latitude: "",
+//     longitude: "",
+//     addressId: "",
+//   }
+// };
