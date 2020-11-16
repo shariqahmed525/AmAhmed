@@ -19,7 +19,8 @@ import {
   ERROR_IMG,
   THANKS_IMG,
   MAP_API_KEY,
-  DELIVERY_SLOTS
+  DELIVERY_SLOTS,
+  PLACEHOLDER_TEXT_COLOR
 } from "../../common/constants";
 import "moment/locale/ar";
 import Axios from "axios";
@@ -892,6 +893,7 @@ export default props => {
                         height: IOS ? 150 : undefined
                       }}
                       onChangeText={text => setComments(text)}
+                      placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
                       placeholder={isArabic ? "تعليقات..." : "Any comment..."}
                     />
                     <Text ref={contactRef} style={styles.heading(isArabic)}>
@@ -988,6 +990,7 @@ export default props => {
                       style={styles.input(isArabic)}
                       onSubmitEditing={makeVerification}
                       onChangeText={text => setText(text)}
+                      placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
                     />
                   </>
                 )}

@@ -49,11 +49,9 @@ const styles = StyleSheet.create({
   footer: isArabic => ({
     width: "100%",
     paddingBottom: 15,
-    alignItems: "center",
     paddingHorizontal: 10,
     backgroundColor: "#fff",
-    paddingTop: isArabic ? 5 : 15,
-    justifyContent: "space-between",
+    paddingTop: isArabic ? 5 : 5,
     borderColor: "#fff",
     borderWidth: 1,
     shadowColor: "#000",
@@ -63,7 +61,12 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 5
+  }),
+  footerBottom: isArabic => ({
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "space-between",
     flexDirection: isArabic ? "row-reverse" : "row"
   }),
   total: {
@@ -111,6 +114,16 @@ const styles = StyleSheet.create({
         rotateY: isArabic ? "180deg" : "0deg"
       }
     ]
+  }),
+  messageWrapper: isArabic => ({
+    paddingHorizontal: 10,
+    paddingVertical: isArabic ? 2 : 10
+  }),
+  message: isArabic => ({
+    color: "#c43141",
+    textAlign: "center",
+    fontSize: isArabic ? 14 : 13,
+    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Medium"
   })
 });
 

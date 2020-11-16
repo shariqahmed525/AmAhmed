@@ -18,7 +18,13 @@ import NoInternet from "../../components/NoInternet";
 import NetInfo from "@react-native-community/netinfo";
 import { secondaryHeader, theme } from "../../common/colors";
 import { Octicons, MaterialIcons } from "../../common/icons";
-import { ANDROID, ARABIC, BASE_URL, WIDTH } from "../../common/constants";
+import {
+  ANDROID,
+  ARABIC,
+  BASE_URL,
+  PLACEHOLDER_TEXT_COLOR,
+  WIDTH
+} from "../../common/constants";
 
 let _isMounted = false;
 
@@ -150,6 +156,7 @@ export default props => {
           onSubmitEditing={onSearch}
           style={styles.input(isArabic)}
           onChangeText={text => setText(text)}
+          placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
           placeholder={isArabic ? "بحث عن البند" : "Search Item"}
         />
         {text !== "" && (

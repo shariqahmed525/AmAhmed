@@ -4,7 +4,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <GoogleMaps/GoogleMaps.h>
-//#import "RNSplashScreen.h"
+#import "RNSplashScreen.h"
 #import <Firebase.h>
 
 //@import CardScan;
@@ -56,6 +56,8 @@ static void InitializeFlipper(UIApplication *application) {
   if ([FIRApp defaultApp] == nil) {
     [FIRApp configure];
   }
+  [RNSplashScreen show];
+
 //  [RNSplashScreen showSplash:@"LaunchScreen" inRootView:rootView];
   
   return YES;

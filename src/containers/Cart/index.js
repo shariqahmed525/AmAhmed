@@ -144,36 +144,45 @@ export default () => {
               ))}
             </ScrollView>
             <View style={styles.footer(isArabic)}>
-              <View style={styles.total}>
-                <Text style={styles.totalText(isArabic)}>
-                  {isArabic ? "مجموع" : "TOTAL"}
-                </Text>
-                <Text style={styles.totalPrice(isArabic)}>
-                  {!isArabic && (
-                    <Text style={styles.totalSign(isArabic)}>SAR </Text>
-                  )}
-                  {total()}
-                  {isArabic && (
-                    <Text style={styles.totalSign(isArabic)}>ر.س </Text>
-                  )}
+              <View style={styles.messageWrapper(isArabic)}>
+                <Text style={styles.message(isArabic)}>
+                  {isArabic
+                    ? "الطلبات أقل من 150 ريال سوف يحتسب رسوم توصيل 20 ريال."
+                    : "If your order value will be 150 SAR, we won't charge shipping cost."}
                 </Text>
               </View>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={handleCheckout}
-                style={styles.btn(isArabic)}
-              >
-                <Text style={styles.btnText(isArabic)}>
-                  {isArabic ? "الدفع" : "CHECKOUT"}
-                </Text>
-                <View style={styles.rotateIcon(isArabic)}>
-                  <MaterialIcons
-                    size={35}
-                    color={"#fff"}
-                    name="arrow-right-alt"
-                  />
+              <View style={styles.footerBottom(isArabic)}>
+                <View style={styles.total}>
+                  <Text style={styles.totalText(isArabic)}>
+                    {isArabic ? "مجموع" : "TOTAL"}
+                  </Text>
+                  <Text style={styles.totalPrice(isArabic)}>
+                    {!isArabic && (
+                      <Text style={styles.totalSign(isArabic)}>SAR </Text>
+                    )}
+                    {total()}
+                    {isArabic && (
+                      <Text style={styles.totalSign(isArabic)}> ر.س</Text>
+                    )}
+                  </Text>
                 </View>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={handleCheckout}
+                  style={styles.btn(isArabic)}
+                >
+                  <Text style={styles.btnText(isArabic)}>
+                    {isArabic ? "الدفع" : "CHECKOUT"}
+                  </Text>
+                  <View style={styles.rotateIcon(isArabic)}>
+                    <MaterialIcons
+                      size={35}
+                      color={"#fff"}
+                      name="arrow-right-alt"
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           </>
         ) : (

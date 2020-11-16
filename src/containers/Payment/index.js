@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
-  Text,
-  TextInput,
+  // Text,
+  // TextInput,
   StatusBar,
-  ScrollView,
-  TouchableOpacity,
+  // ScrollView,
+  // TouchableOpacity,
   KeyboardAvoidingView
 } from "react-native";
 import styles from "./styles";
@@ -17,8 +17,13 @@ import { WebView } from "react-native-webview";
 // import Cardscan from "react-native-cardscan";
 import { SafeAreaView } from "react-navigation";
 import { useNavigation } from "@react-navigation/native";
-import { CreditCardInput } from "react-native-credit-card-input";
-import { ANDROID, ARABIC, IOS, ERROR_IMG, WIDTH } from "../../common/constants";
+// import { CreditCardInput } from "react-native-credit-card-input";
+import {
+  ANDROID,
+  ARABIC,
+  IOS
+  // ERROR_IMG, WIDTH
+} from "../../common/constants";
 
 let _isMounted = false;
 

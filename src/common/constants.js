@@ -14,6 +14,7 @@ export const ANDROID = Platform.OS === "android";
 export const CONTAINER_PADDING = WIDTH * 0.07;
 export const ARABIC = "ar-sa";
 export const ENGLISH = "en";
+export const PLACEHOLDER_TEXT_COLOR = "#bdbdbd";
 
 export const DEBUG_SMS_RETRIVER_CODE = "mMRYfuE6HNj";
 export const RELEASE_SMS_RETRIVER_CODE = "+UDWuAiZExX";

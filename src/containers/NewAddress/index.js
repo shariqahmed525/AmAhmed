@@ -24,7 +24,12 @@ import { ActivityIndicator } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { theme, lightTheme } from "../../common/colors";
 import { removePreviousRoutes } from "../../common/functions";
-import { ANDROID, ARABIC, MAP_API_KEY } from "../../common/constants";
+import {
+  ANDROID,
+  ARABIC,
+  MAP_API_KEY,
+  PLACEHOLDER_TEXT_COLOR
+} from "../../common/constants";
 import { BASE_URL, ERROR_IMG, INFO_IMG } from "../../common/constants";
 
 let _isMounted = false;
@@ -345,6 +350,7 @@ export default ({ route: { params } }) => {
                 autoCorrect={false}
                 style={styles.input(isArabic)}
                 onChangeText={e => setName(e)}
+                placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
                 placeholder={isArabic ? "أدخل اسم" : "Enter name"}
               />
               <Text style={styles.heading(isArabic)}>
@@ -355,6 +361,7 @@ export default ({ route: { params } }) => {
                 spellCheck={false}
                 autoCorrect={false}
                 style={styles.input(isArabic)}
+                placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
                 value={isArabic ? params?.city?.nameAr : params?.city?.nameEn}
               />
               <Text style={styles.heading(isArabic)}>
@@ -366,6 +373,7 @@ export default ({ route: { params } }) => {
                 autoCorrect={false}
                 style={styles.input(isArabic)}
                 onChangeText={e => setAddress(e)}
+                placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
                 placeholder={
                   isArabic
                     ? "أدخل عنوانك الكامل هنا ..."

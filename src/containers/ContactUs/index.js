@@ -17,7 +17,8 @@ import {
   ANDROID,
   BASE_URL,
   ERROR_IMG,
-  THUMB_IMG
+  THUMB_IMG,
+  PLACEHOLDER_TEXT_COLOR
 } from "../../common/constants";
 import Axios from "axios";
 import styles from "./styles";
@@ -265,6 +266,7 @@ export default () => {
               keyboardType="default"
               style={styles.input(isArabic)}
               onChangeText={text => setName(text)}
+              placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
               placeholder={isArabic ? "أدخل الاسم الكامل" : "Enter full name"}
             />
           </View>
@@ -281,6 +283,7 @@ export default () => {
               keyboardType="email-address"
               style={styles.input(isArabic)}
               onChangeText={text => setEmail(text)}
+              placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
               placeholder={
                 isArabic ? "أدخل عنوان بريدك الالكتروني" : "Enter email address"
               }
@@ -301,6 +304,7 @@ export default () => {
               placeholder={"501234567"}
               style={styles.input(isArabic)}
               onChangeText={text => setPhone(text)}
+              placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
             />
           </View>
           <View style={styles.inputWrapper(isArabic)}>
@@ -316,6 +320,7 @@ export default () => {
               keyboardType="default"
               style={styles.input(isArabic)}
               onChangeText={text => setSubject(text)}
+              placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
               placeholder={isArabic ? "أدخل الموضوع" : "Enter subject"}
             />
           </View>
@@ -339,6 +344,7 @@ export default () => {
                 height: IOS ? 200 : undefined
               }}
               onChangeText={text => setMessage(text)}
+              placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
               placeholder={
                 isArabic ? "اكتب الرسالة هنا ..." : "Write message here..."
               }
