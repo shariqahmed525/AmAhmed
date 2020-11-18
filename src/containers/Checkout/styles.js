@@ -314,6 +314,13 @@ const styles = StyleSheet.create({
   radioItemText: isArabic => ({
     color: "#111111",
     fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
+  }),
+  priceMessage: isArabic => ({
+    color: "green",
+    textAlign: "center",
+    fontSize: isArabic ? 17 : 16,
+    paddingVertical: isArabic ? 5 : 10,
+    fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
   })
 });
 

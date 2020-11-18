@@ -313,9 +313,7 @@ export default props => {
 
   const getPaymentGatewayLink = async () => {
     try {
-      const amount = (total() + calculateVat() + calculateShipping()).toFixed(
-        2
-      );
+      const amount = (total() + calculateShipping()).toFixed(2);
       const gatewayURL = `https://amahmed.com/api/pay/generate?test=0&amount=${amount}&currency=SAR&description=For payment purpose&authorisedUrl=https://www.amahmed.com/done/&declinedUrl=https://www.amahmed.com/declined/&cancelledUrl=https://www.amahmed.com/cancelled/`;
       setCurrentLocatioLoading(true);
       const { data } = await Axios.get(gatewayURL);
@@ -477,7 +475,7 @@ export default props => {
         callBeforeDelivery: callBeforeDelivery,
         shippingCost: calculateShipping().toFixed(2),
         paymentType: paymentMethod(selectedPayment?.id),
-        total: (total() + calculateShipping() + calculateVat()).toFixed(2),
+        total: (total() + calculateShipping()).toFixed(2),
         payment: {
           paymentRef: ref
           // expiry:"",
@@ -907,13 +905,17 @@ export default props => {
                           isArabic ? "طريقة الدفع" : "Payment Method"
                         }
                         secondaryText={
-                          isArabic
-                            ? selectedPayment?.nameAr
-                            : selectedPayment?.nameEn
+                          selectedPayment
+                            ? isArabic
+                              ? selectedPayment?.nameAr
+                              : selectedPayment?.nameEn
+                            : "-----"
                         }
                       />
                       <View style={styles.pd10}>
-                        <Divider />
+                        <Divider
+                          style={{ backgroundColor: PLACEHOLDER_TEXT_COLOR }}
+                        />
                       </View>
                       <LIST
                         bold
@@ -926,15 +928,15 @@ export default props => {
                         }
                       />
                       <View style={styles.pd10}>
-                        <Divider />
+                        <Divider
+                          style={{ backgroundColor: PLACEHOLDER_TEXT_COLOR }}
+                        />
                       </View>
                       <LIST
                         isArabic={isArabic}
                         secondaryText={total().toFixed(2)}
                         primaryText={
-                          isArabic
-                            ? "المبلغ قبل الضريبة :"
-                            : "Total (Exculding VAT) :"
+                          isArabic ? "السعر الاجمالي :" : "Gross Total :"
                         }
                       />
                       <LIST
@@ -944,7 +946,7 @@ export default props => {
                           isArabic ? "تكلفة الشحن :" : "Shipping Cost :"
                         }
                       />
-                      <LIST
+                      {/* <LIST
                         secondaryText={calculateVat().toFixed(2)}
                         isArabic={isArabic}
                         primaryText={
@@ -952,22 +954,23 @@ export default props => {
                             ? "الضريبة قيمة المضافة 15% :"
                             : "VAT (15%) :"
                         }
-                      />
+                      /> */}
                       <LIST
                         bold
                         secondaryBold
-                        secondaryText={(
-                          total() +
-                          calculateVat() +
-                          calculateShipping()
-                        ).toFixed(2)}
+                        secondaryText={(total() + calculateShipping()).toFixed(
+                          2
+                        )}
                         isArabic={isArabic}
                         primaryText={
-                          isArabic
-                            ? "المبلغ بعدالضريبة المضافة :"
-                            : "Total (Including VAT) :"
+                          isArabic ? "المبلغ الصافي :" : "Net Total :"
                         }
                       />
+                      <Text style={styles.priceMessage(isArabic)}>
+                        {isArabic
+                          ? "السعر شامل الضريبة"
+                          : "All Prices included VAT"}
+                      </Text>
                     </View>
                   </>
                 ) : (
