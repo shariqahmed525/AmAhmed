@@ -22,17 +22,18 @@ import { useSelector } from "react-redux";
 import Alert from "../../components/Alert";
 import LottieView from "lottie-react-native";
 import Header from "../../components/Header";
+import { EvilIcons } from "../../common/icons";
 import { SafeAreaView } from "react-navigation";
 import NoInternet from "../../components/NoInternet";
 import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from "@react-navigation/native";
 import { theme, delivered, lightTheme } from "../../common/colors";
-import { EvilIcons } from "../../common/icons";
 
 let _isMounted = false;
 
 const _renderItems = ({ item, isArabic, onDeletePress }) => {
   moment.locale(isArabic ? "ar" : "en");
+  console.log(item, " data");
   return (
     <View style={styles.orderListWrapper(isArabic)}>
       <View style={styles.orderListHeader(isArabic)}>
@@ -47,7 +48,9 @@ const _renderItems = ({ item, isArabic, onDeletePress }) => {
         </Text>
         <Text style={styles.totalPrice(isArabic)}>
           {!isArabic && "SAR "}
-          <Text style={styles.price(isArabic)}>{item?.total} </Text>
+          <Text style={styles.price(isArabic)}>
+            {item?.total + (item?.shippingCost || 0)}{" "}
+          </Text>
           {isArabic && "ر.س "}
         </Text>
       </View>
