@@ -24,6 +24,7 @@ import {
 } from "../../common/constants";
 import "moment/locale/ar";
 import Axios from "axios";
+import moment from "moment";
 import styles from "./styles";
 import RenderMap from "./RenderMap";
 import Alert from "../../components/Alert";
@@ -39,24 +40,16 @@ import { useNavigation } from "@react-navigation/native";
 import { Divider, RadioButton } from "react-native-paper";
 import Geolocation from "@react-native-community/geolocation";
 import DropdownSection from "../../components/DropdownSection";
-import { makeOtpCode, validatePhone } from "../../common/functions";
+import {
+  makeOtpCode,
+  paymentMethod,
+  validatePhone
+} from "../../common/functions";
 import { lightGray, lightTheme, theme } from "../../common/colors";
 import { clearCart, onAddressesAction } from "../../redux/actions/user";
 import RNAndroidLocationEnabler from "react-native-android-location-enabler";
-import moment from "moment";
 
 let _isMounted = false;
-
-const paymentMethod = id => {
-  switch (id) {
-    case "p-2":
-      return "card";
-    case "p-3":
-      return "online";
-    default:
-      return "cod";
-  }
-};
 
 const LIST = ({
   isArabic,
@@ -1053,28 +1046,3 @@ export default props => {
     </KeyboardAvoidingView>
   );
 };
-
-// const placeOrder = {
-//   vat: "",
-//   phone: "",
-//   subTotal: "",
-//   items: "cart items array",
-//   status: "",
-//   comments: "",
-//   locationId: "user's city name",
-//   deliveryDate: "",
-//   deliverySlot: "",
-//   callBeforeDelivery: "",
-//   shippingCost: "",
-//   paymentType: "",
-//   total: "",
-//   payment: {
-//     ref: ""
-//   },
-//   shippingDetails: {
-//     address: "",
-//     latitude: "",
-//     longitude: "",
-//     addressId: "",
-//   }
-// };

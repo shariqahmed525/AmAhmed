@@ -4,7 +4,8 @@ import {
   Text,
   StatusBar,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  TextInput
 } from "react-native";
 import styles from "./styles";
 import MapView from "react-native-maps";
@@ -13,13 +14,20 @@ import Alert from "../../components/Alert";
 import { theme } from "../../common/colors";
 import Header from "../../components/Header";
 import { SafeAreaView } from "react-navigation";
-import { ERROR_IMG, IOS } from "../../common/constants";
+import {
+  IOS,
+  ERROR_IMG,
+  MAP_API_KEY,
+  PLACEHOLDER_TEXT_COLOR
+} from "../../common/constants";
 import { useNavigation } from "@react-navigation/native";
 import Geolocation from "@react-native-community/geolocation";
 import { FontAwesome, MaterialIcons } from "../../common/icons";
 import DropdownSection from "../../components/DropdownSection";
 import { ANDROID, ARABIC, HEIGHT, WIDTH } from "../../common/constants";
 import RNAndroidLocationEnabler from "react-native-android-location-enabler";
+import Axios from "axios";
+import { findCityName } from "../../common/functions";
 
 let _isMounted = false;
 
@@ -29,6 +37,8 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * (WIDTH / HEIGHT);
 export default ({ route: { params } }) => {
   const ref = useRef(null);
   const navigation = useNavigation();
+  const [next, setNext] = useState(false);
+  const [address, setAddress] = useState("");
   const [coords, setCoords] = useState(null);
   const [alert, setAlert] = useState({
     alert: false,
@@ -51,6 +61,9 @@ export default ({ route: { params } }) => {
           latitudeDelta: params?.latitudeDelta,
           longitudeDelta: params?.longitudeDelta
         });
+      }
+      if (params?.address) {
+        setAddress(params?.address);
       }
       if (
         params?.locationID &&
@@ -133,6 +146,14 @@ export default ({ route: { params } }) => {
   };
 
   const handleNext = () => {
+    if (!next) {
+      addressError(
+        isArabic
+          ? ""
+          : "The location selected does not match the chosen city. Select a delivery location within the chosen city or change the city."
+      );
+      return;
+    }
     if (!selectedCity) {
       setAlert({
         alert: true,
@@ -158,6 +179,7 @@ export default ({ route: { params } }) => {
     navigation.navigate("NewAddress", {
       ...params,
       coords,
+      address,
       city: selectedCity
     });
   };
@@ -177,8 +199,73 @@ export default ({ route: { params } }) => {
       const newCoordsStringfy = JSON.stringify(e);
       if (newCoordsStringfy !== coordsStringfy) {
         setCoords({ ...e });
+        getAddressDetails(e.latitude, e.longitude);
       }
     }
+  };
+
+  const getAddressDetails = async (lat, lng) => {
+    try {
+      const { data } = await Axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${MAP_API_KEY}`
+      );
+      if (
+        data &&
+        data.results &&
+        data.results.length > 0 &&
+        data.results[0] &&
+        data.results[0].formatted_address
+      ) {
+        setAddress(data.results[0].formatted_address);
+        checkCityAddress(data.results[0].formatted_address);
+      } else {
+        addressError();
+      }
+    } catch (error) {
+      console.log(error, " error in getting address");
+      addressError();
+    }
+  };
+
+  const addressError = (
+    addressError = isArabic
+      ? ""
+      : "Something went wrong, Please set marker again."
+  ) => {
+    setAlert({
+      alert: true,
+      error: true,
+      alertImg: ERROR_IMG,
+      alertText: addressError,
+      alertTitle: isArabic ? "خطأ" : "Error"
+    });
+    setNext(false);
+  };
+
+  const checkCityAddress = formattedAddress => {
+    if (!formattedAddress) {
+      addressError();
+      return;
+    }
+    const lowerCaseAddress = formattedAddress.toLowerCase();
+    const getCityNames = findCityName(selectedCity?.nameEn);
+    const cond = getCityNames.some(element =>
+      lowerCaseAddress.includes(element)
+    );
+    if (!cond) {
+      addressError(
+        isArabic
+          ? ""
+          : "The location selected does not match the chosen city. Select a delivery location within the chosen city or change the city."
+      );
+      return;
+    }
+    setNext(true);
+    console.log(selectedCity.nameEn, " cityName");
+    console.log(formattedAddress, " formattedAddress");
+    console.log(lowerCaseAddress, " lowerCaseAddress");
+    console.log(getCityNames, " getCityNames");
+    console.log(cond, " cond");
   };
 
   const markerRender = () => (
@@ -244,11 +331,19 @@ export default ({ route: { params } }) => {
               noIcon
               ref={ref}
               data={cities}
+              marginBottom={10}
               isArabic={isArabic}
               onPress={handleCity}
               selected={selectedCity}
               title={isArabic ? "مدينة" : "City"}
               btnText={isArabic ? "اختر مدينة" : "Select City"}
+            />
+            <TextInput
+              value={address}
+              keyboardType="default"
+              style={styles.input(isArabic)}
+              placeholder={"---------------------"}
+              placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
             />
           </View>
           <View style={styles.mapBox}>

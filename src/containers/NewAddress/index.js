@@ -27,7 +27,6 @@ import { removePreviousRoutes } from "../../common/functions";
 import {
   ANDROID,
   ARABIC,
-  MAP_API_KEY,
   PLACEHOLDER_TEXT_COLOR
 } from "../../common/constants";
 import { BASE_URL, ERROR_IMG, INFO_IMG } from "../../common/constants";
@@ -46,7 +45,7 @@ export default ({ route: { params } }) => {
     alertTitle: ""
   });
   const [address, setAddress] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [internet, setInternet] = useState(true);
   const {
     app: { language },
@@ -57,11 +56,6 @@ export default ({ route: { params } }) => {
   useEffect(() => {
     _isMounted = true;
     if (_isMounted) {
-      if (!params?.isEdit) {
-        getAddressDetails();
-      } else {
-        setLoading(false);
-      }
       if (params?.area) setName(params?.area);
       if (params?.address) setAddress(params?.address);
       StatusBar.setBarStyle("light-content");
@@ -71,30 +65,6 @@ export default ({ route: { params } }) => {
 
   const handleBack = () => {
     navigation.goBack();
-  };
-
-  const getAddressDetails = async () => {
-    try {
-      const lat = params?.coords?.latitude;
-      const lng = params?.coords?.longitude;
-      const { data } = await Axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${MAP_API_KEY}`
-      );
-      if (
-        data &&
-        data.results &&
-        data.results.length > 0 &&
-        data.results[0] &&
-        data.results[0].formatted_address
-      ) {
-        console.log(data.results[0], " res");
-        setAddress(data.results[0].formatted_address);
-      }
-    } catch (error) {
-      console.log(error, " error in getting address");
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleAddressUpdate = async () => {

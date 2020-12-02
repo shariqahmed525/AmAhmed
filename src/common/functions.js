@@ -145,6 +145,40 @@ export const convertSecondstoTime = sec => {
   return timeString;
 };
 
+export const findCityName = name => {
+  const nameLowerCase = name.toLowerCase();
+  if (nameLowerCase.includes("makkah")) {
+    return ["makkah", "mecca", "مكة"];
+  } else if (nameLowerCase.includes("madina")) {
+    return ["madina", "medina", "المدينة المنورة", "مدينة"];
+  } else if (nameLowerCase.includes("jeddah")) {
+    return ["jeddah", "جدة"];
+  } else {
+    return [
+      "makkah",
+      "mecca",
+      "مكة",
+      "madina",
+      "medina",
+      "المدينة المنورة",
+      "مدينة",
+      "jeddah",
+      "جدة"
+    ];
+  }
+};
+
+export const paymentMethod = id => {
+  switch (id) {
+    case "p-2":
+      return "card";
+    case "p-3":
+      return "online";
+    default:
+      return "cod";
+  }
+};
+
 export const generateCode = () => Math.floor(100000 + Math.random() * 900000);
 export const getRandom = length => {
   return Math.floor(

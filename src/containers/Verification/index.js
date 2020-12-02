@@ -85,13 +85,15 @@ export default ({ route: { params } }) => {
   };
 
   const otpCode = message => {
-    try {
-      const retreivedCode = message
-        .split("<#> Your verification code is: ")[1]
-        .split(".")[0];
-      Clipboard.setString(retreivedCode);
-    } catch (error) {
-      console.log(error, " error in otpCode");
+    if (message && typeof message === "object") {
+      try {
+        const retreivedCode = message
+          .split("<#> Your verification code is: ")[1]
+          .split(".")[0];
+        Clipboard.setString(retreivedCode);
+      } catch (error) {
+        console.log(error, " error in otpCode");
+      }
     }
   };
 
@@ -234,7 +236,7 @@ export default ({ route: { params } }) => {
               <Text style={styles.description(isArabic)}>
                 {`${
                   isArabic
-                    ? "ادخل رقم التعريف تم ارساله الى :\n"
+                    ? "ادخل رقم التعريف تم ارساله الى :"
                     : "Enter the 4-digit code sent to\n"
                 }`}
               </Text>

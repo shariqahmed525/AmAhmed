@@ -21,6 +21,7 @@ export default forwardRef((props, ref) => {
   const {
     title,
     loading,
+    marginBottom,
     isAddress,
     btnText,
     isArabic,
@@ -57,7 +58,7 @@ export default forwardRef((props, ref) => {
             onPress={openMenu}
             disabled={loading}
             activeOpacity={0.7}
-            style={styles.option(isArabic, loading)}
+            style={styles.option(isArabic, loading, marginBottom)}
           >
             {loading ? (
               <ActivityIndicator size="small" color={theme} />
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
     textAlign: isCenter ? "center" : isArabic ? "right" : "left",
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-SemiBold"
   }),
-  option: (isArabic, loading) => ({
+  option: (isArabic, loading, marginBottom) => ({
     width: "100%",
     borderRadius: 4,
     alignItems: "center",
@@ -212,7 +213,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.18,
     shadowRadius: 1.0,
     elevation: 1,
-    marginBottom: isArabic ? 20 : 20,
+    marginBottom: marginBottom || 20,
     justifyContent: loading ? "center" : "space-between"
   }),
   optionText: isArabic => ({

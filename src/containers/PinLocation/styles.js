@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { backgroundColor, theme } from "../../common/colors";
+import { backgroundColor, black, theme } from "../../common/colors";
 import { CONTAINER_PADDING } from "../../common/constants";
 const styles = StyleSheet.create({
   safe: {
@@ -79,6 +79,31 @@ const styles = StyleSheet.create({
     marginTop: isArabic ? -5 : 0,
     fontSize: isArabic ? 22 : 19,
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
+  }),
+  input: isArabic => ({
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    color: black,
+    fontSize: 16,
+    paddingVertical: 15,
+    backgroundColor: "#ffffff",
+    borderColor: "#fff",
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+    elevation: 1,
+    maxHeight: 200,
+    borderRadius: 4,
+    marginBottom: 15,
+    paddingHorizontal: 15,
+    textAlign: isArabic ? "right" : "left",
+    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
   })
 });
 
