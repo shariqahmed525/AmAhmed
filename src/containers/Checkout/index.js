@@ -41,6 +41,7 @@ import { Divider, RadioButton } from "react-native-paper";
 import Geolocation from "@react-native-community/geolocation";
 import DropdownSection from "../../components/DropdownSection";
 import {
+  findCityName,
   makeOtpCode,
   paymentMethod,
   validatePhone
@@ -604,20 +605,36 @@ export default props => {
         data.results[0] &&
         data.results[0].formatted_address
       ) {
-        const formattedAddress = data.results[0].formatted_address;
-        const obj = {
-          latitude: lat,
-          longitude: lng,
-          address: formattedAddress,
-          area: isArabic ? "الموقع الحالي" : "Current Location"
-        };
-        setSelectedAddress({ ...obj });
+        checkCityAddress(data.results[0].formatted_address, lat, lng);
       }
     } catch (error) {
       console.log(error, " error in getting address");
     } finally {
       setCurrentLocatioLoading(false);
     }
+  };
+
+  const checkCityAddress = (formattedAddress, lat, lng) => {
+    if (!formattedAddress) return;
+    const lowerCaseAddress = formattedAddress.toLowerCase();
+    const getCityNames = findCityName("");
+    const cond = getCityNames.some(element =>
+      lowerCaseAddress.includes(element)
+    );
+    if (!cond) return;
+    const obj = {
+      latitude: lat,
+      longitude: lng,
+      address: formattedAddress,
+      area: isArabic ? "الموقع الحالي" : "Current Location"
+    };
+
+    setSelectedAddress({ ...obj });
+    console.log(formattedAddress, " formattedAddress");
+    console.log(lowerCaseAddress, " lowerCaseAddress");
+    console.log(getCityNames, " getCityNames");
+    console.log(cond, " cond");
+    console.log(obj, " obj");
   };
 
   const getLocation = fromStart => {
