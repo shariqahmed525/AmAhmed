@@ -229,7 +229,7 @@ export default ({ route: { params } }) => {
 
   const addressError = (
     addressError = isArabic
-      ? ""
+      ? "حصل خطاء الرجاء إختيار الموقع المناسب."
       : "Something went wrong, Please set marker again."
   ) => {
     setAlert({
@@ -255,17 +255,12 @@ export default ({ route: { params } }) => {
     if (!cond) {
       addressError(
         isArabic
-          ? ""
+          ? "عذرا الموقع خارج نطاق الخدمة."
           : "The location selected does not match the chosen city. Select a delivery location within the chosen city or change the city."
       );
       return;
     }
     setNext(true);
-    console.log(selectedCity.nameEn, " cityName");
-    console.log(formattedAddress, " formattedAddress");
-    console.log(lowerCaseAddress, " lowerCaseAddress");
-    console.log(getCityNames, " getCityNames");
-    console.log(cond, " cond");
   };
 
   const markerRender = () => (

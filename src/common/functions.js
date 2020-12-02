@@ -3,6 +3,7 @@ import { Toast } from "native-base";
 import { Platform } from "react-native";
 import {
   DEBUG_SMS_RETRIVER_CODE,
+  UPLOAD_SMS_RETRIVER_CODE,
   RELEASE_SMS_RETRIVER_CODE,
   HEIGHT,
   IOS,
