@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* AmAhmedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* AmAhmedTests.m */; };
 		018556C37CA7422FB476EE3E /* Roboto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0AABB8EAED384961904AD223 /* Roboto.ttf */; };
-		04B46F00254F604E001E3F52 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 04B46EFF254F604E001E3F52 /* GoogleService-Info.plist */; };
+		040D19882584012500E9EE49 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 040D19872584012500E9EE49 /* GoogleService-Info.plist */; };
 		04FDB004252FE98B001576F1 /* Cairo-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 04FDAFEF252FE988001576F1 /* Cairo-Black.ttf */; };
 		04FDB005252FE98B001576F1 /* Rubik-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 04FDAFF0252FE989001576F1 /* Rubik-Black.ttf */; };
 		04FDB006252FE98B001576F1 /* Rubik-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 04FDAFF1252FE989001576F1 /* Rubik-Medium.ttf */; };
@@ -64,8 +64,8 @@
 		00E356EE1AD99517003FC87E /* AmAhmedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AmAhmedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* AmAhmedTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AmAhmedTests.m; sourceTree = "<group>"; };
+		040D19872584012500E9EE49 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		048F735425345080000C40B7 /* AmAhmed.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = AmAhmed.entitlements; path = AmAhmed/AmAhmed.entitlements; sourceTree = "<group>"; };
-		04B46EFF254F604E001E3F52 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		04FDAFED252FE988001576F1 /* AmAhmed-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AmAhmed-Bridging-Header.h"; sourceTree = "<group>"; };
 		04FDAFEF252FE988001576F1 /* Cairo-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Cairo-Black.ttf"; sourceTree = "<group>"; };
 		04FDAFF0252FE989001576F1 /* Rubik-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Rubik-Black.ttf"; sourceTree = "<group>"; };
@@ -259,7 +259,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				04B46EFF254F604E001E3F52 /* GoogleService-Info.plist */,
+				040D19872584012500E9EE49 /* GoogleService-Info.plist */,
 				04FDB001252FE98B001576F1 /* addtocart.mp3 */,
 				04FDAFEF252FE988001576F1 /* Cairo-Black.ttf */,
 				04FDAFFA252FE98A001576F1 /* Cairo-Bold.ttf */,
@@ -466,7 +466,7 @@
 				40C80CFF33634D04834372C2 /* rubicon-icon-font.ttf in Resources */,
 				04FDB008252FE98B001576F1 /* Cairo-Light.ttf in Resources */,
 				04FDB013252FE98B001576F1 /* Rubik-Light.ttf in Resources */,
-				04B46F00254F604E001E3F52 /* GoogleService-Info.plist in Resources */,
+				040D19882584012500E9EE49 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
