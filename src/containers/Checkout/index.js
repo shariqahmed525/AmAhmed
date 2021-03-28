@@ -87,19 +87,21 @@ export default props => {
   const [text, setText] = useState("");
   const [dates, setDates] = useState([]);
   const [slots, setSlots] = useState([]);
+  const [voucher, setVoucher] = useState("");
   const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(false);
   const [internet, setInternet] = useState(true);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [orderLoading, setOrderLoading] = useState(false);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [fetchingLoading, setFetchingLoading] = useState(false);
   const [callBeforeDelivery, setCallBeforeDelivery] = useState(false);
   const [currentLocatioLoading, setCurrentLocatioLoading] = useState(false);
   const {
-    app: { language, selectedCity },
+    app: { language, selectedCity, vouchers = [] },
     user: { userData, addresses, randomCheckout, token, cart }
   } = useSelector(state => state);
   const isArabic = language === ARABIC;
@@ -307,8 +309,8 @@ export default props => {
 
   const getPaymentGatewayLink = async () => {
     try {
-      const amount = (total() + calculateShipping()).toFixed(2);
-      const gatewayURL = `https://amahmed.com/api/pay/generate?test=0&amount=${amount}&currency=SAR&description=For payment purpose&authorisedUrl=https://www.amahmed.com/done/&declinedUrl=https://www.amahmed.com/declined/&cancelledUrl=https://www.amahmed.com/cancelled/`;
+      const amount = (total()).toFixed(2);
+      const gatewayURL = `${BASE_URL}/pay/generate?test=0&amount=${amount}&currency=SAR&description=For payment purpose&authorisedUrl=https://www.amahmed.com/done/&declinedUrl=https://www.amahmed.com/declined/&cancelledUrl=https://www.amahmed.com/cancelled/`;
       setCurrentLocatioLoading(true);
       const { data } = await Axios.get(gatewayURL);
       if (data && data?.order && data?.order?.url) {
@@ -374,9 +376,6 @@ export default props => {
         return;
       }
       getPaymentGatewayLink();
-      // navigation.navigate("Payment", {
-      //   handleCardCallBack
-      // });
       return;
     }
     if (paymentOption?.id === "p-3") {
@@ -460,7 +459,7 @@ export default props => {
         items: cartItems,
         status: "pending",
         phone: userData?.phone,
-        subTotal: total().toFixed(2),
+        subTotal: productTotal().toFixed(2),
         locationId: selectedCity?.id,
         vat: calculateVat().toFixed(2),
         comments: comments,
@@ -469,13 +468,9 @@ export default props => {
         callBeforeDelivery: callBeforeDelivery,
         shippingCost: calculateShipping().toFixed(2),
         paymentType: paymentMethod(selectedPayment?.id),
-        total: (total() + calculateShipping()).toFixed(2),
+        total: (total()).toFixed(2),
         payment: {
           paymentRef: ref
-          // expiry:"",
-          // cardNumber:"",
-          // postalCode:"",
-          // cardHolderName:""
         },
         shippingDetails: {
           address: selectedAddress?.address,
@@ -491,6 +486,7 @@ export default props => {
         errorMessage();
         return;
       }
+      setSelectedVoucher(null);
       dispatch(clearCart());
       setAlert({
         alert: true,
@@ -558,7 +554,7 @@ export default props => {
     [isArabic, selectedCity, randomCheckout]
   );
 
-  const total = () => {
+  const productTotal = () => {
     if (!cart || cart.length < 1) return 0;
     const makeSumArr = cart.map(val => {
       const pp = val?.discount > 0 ? val?.discount : val?.price;
@@ -584,12 +580,28 @@ export default props => {
     return sum;
   };
 
+  const total = () => {
+    const subTotal = productTotal() + calculateShipping();
+    const value = selectedVoucher?.value;
+    const promoType = selectedVoucher?.promoType;
+    if(promoType && value){
+      if(promoType == 1){
+        const lessPercentage = subTotal / 100 * parseInt(value);
+        return subTotal - lessPercentage;
+      } else {
+        return subTotal - value;
+      }
+    } else{
+      return subTotal;
+    }
+  }
+
   const calculateVat = () => {
-    return (total() + calculateShipping()) * 0.15;
+    return (productTotal() + calculateShipping()) * 0.15;
   };
 
   const calculateShipping = () => {
-    return total() < 150 ? 20 : 0;
+    return (productTotal() > 0 && productTotal() < 150) ? 20 : 0;
   };
 
   const getAddressDetails = async (lat, lng, fromStart) => {
@@ -753,6 +765,50 @@ export default props => {
     setSelectedSlot({ ...slot });
   };
 
+  const handleVoucher = () => {
+    if(!voucher){
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic ? "الرجاء إدخال رقم الكود" : "Please enter promo code"
+      });
+      setSelectedVoucher(null);
+      return;
+    }
+    const find = vouchers.find(o => o.code === voucher);
+    if(!find || !find?.isActive || find?.isDeleted){
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic ? "رقم الكود غير صحيح!" : "Invalid promo code!"
+      });
+      setSelectedVoucher(null);
+      return;
+    }
+    const currentTime = new Date().getTime();
+    const validTill = new Date(find?.validTill).getTime();
+    const diff = validTill - currentTime;
+    if(diff < 1) {
+      setAlert({
+        alert: true,
+        error: true,
+        alertImg: ERROR_IMG,
+        alertTitle: isArabic ? "خطأ" : "Error",
+        alertText: isArabic ? "انتهت صلاحية رقم الكود!" : "Promo code has been expired!"
+      });
+      setSelectedVoucher(null);
+      return;
+    }
+    setSelectedVoucher({ ...find });
+    console.log("diff ==> ", diff);
+    console.log(find,"  voucher");
+    console.log(vouchers,"  vouchers");
+  }
+
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={IOS && "padding"}>
       <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
@@ -896,14 +952,37 @@ export default props => {
                       style={{
                         ...styles.input(isArabic),
                         marginTop: 5,
-                        textAlignVertical: "top",
                         paddingTop: 15,
+                        textAlignVertical: "top",
                         height: IOS ? 150 : undefined
                       }}
                       onChangeText={text => setComments(text)}
                       placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
                       placeholder={isArabic ? "تعليقات..." : "Any comment..."}
                     />
+                    <Text ref={contactRef} style={styles.heading(isArabic)}>
+                      {isArabic ? "رقم الكود" : "Promo Code"}
+                    </Text>
+                    <View style={styles.voucherWrapper(isArabic)}>
+                      <TextInput
+                        blurOnSubmit
+                        value={voucher}
+                        onSubmitEditing={handleVoucher}
+                        style={styles.voucherInput(isArabic)}
+                        onChangeText={text => setVoucher(text)}
+                        placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
+                        placeholder={isArabic ? "ادخل رقم الكود" : "Enter promo code"}
+                      />
+                      <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={handleVoucher}
+                        style={styles.voucherBtn}
+                      >
+                        <Text style={styles.voucherBtnText(isArabic)}>
+                          {isArabic ? "تفعيل" : "Apply"}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
                     <Text ref={contactRef} style={styles.heading(isArabic)}>
                       {isArabic ? "معلومات الدفع" : "Order Details"}
                     </Text>
@@ -944,7 +1023,7 @@ export default props => {
                       </View>
                       <LIST
                         isArabic={isArabic}
-                        secondaryText={total().toFixed(2)}
+                        secondaryText={productTotal().toFixed(2)}
                         primaryText={
                           isArabic ? "السعر الاجمالي :" : "Gross Total :"
                         }
@@ -966,9 +1045,18 @@ export default props => {
                         }
                       /> */}
                       <LIST
+                        secondaryText={selectedVoucher ? (
+                          selectedVoucher?.promoType === 1 ? `${selectedVoucher?.value}%` : parseInt(selectedVoucher?.value).toFixed(2)
+                        ) : 0}
+                        isArabic={isArabic}
+                        primaryText={
+                          isArabic ? "الخصم :" : "Discount :"
+                        }
+                      />
+                      <LIST
                         bold
                         secondaryBold
-                        secondaryText={(total() + calculateShipping()).toFixed(
+                        secondaryText={(total()).toFixed(
                           2
                         )}
                         isArabic={isArabic}

@@ -1,4 +1,5 @@
 export const CITIES = "CITIES";
+export const VOUCHERS = "VOUCHERS";
 export const LANGUAGE = "LANGUAGE";
 export const CATEGORY = "CATEGORY";
 export const SHOW_ALERT = "SHOW_ALERT";

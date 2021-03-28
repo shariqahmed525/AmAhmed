@@ -204,7 +204,7 @@ export default () => {
   };
 
   const handleOpenDialer = () => {
-    Linking.openURL("tel:0568042000");
+    Linking.openURL("tel:0566951999");
   };
 
   const _renderSliderLoadingOrNotGetting = (loading = true) => (

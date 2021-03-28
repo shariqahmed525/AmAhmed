@@ -321,7 +321,60 @@ const styles = StyleSheet.create({
     fontSize: isArabic ? 17 : 16,
     paddingVertical: isArabic ? 5 : 10,
     fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
-  })
+  }),
+  voucherWrapper: isArabic => ({
+    padding: 10,
+    width: "100%",
+    borderWidth: 1,
+    marginBottom: 20,
+    borderColor: theme,
+    alignItems: "center",
+    borderStyle: "dashed",    
+    flexDirection: isArabic ? "row-reverse" : "row"
+  }),
+  voucherInput: isArabic => ({
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    color: black,
+    fontSize: 16,
+    backgroundColor: "#ffffff",
+    borderColor: "#fff",
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+    elevation: 1,
+    paddingHorizontal: 15,
+    borderRadius: 100,
+    marginLeft: isArabic ? 7 : 0,
+    marginRight: isArabic ? 0 : 7,
+    paddingVertical: isArabic ? 5 : 10,
+    textAlign: isArabic ? "right" : "left",
+    fontFamily: isArabic ? "Cairo-SemiBold" : "Rubik-Regular"
+  }),
+  voucherBtn: {
+    height: 40,
+    width: 110,
+    borderWidth: 1,
+    borderRadius: 100,
+    borderColor: theme,
+    alignItems: "center",
+    paddingHorizontal: 15,
+    backgroundColor: theme,
+    justifyContent: "center"
+  },
+  voucherBtnText: isArabic => ({
+    color: "#fff",
+    textAlign: "center",
+    marginTop: isArabic ? -4 : 0,
+    fontSize: isArabic ? 18 : 16,
+    fontFamily: isArabic ? "Cairo-Bold" : "Rubik-Medium"
+  }),
 });
 
 export default styles;

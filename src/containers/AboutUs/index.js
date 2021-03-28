@@ -45,7 +45,7 @@ export default () => {
               source={require("../../../assets/images/logo.png")}
             />
           </View>
-          <Text style={styles.text(isArabic, 20, "center")}>
+          {/* <Text style={styles.text(isArabic, 20, "center")}>
             {isArabic
               ? " نلاحظ أن الهندسة التي يتم إجراؤها تبدو وكأنها طاردة وخطورة شبيهة بالحيوية ، وألام قيسم بياتي. من السهل جدًا ."
               : "AmAhmed provides you with your daily needs of fresh quality fruits and vegetables at the comfort of your doorstep."}
@@ -64,68 +64,68 @@ export default () => {
             {isArabic
               ? " نلاحظ أن الهندسة التي يتم إجراؤها تبدو وكأنها طاردة وخطورة شبيهة بالحيوية ، وألام قيسم بياتي. من السهل جدًا ."
               : "We can always be reached out with comments, questions or suggestions. We love hearing from our customers to improve our service as possible."}
-          </Text>
+          </Text> */}
 
-          <Text
+          {/* <Text
             style={styles.heading(
               isArabic,
               isArabic ? 20 : 25,
-              isArabic ? 10 : 25,
+              isArabic ? 5 : 25,
               "center",
               isArabic ? 32 : 30
             )}
           >
-            {isArabic ? "لماذا نحن" : "WHY US"}
-          </Text>
-          <Text
-            style={styles.heading(
-              isArabic,
-              5,
-              0,
-              isArabic ? "right" : "left",
-              isArabic ? 28 : 22
-            )}
-          >
-            {isArabic ? "راحة كبيرة" : "GREAT CONVENIENCE"}
-          </Text>
-          <Text style={styles.text(isArabic, 20, isArabic ? "right" : "left")}>
-            {isArabic
-              ? "نفكر في الراحة التي تختارها. التسوق عبر الإنترنت مريح وخالٍ من المتاعب وسريع وسهل وموفر للمال. علاوة على ذلك ، يمكنك البحث في موقعنا إذا كنت تعرف بالضبط ما تبحث عنه أو تستخدم مجموعة من الفلاتر المختلفة التي ستوفر وقتك وجهودك بشكل كبير."
-              : "We think about the convenience of your choice. Online shopping is convenient, hassle-free, and offers fast, easy, and money-saving. What’s more, you can search our site if you know exactly what you are looking for or use a bunch of different filters that will considerably save your time and efforts."}
-          </Text>
+            {isArabic ? "من نحن" : "WHO WE ARE"}
+          </Text> */}
           <Text
             style={styles.heading(
               isArabic,
               isArabic ? 20 : 30,
-              0,
-              isArabic ? "right" : "left",
-              isArabic ? 28 : 22
+              isArabic ? 5 : 10,
+              "center",
+              28
             )}
           >
-            {isArabic ? "افضل اسعار" : "BETTER PRICES"}
+            {isArabic ? "من نحن" : "WHO WE ARE"}
           </Text>
-          <Text style={styles.text(isArabic, 20, isArabic ? "right" : "left")}>
+          <Text style={styles.text(isArabic, 20, "center")}>
             {isArabic
-              ? "نحن نقدم الفواكه والخضروات بأسعار أفضل مما ستجده في أي مكان آخر."
-              : "We offer fruits and vegetables at better prices than what you will find anywhere else."}
+              ? "تطبيق عم احمد يعتبر احد الخدمات التسويقية التي أطلقتها شركة التيسير الماسي للتطوير والاستثمار التجاري وهي شركة سعودية متخصصة في مجال استيراد المواشي وتربيتها ولديها العديد من الأنشطة الأخرى."
+              : "AmAhmed's application is considered one of the marketing services launched by Al-Tayseer Al-Masi Company for Development and Commercial Investment, a Saudi company specialized in the field of livestock import and breeding, and it has many other activities."}
           </Text>
           <Text
             style={styles.heading(
               isArabic,
-              isArabic ? 20 : 30,
-              0,
-              isArabic ? "right" : "left",
-              isArabic ? 28 : 22
+              isArabic ? 30 : 35,
+              isArabic ? 5 : 15,
+              "center",
+              28
             )}
           >
-            {isArabic ? "ردفعل سريع" : "FAST RESPONSE"}
+            {isArabic ? "اللحوم و الفواكه والخضروات" : "Meat, Fruits and Vegetables"}
           </Text>
-          <Text style={styles.text(isArabic, 20, isArabic ? "right" : "left")}>
+          <Text style={styles.text(isArabic, 20, "center")}>
             {isArabic
-              ? "نقوم بتسليم بضائعنا إلى مكانك. بغض النظر عن المكان الذي تعيش فيه ، سيتم شحن طلبك في الوقت المناسب وتسليمه مباشرة إلى باب منزلك أو إلى أي مكان آخر ذكرته. يتم التعامل مع العبوات الطازجة بعناية فائقة ، لذلك سيتم تسليم المنتجات المطلوبة إليك بأمان وسليمة ، تمامًا كما تتوقعها. يعمل فريقنا يوميًا من الساعة 9 صباحًا حتى 9 مساءً لتلبية توقعاتك. يمكنك اختيار وقت التسليم المفضل لديك بين أربع فترات زمنية يوميًا ، وسيتم توصيله إلى باب منزلك."
-              : "We deliver our goods to your place. No matter where you live, your order will be shipped in time and delivered right to your door or to any other location you have stated. The fresh packages are handled with the utmost care, so the ordered products will be handed to you safely and sound, just like you expect them to be. Our team is working every day from 9 am to 9 pm to meet your expectations. You can choose your preferred delivery time between a daily four time slots, and it will be delivered to your doorstep."}
+              ? "نقوم بالعمل على أدق التفاصيل من ناحية الجودة والنوعية والنظافة وتقديم منتج منافس لكسب ثقة عملائنا."
+              : "We work on the smallest details in terms of quality, quality and cleanliness and provide a competitive product to win the confidence of our customers."}
           </Text>
           <Text
+            style={styles.heading(
+              isArabic,
+              isArabic ? 30 : 30,
+              isArabic ? 0 : 10,
+              "center",
+              28
+            )}
+          >
+            {isArabic ? "خدماتنا" : "Our Services"}
+          </Text>
+          <Text style={styles.text(isArabic, 20, "center")}>
+            {isArabic
+              ? "لا تقتصر خدماتنا فقط على تقديم الخدمات فقط للمنازل حيث بإمكاننا التوريد لشركات الإعاشة والمطاعم والمناسبات."
+              : "Our services are not limited to providing services only to homes, as we can supply to catering companies, restaurants and events."}
+          </Text>
+          {/* <Text
             style={styles.heading(
               isArabic,
               isArabic ? 20 : 30,
@@ -144,7 +144,7 @@ export default () => {
             {isArabic
               ? "نحن نضمن أعلى جودة للمنتجات التي نبيعها. نحن صعب الإرضاء مثلك يمكنك الوثوق بموظفينا المدربين لاختيار الفواكه والخضروات كما تريد."
               : "We guarantee the highest quality of the products we sell. We are as picky as you are. You can trust our trained staff for choosing your goats, meat, fruits and vegetables as you would."}
-          </Text>
+          </Text> */}
         </ScrollView>
       </View>
     </SafeAreaView>

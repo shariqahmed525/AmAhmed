@@ -212,7 +212,7 @@ export default () => {
     });
 
   const handleNumber = () => {
-    Linking.openURL("tel:0568042000");
+    Linking.openURL("tel:0566951999");
   };
 
   return (
@@ -249,7 +249,7 @@ export default () => {
             </View>
             <TouchableOpacity activeOpacity={0.7} onPress={handleNumber}>
               <Text style={styles.link(isArabic)}>
-                {isArabic ? "0568042000 " : "0568042000"}
+                0566951999
               </Text>
             </TouchableOpacity>
           </View>

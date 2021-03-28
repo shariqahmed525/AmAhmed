@@ -33,7 +33,6 @@ let _isMounted = false;
 
 const _renderItems = ({ item, isArabic, onDeletePress }) => {
   moment.locale(isArabic ? "ar" : "en");
-  console.log(item, " data");
   return (
     <View style={styles.orderListWrapper(isArabic)}>
       <View style={styles.orderListHeader(isArabic)}>
@@ -49,7 +48,7 @@ const _renderItems = ({ item, isArabic, onDeletePress }) => {
         <Text style={styles.totalPrice(isArabic)}>
           {!isArabic && "SAR "}
           <Text style={styles.price(isArabic)}>
-            {item?.total + (item?.shippingCost || 0)}{" "}
+            {item?.total}{" "}
           </Text>
           {isArabic && "ر.س "}
         </Text>
@@ -153,6 +152,7 @@ export default props => {
       const { data } = await Axios.get(
         `${BASE_URL}/Orders/customer/${userData.phone}/pending/1`
       );
+      console.log("getPendingOrders ===> ", data);
       if (data && data.length > 0) {
         setPendingOrders([...data]);
       }
@@ -173,6 +173,7 @@ export default props => {
       const { data } = await Axios.get(
         `${BASE_URL}/Orders/customer/${userData.phone}/pending/0`
       );
+      console.log("getHistoryOrders ===> ", data);
       if (data && data.length > 0) {
         setHistoryOrders([...data]);
       }

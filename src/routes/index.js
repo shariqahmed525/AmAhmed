@@ -29,6 +29,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Feather, MaterialCommunityIcons } from "../common/icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useDispatch } from 'react-redux';
+import { onVoucherGetting } from '../redux/actions/app';
 
 let _isMounted = false;
 
@@ -238,6 +240,7 @@ const OnBoardStack = () => {
 };
 
 export default () => {
+  const dispatch = useDispatch();
   useEffect(() => {
     _isMounted = true;
     if (_isMounted) {
@@ -263,6 +266,7 @@ export default () => {
             // setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
           }
         });
+      dispatch(onVoucherGetting());
     }
   }, []);
 
