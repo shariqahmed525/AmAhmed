@@ -10,3 +10,7 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
 });
 
 AppRegistry.registerComponent(appName, () => App);
+
+// AmAhmed is an e-commerce application to purchase things online easily.
+
+// تطبيق عم احمد لبيع الأغنام واللحوم والفواكة والخضروات الطازجة عن طريق الانترنت.
