@@ -106,6 +106,8 @@ export default props => {
   } = useSelector(state => state);
   const isArabic = language === ARABIC;
 
+  console.log(vouchers, " vouchers")
+
   useEffect(() => {
     _isMounted = true;
     if (_isMounted) {
@@ -469,6 +471,10 @@ export default props => {
         shippingCost: calculateShipping().toFixed(2),
         paymentType: paymentMethod(selectedPayment?.id),
         total: (total()).toFixed(2),
+        discount: selectedVoucher ? (
+          selectedVoucher?.promoType === 1 ? `${selectedVoucher?.value}%` : parseInt(selectedVoucher?.value).toFixed(2)
+        ) : 0,
+        promoId: selectedVoucher?.code || "",
         payment: {
           paymentRef: ref
         },
@@ -584,14 +590,14 @@ export default props => {
     const subTotal = productTotal() + calculateShipping();
     const value = selectedVoucher?.value;
     const promoType = selectedVoucher?.promoType;
-    if(promoType && value){
-      if(promoType == 1){
+    if (promoType && value) {
+      if (promoType == 1) {
         const lessPercentage = subTotal / 100 * parseInt(value);
         return subTotal - lessPercentage;
       } else {
         return subTotal - value;
       }
-    } else{
+    } else {
       return subTotal;
     }
   }
@@ -766,7 +772,7 @@ export default props => {
   };
 
   const handleVoucher = () => {
-    if(!voucher){
+    if (!voucher) {
       setAlert({
         alert: true,
         error: true,
@@ -778,7 +784,7 @@ export default props => {
       return;
     }
     const find = vouchers.find(o => o.code === voucher);
-    if(!find || !find?.isActive || find?.isDeleted){
+    if (!find || !find?.isActive || find?.isDeleted) {
       setAlert({
         alert: true,
         error: true,
@@ -792,7 +798,7 @@ export default props => {
     const currentTime = new Date().getTime();
     const validTill = new Date(find?.validTill).getTime();
     const diff = validTill - currentTime;
-    if(diff < 1) {
+    if (diff < 1) {
       setAlert({
         alert: true,
         error: true,
@@ -805,8 +811,8 @@ export default props => {
     }
     setSelectedVoucher({ ...find });
     console.log("diff ==> ", diff);
-    console.log(find,"  voucher");
-    console.log(vouchers,"  vouchers");
+    console.log(find, "  voucher");
+    console.log(vouchers, "  vouchers");
   }
 
   return (
