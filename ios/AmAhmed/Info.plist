@@ -40,9 +40,9 @@
 	<key>NSCameraUsageDescription</key>
 	<string>We need to access your camera to scan your card</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>AmAhmed wants to access your location</string>
+	<string>Turn on location services to deliver order at your home</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>AmAhmed wants to access your location</string>
+	<string>Turn on location services to deliver order at your home</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Cairo-Black.ttf</string>
