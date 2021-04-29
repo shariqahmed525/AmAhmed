@@ -46,12 +46,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
-  footer: isArabic => ({
+  footer: () => ({
     width: "100%",
+    paddingTop: 10,
     paddingBottom: 15,
     paddingHorizontal: 10,
     backgroundColor: "#fff",
-    paddingTop: isArabic ? 5 : 5,
     borderColor: "#fff",
     borderWidth: 1,
     shadowColor: "#000",

@@ -118,18 +118,6 @@ export default () => {
     const fcmToken = await messaging().getToken();
     console.log(fcmToken, " fcmToken");
     dispatch(onSaveUserTokenAction(fcmToken));
-    // await fetch("https://db49e47b5202.ngrok.io/fcm-test", {
-    //   method: "POST",
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json"
-    //   },
-    //   body: JSON.stringify({
-    //     token: fcmToken,
-    //     // apnsToken: apnsToken,
-    //     platform: IOS ? "Ios" : "android"
-    //   })
-    // });
   };
 
   const checkConnection = func => {
@@ -286,8 +274,8 @@ export default () => {
           ? selectedCategory.nameAr
           : selectedCategory.nameEn
         : isArabic
-        ? "اختر الفئة"
-        : "Select Category";
+          ? "اختر الفئة"
+          : "Select Category";
     return (
       <Header
         leftIcon={() => (
@@ -338,6 +326,7 @@ export default () => {
     <SideMenu
       isOpen={isOpen}
       onChange={e => setIsOpen(e)}
+      bounceBackOnOverdraw={false}
       menu={
         <Drawer navigation={navigation} drawerClose={() => setIsOpen(false)} />
       }

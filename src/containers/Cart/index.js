@@ -144,13 +144,13 @@ export default () => {
               ))}
             </ScrollView>
             <View style={styles.footer(isArabic)}>
-              <View style={styles.messageWrapper(isArabic)}>
+              {/* <View style={styles.messageWrapper(isArabic)}>
                 <Text style={styles.message(isArabic)}>
                   {isArabic
                     ? "الطلبات أقل من 150 ريال سوف يحتسب رسوم توصيل 20 ريال."
                     : "If your order value will be 150 SAR, we won't charge shipping cost."}
                 </Text>
-              </View>
+              </View> */}
               <View style={styles.footerBottom(isArabic)}>
                 <View style={styles.total}>
                   <Text style={styles.totalText(isArabic)}>

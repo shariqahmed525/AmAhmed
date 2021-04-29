@@ -311,7 +311,7 @@ export default props => {
 
   const getPaymentGatewayLink = async () => {
     try {
-      const amount = (total()).toFixed(2);
+      const amount = total();
       const gatewayURL = `${BASE_URL}/pay/generate?test=0&amount=${amount}&currency=SAR&description=For payment purpose&authorisedUrl=https://www.amahmed.com/done/&declinedUrl=https://www.amahmed.com/declined/&cancelledUrl=https://www.amahmed.com/cancelled/`;
       setCurrentLocatioLoading(true);
       const { data } = await Axios.get(gatewayURL);
@@ -461,19 +461,17 @@ export default props => {
         items: cartItems,
         status: "pending",
         phone: userData?.phone,
-        subTotal: productTotal().toFixed(2),
+        subTotal: productTotal(),
         locationId: selectedCity?.id,
-        vat: calculateVat().toFixed(2),
+        vat: calculateVat(),
         comments: comments,
         deliveryDate: selectedDate.enDate,
         deliverySlot: `${selectedSlot.mainTextEn} -- ${selectedSlot.secondaryTextEn}, ${selectedSlot.mainTextAr} -- ${selectedSlot.secondaryTextAr}`,
         callBeforeDelivery: callBeforeDelivery,
-        shippingCost: calculateShipping().toFixed(2),
+        shippingCost: calculateShipping(),
         paymentType: paymentMethod(selectedPayment?.id),
-        total: (total()).toFixed(2),
-        discount: selectedVoucher ? (
-          selectedVoucher?.promoType === 1 ? `${selectedVoucher?.value}%` : parseInt(selectedVoucher?.value).toFixed(2)
-        ) : 0,
+        total: total(),
+        discount: calculateDiscount() || 0,
         promoId: selectedVoucher?.code || "",
         payment: {
           paymentRef: ref
@@ -583,32 +581,44 @@ export default props => {
     const sum = makeSumArr.reduce((partialSum, o) => {
       return partialSum + o;
     }, 0);
-    return sum;
+    return parseFloat(sum.toFixed(2));
   };
 
-  const total = () => {
+  const calculateDiscount = () => {
     const subTotal = productTotal() + calculateShipping();
     const value = selectedVoucher?.value;
     const promoType = selectedVoucher?.promoType;
     if (promoType && value) {
       if (promoType == 1) {
         const lessPercentage = subTotal / 100 * parseInt(value);
-        return subTotal - lessPercentage;
+        return parseFloat(lessPercentage.toFixed(2));
       } else {
-        return subTotal - value;
+        return parseFloat(value.toFixed(2));
       }
     } else {
-      return subTotal;
+      return parseInt(0);
     }
   }
 
   const calculateVat = () => {
-    return (productTotal() + calculateShipping()) * 0.15;
+    return parseFloat(
+      (
+        ((productTotal() + calculateShipping()) - calculateDiscount()) * 0.15
+      ).toFixed(2)
+    );
   };
 
   const calculateShipping = () => {
-    return (productTotal() > 0 && productTotal() < 150) ? 20 : 0;
+    return parseInt(15.0);
   };
+
+  const total = () => {
+    return parseFloat(
+      (
+        (productTotal() + calculateShipping() + calculateVat()) - calculateDiscount()
+      ).toFixed(2)
+    );
+  }
 
   const getAddressDetails = async (lat, lng, fromStart) => {
     try {
@@ -815,6 +825,11 @@ export default props => {
     console.log(vouchers, "  vouchers");
   }
 
+  console.log(productTotal(), " productTotal");
+  console.log(calculateShipping(), " calculateShipping");
+  console.log(calculateDiscount(), " calculateDiscount");
+  console.log((productTotal() + calculateShipping()) - calculateDiscount(), " Balance");
+
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={IOS && "padding"}>
       <SafeAreaView style={styles.safe} forceInset={{ bottom: "never" }}>
@@ -865,7 +880,6 @@ export default props => {
                       btnText={isArabic ? "حدد العنوان" : "Select Address"}
                       title={isArabic ? "عنوان التوصيل" : "Delivery Address"}
                     />
-
                     {mapMemo}
                     <DropdownSection
                       data={payments}
@@ -878,6 +892,9 @@ export default props => {
                         isArabic ? "اختر طريقة الدفع" : "Select Payment Method"
                       }
                     />
+
+                    {/* Delivery Days Section */}
+
                     <Text ref={contactRef} style={styles.heading(isArabic)}>
                       {isArabic ? "ايام التوصيل" : "Delivery Days"}
                     </Text>
@@ -899,6 +916,8 @@ export default props => {
                       )}
                       keyExtractor={keyExtractor}
                     />
+
+                    {/* Delivery Slots Section */}
 
                     <Text ref={contactRef} style={styles.heading(isArabic)}>
                       {isArabic ? "وقت التوصيل" : "Delivery Slots"}
@@ -928,6 +947,8 @@ export default props => {
                       keyExtractor={keyExtractor}
                     />
 
+                    {/* Call before delivery Section */}
+
                     <RadioButton.Group
                       value={true}
                       onValueChange={() =>
@@ -947,6 +968,9 @@ export default props => {
                         }
                       />
                     </RadioButton.Group>
+
+                    {/* Comment Section */}
+
                     <TextInput
                       multiline
                       value={comments}
@@ -966,6 +990,9 @@ export default props => {
                       placeholderTextColor={PLACEHOLDER_TEXT_COLOR}
                       placeholder={isArabic ? "تعليقات..." : "Any comment..."}
                     />
+
+                    {/* Promo Section */}
+
                     <Text ref={contactRef} style={styles.heading(isArabic)}>
                       {isArabic ? "رقم الكود" : "Promo Code"}
                     </Text>
@@ -989,8 +1016,11 @@ export default props => {
                         </Text>
                       </TouchableOpacity>
                     </View>
+
+                    {/* Order Details Section */}
+
                     <Text ref={contactRef} style={styles.heading(isArabic)}>
-                      {isArabic ? "معلومات الدفع" : "Order Details"}
+                      {isArabic ? "مخلص الطلب" : "Request sincere"}
                     </Text>
                     <View style={styles.orderCard(isArabic)}>
                       <LIST
@@ -1027,54 +1057,60 @@ export default props => {
                           style={{ backgroundColor: PLACEHOLDER_TEXT_COLOR }}
                         />
                       </View>
+
                       <LIST
                         isArabic={isArabic}
-                        secondaryText={productTotal().toFixed(2)}
+                        secondaryText={productTotal()}
                         primaryText={
-                          isArabic ? "السعر الاجمالي :" : "Gross Total :"
+                          isArabic ? "إجمالي قيمة الطلب :" : "Total order value :"
                         }
                       />
                       <LIST
-                        secondaryText={calculateShipping().toFixed(2)}
+                        secondaryText={calculateShipping()}
                         isArabic={isArabic}
                         primaryText={
-                          isArabic ? "تكلفة الشحن :" : "Shipping Cost :"
+                          isArabic ? "رسوم التوصيل" : "Delivery Charges :"
                         }
                       />
-                      {/* <LIST
-                        secondaryText={calculateVat().toFixed(2)}
+                      <LIST
+                        primaryText={
+                          isArabic ? "خصم :" : "Discount :"
+                        }
+                        isArabic={isArabic}
+                        secondaryText={calculateDiscount() || 0}
+                      />
+                      <LIST
+                        isArabic={isArabic}
+                        primaryText={
+                          isArabic ? "رصيد :" : "Balance :"
+                        }
+                        secondaryText={(
+                          (productTotal() + calculateShipping()) - calculateDiscount()
+                        )}
+                      />
+                      <LIST
+                        secondaryText={calculateVat()}
                         isArabic={isArabic}
                         primaryText={
                           isArabic
-                            ? "الضريبة قيمة المضافة 15% :"
-                            : "VAT (15%) :"
-                        }
-                      /> */}
-                      <LIST
-                        secondaryText={selectedVoucher ? (
-                          selectedVoucher?.promoType === 1 ? `${selectedVoucher?.value}%` : parseInt(selectedVoucher?.value).toFixed(2)
-                        ) : 0}
-                        isArabic={isArabic}
-                        primaryText={
-                          isArabic ? "الخصم :" : "Discount :"
+                            ? "ضريبية القيمة المضافة :"
+                            : "VAT :"
                         }
                       />
                       <LIST
                         bold
                         secondaryBold
-                        secondaryText={(total()).toFixed(
-                          2
-                        )}
+                        secondaryText={total()}
                         isArabic={isArabic}
                         primaryText={
-                          isArabic ? "المبلغ الصافي :" : "Net Total :"
+                          isArabic ? "المجموع الكلي :" : "Total Summation :"
                         }
                       />
-                      <Text style={styles.priceMessage(isArabic)}>
+                      {/* <Text style={styles.priceMessage(isArabic)}>
                         {isArabic
                           ? "السعر شامل الضريبة"
                           : "All Prices included VAT"}
-                      </Text>
+                      </Text> */}
                     </View>
                   </>
                 ) : (
