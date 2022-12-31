@@ -4,8 +4,8 @@ import { Dimensions, Platform } from "react-native";
 import { theme } from "./colors";
 import { MaterialCommunityIcons } from "./icons";
 
-export const BASE_URL = "https://amahmed.com/api";
-export const MAP_API_KEY = "AIzaSyA3X_iki3k_oSwkrDp3zbLeTTKTAnlAX80";
+export const BASE_URL = "";
+export const MAP_API_KEY = "";
 
 export const WIDTH = Dimensions.get("window").width;
 export const HEIGHT = Dimensions.get("window").height;
