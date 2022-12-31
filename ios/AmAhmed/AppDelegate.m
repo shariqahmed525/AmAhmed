@@ -50,8 +50,7 @@ static void InitializeFlipper(UIApplication *application) {
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   
-  [GMSServices provideAPIKey:@"AIzaSyA3X_iki3k_oSwkrDp3zbLeTTKTAnlAX80"];
-//  [ScanViewController configureWithApiKey:@"HYq7p2fSJzkSDX29Buqx3X03ZaRRfwKe"];
+  [GMSServices provideAPIKey:@""];
 
   if ([FIRApp defaultApp] == nil) {
     [FIRApp configure];
